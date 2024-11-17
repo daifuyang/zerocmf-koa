@@ -1,0 +1,258 @@
+paths:
+  /api/v1/admin/roles:
+    get:
+      summary: 获取用户角色列表
+      description: 返回用户角色的分页列表。
+      operationId: getRoles
+      security:
+        - bearerAuth: []
+      tags:
+        - roles
+
+      parameters:
+        - name: "page"
+          in: "query"
+          required: false
+          description: "当前页"
+          schema:
+            type: "integer"
+        - name: "pageSize"
+          in: "query"
+          required: false
+          description: "每页数量"
+          schema:
+            type: "integer"
+        - name: name
+          in: query
+          description: 角色名称
+          required: false
+          schema:
+            type: string
+        - name: description
+          in: query
+          description: 角色描述
+          required: false
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: 角色状态
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 用户角色的分页列表。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example:
+                {
+                  "code": 1,
+                  "msg": "获取成功！",
+                  "data":
+                    {
+                      "page": 1,
+                      "pageSize": 10,
+                      "total": 2,
+                      "data":
+                        [
+                          {
+                            "id": 1,
+                            "name": "超级管理员",
+                            "description": "超级管理员",
+                            "sort": 0,
+                            "status": 1,
+                            "createdAt": "0",
+                            "updatedAt": "0"
+                          },
+                          {
+                            "id": 2,
+                            "name": "普通管理员",
+                            "description": "普通管理员",
+                            "sort": 0,
+                            "status": 1,
+                            "createdAt": "0",
+                            "updatedAt": "0"
+                          }
+                        ]
+                    }
+                }
+    post:
+      summary: 创建用户角色
+      description: 创建一个新的用户角色。
+      operationId: addRole
+      security:
+        - bearerAuth: []
+      tags:
+        - roles
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Role"
+      responses:
+        "200":
+          description: 创建成功。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example:
+                {
+                  "code": 1,
+                  "msg": "创建成功！",
+                  "data":
+                    {
+                      "id": 1,
+                      "name": "管理员",
+                      "description": "负责管理系统的管理员角色",
+                      "sort": 1,
+                      "status": 1,
+                      "createdAt": "12345678910",
+                      "updatedAt": "12345678910"
+                    }
+                }
+
+  /api/v1/admin/roles/{id}:
+    get:
+      summary: 获取单个角色
+      description: 根据id获取单个角色
+      operationId: getRole
+      security:
+        - bearerAuth: []
+      tags:
+        - roles
+      parameters:
+        - name: id
+          in: path
+          description: 角色唯一标识符
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 用户角色的分页列表。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example:
+                {
+                  "code": 1,
+                  "msg": "获取成功！",
+                  "data":
+                    {
+                      "id": 1,
+                      "name": "管理员",
+                      "description": "负责管理系统的管理员角色",
+                      "sort": 1,
+                      "status": 1,
+                      "createdAt": "12345678910",
+                      "updatedAt": "12345678910"
+                    }
+                }
+    post:
+      summary: 更新用户角色
+      description: 更新指定id的用户角色
+      operationId: updateRole
+      security:
+        - bearerAuth: []
+      tags:
+        - roles
+      parameters:
+        - name: id
+          in: path
+          description: 角色唯一标识符
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Role"
+      responses:
+        "200":
+          description: 更新成功。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example:
+                {
+                  "code": 1,
+                  "msg": "更新成功！",
+                  "data":
+                    {
+                      "id": 1,
+                      "name": "超级管理员",
+                      "description": "超级管理员",
+                      "sort": 1,
+                      "status": 1,
+                      "createdAt": "1725349743",
+                      "updatedAt": "1725354179"
+                    }
+                }
+    delete:
+      summary: 删除用户角色
+      description: 删除指定id的用户角色
+      operationId: deleteRole
+      security:
+        - bearerAuth: []
+      tags:
+        - roles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: 删除成功。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example:
+                {
+                  "code": 1,
+                  "msg": "删除成功！",
+                  "data":
+                    {
+                      "id": 1,
+                      "name": "超级管理员",
+                      "description": "超级管理员",
+                      "sort": 1,
+                      "status": 1,
+                      "createdAt": "1725349743",
+                      "updatedAt": "1725354179"
+                    }
+                }
+
+components:
+  schemas:
+    Role:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 角色名称
+          example: "管理员"
+        description:
+          type: string
+          description: 角色描述
+          example: "负责管理系统的管理员角色"
+        sort:
+          type: integer
+          description: 排序值
+          example: 1
+        status:
+          type: integer
+          description: 角色状态，1表示启用，0表示禁用
+          example: 1

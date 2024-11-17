@@ -1,0 +1,91 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// 用户表
+model sysUser {
+  id        Int     @id @default(autoincrement())
+  loginName String? @unique @map("login_name") // 用户名可选，因为可能使用手机号或邮箱作为主要登录方式
+  email     String? @unique // 邮箱可选，因为可能使用手机号作为主要登录方式
+  phone     String? @unique // 手机号可选，可以支持手机号登录
+  password  String? // 如果用户使用第三方登录，密码可以为空
+  salt      String? // 密码盐值
+  nickname  String? // 用户的昵称
+  realName  String? @map("realname") // 用户的真实姓名
+  gender    Int     @default(0) @db.TinyInt // 用户性别，0 表示未知，1 表示男，2 表示女
+  birthday  Int? // 用户的生日
+  userType  Int     @default(0) @map("user_type") @db.TinyInt // 用户类型, 0 未激活，1 管理员，2 普通用户
+  avatar    String? // 头像
+  loginIp   String? @map("login_ip") // 最后登录IP
+  loginAt Int?    @map("login_at") // 最后登录时间
+  status    Int     @default(1) @db.TinyInt // 用户状态，0 表示正常，1 表示禁用
+  createdAt Int     @map("create_at") // 使用 UNIX 时间戳（毫秒）
+  updatedAt Int     @map("update_at") // 更新时间，使用 int 类型
+  deletedAt Int     @default(0) @map("delete_at") // 删除时间，使用 int 类型
+
+  @@map("sys_user")
+}
+
+// token表
+model sysUserToken {
+  id           Int    @id @default(autoincrement())
+  userId       Int    @map("user_id") // 用户ID
+  accessToken  String @unique @map("access_token") // token
+  expiresAt    Int @map("expires_at") // token过期时间
+  refreshToken String @unique @map("refresh_token") // 刷新token
+  reExpiresAt  Int @map("re_expires_at") // 刷新token过期时间
+
+  @@map("sys_user_token")
+}
+
+// 角色表
+model sysRole {
+  id          Int     @id @default(autoincrement())
+  name        String // 角色名称
+  description String? // 角色描述
+  sort        Int     @default(1) @db.TinyInt // 排序
+  status      Int     @default(1) @db.TinyInt // 角色状态，0 表示禁用，1 表示正常
+  createdAt   Int  @map("create_at") // 使用 UNIX 时间戳（毫秒）
+  updatedAt   Int  @map("update_at") // 更新时间，使用 int 类型
+  deletedAt   Int  @default(0) @map("delete_at") // 删除时间，使用 int 类型
+
+  @@map("sys_role")
+}
+
+// 菜单表
+model sysMenu {
+  menuId    Int  @id @default(autoincrement()) @map("menu_id") // 菜单ID
+  menuName  String  @map("menu_name") @db.VarChar(50) // 菜单名称
+  parentId  Int  @default(0) @map("parent_id") // 父菜单ID
+  order     Int     @default(0) @map("order") // 排序
+  path      String  @default("") @map("path") @db.VarChar(200) // 路由地址
+  component String? @map("component") @db.VarChar(255) // 组件路径
+  query     String? @map("query") @db.VarChar(255) // 路由参数
+  isFrame   Int     @default(1) @map("is_frame") // 是否为外链
+  isCache   Int     @default(0) @map("is_cache") // 是否缓存（0缓存 1不缓存）
+  menuType  String  @default("") @map("menu_type") @db.Char(1) // 菜单类型 （M目录 C菜单 F按钮）
+  visible   Int     @default(0) @map("visible") @db.TinyInt // 菜单状态（0显示 1隐藏）
+  status    Int     @default(0) @map("status") @db.TinyInt // 菜单状态（0正常 1停用）
+  perms     String? @map("perms") @db.VarChar(100) // 权限标识
+  icon      String  @map("icon") @db.VarChar(100) // 菜单图标
+  createdId Int?    @map("created_id")
+  createdBy String  @default("") @map("created_by") @db.VarChar(64)
+  createdAt Int?    @map("created_at")
+  updatedId Int?    @map("updated_id")
+  updatedBy String  @default("") @map("updated_by") @db.VarChar(64)
+  updatedAt Int?    @map("updated_at")
+  remark    String  @default("") @map("remark") @db.VarChar(500)
+
+  @@map("sys_menu")
+}

@@ -1,0 +1,46 @@
+{
+  "name": "@nextcms/api",
+  "version": "0.0.1",
+  "description": "nextcms koa api",
+  "main": "src/app.ts",
+  "scripts": {
+    "start": "node dist/src/index.js",
+    "dev": "cross-env NODE_ENV=development npx nodemon",
+    "build": "tsc",
+    "migrate": "npx prisma migrate dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dayjs": "^1.11.11",
+    "dotenv": "^16.4.5",
+    "ioredis": "^5.4.1",
+    "jsonwebtoken": "^9.0.2",
+    "koa": "^2.15.3",
+    "koa-body": "^6.0.1",
+    "koa-bodyparser": "^4.4.1",
+    "koa-router": "^12.0.1",
+    "koa2-swagger-ui": "^5.10.0",
+    "lodash": "^4.17.21",
+    "swagger-jsdoc": "^6.2.8",
+    "tsconfig-paths": "^4.2.0"
+  },
+  "devDependencies": {
+    "@prisma/client": "5.20.0",
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/koa": "^2.15.0",
+    "@types/koa-bodyparser": "^4.3.12",
+    "@types/koa-router": "^7.4.8",
+    "@types/lodash": "^4.14.202",
+    "@types/node": "^20.14.15",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "cross-env": "^7.0.3",
+    "nodemon": "^3.1.4",
+    "prisma": "^5.20.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
+  }
+}

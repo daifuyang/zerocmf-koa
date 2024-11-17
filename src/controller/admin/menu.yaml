@@ -1,0 +1,48 @@
+paths:
+  /api/v1/admin/menus:
+    get:
+      summary: 获取系统菜单列表
+      description: 返回系统菜单列表
+      operationId: getMenus
+      security:
+        - bearerAuth: []
+      tags:
+        - menus
+      responses:
+        "200":
+          description: 返回系统菜单列表
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example:
+                {
+                  "code": 1,
+                  "msg": "获取成功！",
+                  "data":
+                    [
+                      {
+                        "menuId": 1,
+                        "menuName": "管理员",
+                        "parentId": 0,
+                        "order": 0,
+                        "path": "/user",
+                        "component": null,
+                        "query": null,
+                        "isFrame": 1,
+                        "isCache": 0,
+                        "menuType": "",
+                        "visible": 0,
+                        "status": 0,
+                        "perms": "user",
+                        "icon": "",
+                        "createdId": 1,
+                        "createdBy": "admin",
+                        "createdAt": 1728805377,
+                        "updatedId": 1,
+                        "updatedBy": "admin",
+                        "updatedAt": 1728805377,
+                        "remark": ""
+                      }
+                    ]
+                }

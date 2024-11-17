@@ -1,0 +1,371 @@
+paths:
+  /api/v1/admin/users:
+    get:
+      summary: 获取管理员用户列表
+      description: 获取管理员用户的分页列表，支持通过登录名、手机号和状态进行筛选。
+      operationId: getUsers
+      security:
+        - bearerAuth: []
+      tags:
+        - admins
+      parameters:
+        - name: "page"
+          in: "query"
+          required: false
+          description: "当前页"
+          schema:
+            type: "integer"
+        - name: "pageSize"
+          in: "query"
+          required: false
+          description: "每页数量"
+          schema:
+            type: "integer"
+        - name: loginName
+          in: query
+          description: 通过登录名筛选
+          required: false
+          schema:
+            type: string
+        - name: phone
+          in: query
+          description: 通过手机号筛选
+          required: false
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: 通过状态筛选，0表示禁用，1表示启用
+          required: false
+          schema:
+            type: integer
+            enum: [0, 1]
+      responses:
+        "200":
+          description: 用户角色的分页列表。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example:
+                {
+                  "code": 1,
+                  "msg": "获取成功！",
+                  "data":
+                    [
+                      {
+                        "id": 1,
+                        "loginName": "admin",
+                        "email": null,
+                        "phone": null,
+                        "nickname": "admin",
+                        "realName": null,
+                        "gender": 0,
+                        "birthday": null,
+                        "userType": 1,
+                        "name": null,
+                        "avatar": null,
+                        "loginIp": null,
+                        "loginTime": null,
+                        "status": 1,
+                        "createdAt": "1723613053",
+                        "updatedAt": "1723613053",
+                        "deletedAt": "0"
+                      }
+                    ]
+                }
+    post:
+      summary: 添加管理员用户
+      description: 添加新的管理员用户。
+      operationId: addUser
+      security:
+        - bearerAuth: []
+      tags:
+        - admins
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - loginName
+                - password
+                - phone
+                - status
+              properties:
+                loginName:
+                  type: string
+                  description: 登录名
+                  example: admin
+                email:
+                  type: string
+                  format: email
+                  description: 邮箱地址
+                  example: example@qq.com
+                phone:
+                  type: string
+                  description: 手机号码
+                  example: 12345678910
+                nickname:
+                  type: string
+                  description: 昵称
+                  example: admin
+                realName:
+                  type: string
+                  description: 真实姓名
+                  example: admin
+                password:
+                  type: string
+                  description: 登录密码
+                  example: 123456
+                gender:
+                  type: integer
+                  description: 性别，1表示男性，0表示女性
+                  enum: [0, 1]
+                  example: 1
+                birthday:
+                  type: integer
+                  format: int64
+                  description: 出生日期（Unix 时间戳）
+                  example: 12345678910
+                userType:
+                  type: integer
+                  description: 用户类型，1 表示管理员
+                  example: 1
+                avatar:
+                  type: string
+                  description: 用户头像URL
+                  nullable: true
+                  example: null
+                status:
+                  type: integer
+                  description: 状态，0表示禁用，1表示启用
+                  enum: [0, 1]
+                  example: 1
+            example:
+              {
+                "loginName": "admin",
+                "email": example@qq.com,
+                "phone": "12345678910",
+                "nickname": "admin",
+                "realName": "admin",
+                "password": "123456",
+                "gender": 1,
+                "birthday": 12345678910,
+                "userType": 1,
+                "avatar": null,
+                "status": 1
+              }
+      responses:
+        "200":
+          description: 管理员用户创建成功。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example:
+                {
+                  "code": 1,
+                  "msg": "创建成功！",
+                  "data":
+                    {
+                      "id": 1,
+                      "loginName": "admin",
+                      "email": example@qq.com,
+                      "phone": 12345678910,
+                      "nickname": "admin",
+                      "realName": "admin",
+                      "gender": 1,
+                      "birthday": 12345678910,
+                      "userType": 1,
+                      "avatar": null,
+                      "status": 1,
+                      "loginIp": "127.0.0.1",
+                      "loginTime": "12345678910",
+                      "createdAt": "1723613053",
+                      "updatedAt": "1723613053"
+                    }
+                }
+
+  /api/v1/admin/users/{id}:
+    get:
+      summary: 查看管理员用户详情
+      description: 通过ID获取管理员用户的详细信息。
+      operationId: getUser
+      security:
+        - bearerAuth: []
+      tags:
+        - admins
+      parameters:
+        - name: id
+          in: path
+          description: 管理员用户的ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 管理员用户详情。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example:
+                {
+                  "code": 1,
+                  "msg": "获取成功！",
+                  "data":
+                    {
+                      "id": 1,
+                      "loginName": "admin",
+                      "email": null,
+                      "phone": null,
+                      "nickname": "admin",
+                      "realName": null,
+                      "gender": 0,
+                      "birthday": null,
+                      "userType": 1,
+                      "name": null,
+                      "avatar": null,
+                      "loginIp": "127.0.0.1",
+                      "loginTime": "12345678910",
+                      "status": 1,
+                      "createdAt": "1723613053",
+                      "updatedAt": "1723613053",
+                      "deletedAt": "0"
+                    }
+                }
+    post:
+      summary: 编辑管理员用户信息
+      description: 通过ID编辑管理员用户信息。
+      operationId: updateUser
+      security:
+        - bearerAuth: []
+      tags:
+        - admins
+      parameters:
+        - name: id
+          in: path
+          description: 管理员用户的ID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - loginName
+                - password
+                - phone
+                - status
+              properties:
+                loginName:
+                  type: string
+                  description: 登录名
+                  example: admin
+                email:
+                  type: string
+                  format: email
+                  description: 邮箱地址
+                  example: example@qq.com
+                phone:
+                  type: string
+                  description: 手机号码
+                  example: 12345678910
+                nickname:
+                  type: string
+                  description: 昵称
+                  example: admin
+                realName:
+                  type: string
+                  description: 真实姓名
+                  example: admin
+                password:
+                  type: string
+                  description: 登录密码
+                  example: 123456
+                gender:
+                  type: integer
+                  description: 性别，1表示男性，0表示女性
+                  enum: [0, 1]
+                  example: 1
+                birthday:
+                  type: integer
+                  format: int64
+                  description: 出生日期（Unix 时间戳）
+                  example: 12345678910
+                userType:
+                  type: integer
+                  description: 用户类型，1 表示管理员
+                  example: 1
+                avatar:
+                  type: string
+                  description: 用户头像URL
+                  nullable: true
+                  example: null
+                status:
+                  type: integer
+                  description: 状态，0表示禁用，1表示启用
+                  enum: [0, 1]
+                  example: 1
+            example:
+              {
+                "loginName": "admin",
+                "email": example@qq.com,
+                "phone": "12345678910",
+                "nickname": "admin",
+                "realName": "admin",
+                "password": "123456",
+                "gender": 1,
+                "birthday": 12345678910,
+                "userType": 1,
+                "avatar": null,
+                "status": 1
+              }
+      responses:
+        "200":
+          description: 管理员用户编辑成功。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example:
+                {
+                  "code": 1,
+                  "msg": "编辑成功！",
+                  "data":
+                    {
+                      "id": 1,
+                      "loginName": "newAdmin",
+                      "phone": "12345678901",
+                      "status": 1,
+                      "updatedAt": "1723613053"
+                    }
+                }
+    delete:
+      summary: 删除管理员用户
+      description: 通过ID删除管理员用户。
+      operationId: deleteUser
+      security:
+        - bearerAuth: []
+      tags:
+        - admins
+      parameters:
+        - name: id
+          in: path
+          description: 管理员用户的ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 管理员用户删除成功。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example: { "code": 1, "msg": "删除成功！" }

@@ -1,0 +1,6 @@
+node_modules
+install
+prisma/migrations
+pnpm-lock.yaml
+.env
+.vscode
