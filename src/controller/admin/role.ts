@@ -2,21 +2,21 @@ import { formatFields, now } from "@/lib/date";
 import { parseJson } from "@/lib/request";
 import response from "@/lib/response";
 import {
-  createRoleModel,
-  deleteRoleModel,
+  createRole,
+  deleteRole,
   getRoleById,
   getRoleByName,
   getRoleCount,
   getRoleList,
-  updateRoleModel
+  updateRole
 } from "@/models/role";
 import { Role } from "@/typings/role";
 import { Context } from "koa";
-import { Prisma } from "@prisma/client";
 import redis from "@/lib/redis";
+import { getEnforcer } from "@/casbin";
 
 // 获取角色列表
-export async function getRoles(ctx: Context) {
+export async function getRolesController(ctx: Context) {
   // 获取查询参数
   const query = ctx.query || {};
   const { current = "1", pageSize = "10", name = "", description = "", status = "" } = query;
@@ -63,14 +63,28 @@ export async function getRoles(ctx: Context) {
     };
   }
   ctx.body = response.success("获取成功！", pagination);
+  return;
 }
 
 // 查看单个角色
-export async function getRole(ctx: Context) {
-  const { id } = ctx.params;
+export async function getRoleController(ctx: Context) {
+  const { roleId } = ctx.params;
+  const numberRoleId = Number(roleId);
 
-  if (Number(id) > 0) {
-    const role = await getRoleById(Number(id));
+  if (isNaN(numberRoleId)) {
+    ctx.body = response.error("参数错误！");
+    return;
+  }
+
+  if (numberRoleId > 0) {
+    const role = await getRoleById(numberRoleId);
+    const menuIds: number[] = [];
+    const e = await getEnforcer();
+    const rules = await e.getFilteredPolicy(0, roleId);
+    rules.forEach((rule) => {
+      menuIds.push(Number(rule[1]));
+    });
+    role.menuIds = menuIds;
     if (!role) {
       ctx.body = response.error("角色不存在！");
       return;
@@ -78,14 +92,32 @@ export async function getRole(ctx: Context) {
     ctx.body = response.success("获取成功！", role);
     return;
   }
-
   ctx.body = response.error("参数错误！");
+  return;
 }
 
 // 新增角色
-export async function addRole(ctx: Context) {
-  const { name, description, sort, status } = parseJson(ctx) as Role;
+export async function addRoleController(ctx: Context) {
+  return saveRole(ctx, null);
+}
 
+// 修改角色
+export async function updateRoleController(ctx: Context) {
+  const { roleId } = ctx.params;
+  const numberRoleId = Number(roleId);
+  if (isNaN(numberRoleId)) {
+    ctx.body = response.error("参数错误！");
+    return;
+  }
+  return saveRole(ctx, numberRoleId);
+}
+
+// 保存角色
+async function saveRole(ctx: Context, roleId: number | null) {
+
+  const edit = roleId !== null;
+
+  const { name, description, sortOrder, status, menuIds = [] } = parseJson(ctx) as Role;
   if (!name) {
     ctx.body = response.error("角色名称不能为空！");
     return;
@@ -93,85 +125,82 @@ export async function addRole(ctx: Context) {
 
   const nameRole = await getRoleByName(name);
   if (nameRole) {
-    ctx.body = response.error("角色名称已存在！");
-    return;
-  }
-
-  try {
-    const role = await createRoleModel({
-      name,
-      description,
-      sort,
-      status,
-      createdAt: now(),
-      updatedAt: now()
-    });
-    ctx.body = response.success("新增成功！", role);
-  } catch (error) {
-    ctx.body = response.error("系统出错！");
-  }
-}
-
-// 修改角色
-export async function updateRole(ctx: Context) {
-  const { id } = ctx.params;
-
-  if (Number(id) > 0) {
-    const { name, description, sort, status } = parseJson(ctx) as Role;
-
-    if (!name) {
-      ctx.body = response.error("角色名称不能为空！");
+    if (!edit) {
+      ctx.body = response.error("角色名称已存在！");
       return;
-    }
-
-    const role = await getRoleById(Number(id));
-    if (!role) {
-      ctx.body = response.error("角色不存在！");
-      return;
-    }
-
-    const nameRole = await getRoleByName(name);
-    if (nameRole && nameRole.id !== Number(id)) {
+    } else if (nameRole.roleId !== roleId) {
       ctx.body = response.error("角色名称已存在！");
       return;
     }
-
-    const newRole = await updateRoleModel(Number(id), {
-      name,
-      description,
-      sort,
-      status,
-      updatedAt: now()
-    });
-
-    if (newRole) {
-      redis.del(`role:${id}`);
-    }
-
-    ctx.body = response.success("更新成功！", newRole);
-    return;
   }
 
-  ctx.body = response.error("参数错误！");
+  let role = null;
+  let msg = '';
+  try {
+
+    if (!edit) {
+      role = await createRole({
+        name,
+        description,
+        sortOrder,
+        status,
+        createdAt: now(),
+        updatedAt: now()
+      });
+      msg = '新增成功！';
+    } else {
+      role = await updateRole(roleId, {
+        name,
+        description,
+        sortOrder,
+        status,
+        updatedAt: now()
+      });
+      msg = '修改成功！';
+    }
+
+    // 更新权限
+    if (role) {
+      const e = await getEnforcer();
+      for (const menuId of menuIds) {
+        e.addPermissionForUser(`${roleId}`, `${menuId}`);
+      }
+      await e.savePolicy();
+      if (edit) {
+        redis.del(`role:${roleId}`);
+      }
+    }
+    ctx.body = response.success(msg, role);
+  } catch (error) {
+    ctx.body = response.error("系统出错！");
+    return;
+  }
 }
 
 // 删除角色
-export async function deleteRole(ctx: Context) {
-  const { id } = ctx.params;
+export async function deleteRoleController(ctx: Context) {
+  const { roleId } = ctx.params;
+  const numberRoleId = Number(roleId);
 
-  if (Number(id) > 0) {
-    const role = await getRoleById(Number(id));
+  if (isNaN(numberRoleId)) {
+    ctx.body = response.error("参数错误！");
+    return;
+  }
+
+  if (numberRoleId > 0) {
+    const role = await getRoleById(numberRoleId);
     if (!role) {
       ctx.body = response.error("角色不存在！");
       return;
     }
-    const deleted = await deleteRoleModel(Number(id));
+    const deleted = await deleteRole(numberRoleId);
     if (deleted) {
-      redis.del(`role:${id}`);
+      redis.del(`role:${roleId}`);
     }
     ctx.body = response.success("删除成功！", deleted);
     return;
   }
 
   ctx.body = response.error("参数错误！");
+  return;
 }

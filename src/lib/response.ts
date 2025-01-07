@@ -17,7 +17,7 @@ function success(msg: string, data: any = null) {
   return json;
 }
 
-function error(msg: string, data: any = null) {
+function error(msg: string, data: any = null, log = false) {
   json.code = 0;
   json.msg = msg;
   json.data = data;

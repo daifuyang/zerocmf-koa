@@ -1,13 +1,14 @@
 import { now } from "@/lib/date";
-import { getRoleById, getRoleByName, createRoleModel, updateRoleModel } from "@/models/role";
-import roles from "./data/roles.json";
+import { getFileJson } from "@/lib/file";
+import { getRoleById, getRoleByName, createRole, updateRole } from "@/models/role";
+import path from "path";
 
 // 数据库迁移角色表
 export default async function migrateRole() {
   // 是否存在默认的管理员
   const superRole = await getRoleById(1);
   if (!superRole) {
-    await createRoleModel({
+    await createRole({
       name: "超级管理员",
       description: "超级管理员",
       createdAt: now(),
@@ -15,17 +16,20 @@ export default async function migrateRole() {
     });
   }
 
+  const filePath = path.join(global.ROOT_PATH, "config/migrate/menus.json");
+  const roles = getFileJson(filePath);
+
   for (const element of roles) {
     const role = await getRoleByName(element.name);
     if (!role) {
-      await createRoleModel({
+      await createRole({
         name: element.name,
         description: element.description,
         createdAt: now(),
         updatedAt: now()
       });
     } else {
-      await updateRoleModel(role.id, {
+      await updateRole(role.roleId, {
         name: element.name,
         description: element.description,
         createdAt: now(),

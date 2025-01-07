@@ -1,30 +1,57 @@
 import Router from "koa-router";
 import { auth } from "@/middlewares/auth";
 import { home } from "@/controller/admin";
-import { addRole, getRoles, getRole, updateRole, deleteRole } from "@/controller/admin/role";
-import { getUsers, getUser, addUser, updateUser, deleteUser } from "@/controller/admin/user";
-import { getMenus } from "@/controller/admin/menu";
+import {
+  addRoleController,
+  getRolesController,
+  getRoleController,
+  updateRoleController,
+  deleteRoleController
+} from "@/controller/admin/role";
+import {
+  getUsersController,
+  getUserController,
+  addUserController,
+  updateUserController,
+  deleteUserController
+} from "@/controller/admin/user";
+import {
+  getMenusController,
+  getMenuController,
+  addMenuController,
+  updateMenuController,
+  deleteMenuController
+} from "@/controller/admin/menu";
 
-const adminRouter = new Router({ prefix: "/admin" });
+import { getApisController } from "@/controller/admin/api";
+
+import { adminPrefix } from "@/constants/router";
+
+const adminRouter = new Router({ prefix: adminPrefix });
 adminRouter.use(auth);
 adminRouter.get("/", home);
 
 // 角色管理路由
-adminRouter.get("/roles", getRoles);
-adminRouter.get("/roles/:id", getRole);
-adminRouter.post("/roles", addRole);
-adminRouter.post("/roles/:id", updateRole);
-adminRouter.delete("/roles/:id", deleteRole);
+adminRouter.get("/roles", getRolesController);
+adminRouter.get("/roles/:roleId", getRoleController);
+adminRouter.post("/roles", addRoleController);
+adminRouter.put("/roles/:roleId", updateRoleController);
+adminRouter.delete("/roles/:roleId", deleteRoleController);
 
 // 管理员管理
-adminRouter.get("/users", getUsers);
-adminRouter.get("/users/:id", getUser);
-adminRouter.post("/users", addUser);
-adminRouter.post("/users/:id", updateUser);
-adminRouter.delete("/users/:id", deleteUser);
+adminRouter.get("/users", getUsersController);
+adminRouter.get("/users/:userId", getUserController);
+adminRouter.post("/users", addUserController);
+adminRouter.put("/users/:userId", updateUserController);
+adminRouter.delete("/users/:userId", deleteUserController);
 
 // 菜单管理
-adminRouter.get("/menus", getMenus);
+adminRouter.get("/menus", getMenusController);
+adminRouter.get("/menus/:menuId", getMenuController);
+adminRouter.post("/menus", addMenuController);
+adminRouter.put("/menus/:id", updateMenuController);
+adminRouter.delete("/menus/:id", deleteMenuController);
 
-
+//  接口管理
+adminRouter.get("/apis", getApisController);
 export default adminRouter;

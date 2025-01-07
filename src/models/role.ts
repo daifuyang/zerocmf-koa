@@ -43,21 +43,21 @@ export const getRoleList = async (
 };
 
 // 根据id获取角色详情
-export const getRoleById = async (id: number, tx = prisma) => {
-  const cache = await redis.get(`${roleIdKey}${id}`);
+export const getRoleById = async (roleId: number, tx = prisma) => {
+  const cache = await redis.get(`${roleIdKey}${roleId}`);
   if (cache) {
     return JSON.parse(cache);
   }
 
   const role = await tx.sysRole.findUnique({
     where: {
-      id,
+      roleId,
       deletedAt: 0
     }
   });
 
   if (role) {
-    redis.set(`${roleIdKey}${id}`, serializeData(role));
+    redis.set(`${roleIdKey}${roleId}`, serializeData(role));
   }
 
   return role;
@@ -82,7 +82,7 @@ export const getRoleCount = async (tx = prisma) => {
 };
 
 // 创建角色
-export const createRoleModel = async (data: any, tx = prisma) => {
+export const createRole = async (data: any, tx = prisma) => {
   const role = await tx.sysRole.create({
     data
   });
@@ -91,26 +91,26 @@ export const createRoleModel = async (data: any, tx = prisma) => {
 };
 
 // 更新角色
-export const updateRoleModel = async (id: number, data: Prisma.sysRoleUpdateInput, tx = prisma) => {
+export const updateRole = async (roleId: number, data: Prisma.sysRoleUpdateInput, tx = prisma) => {
   const role = await tx.sysRole.update({
     where: {
-      id
+      roleId
     },
     data
   });
 
   if (role) {
-    redis.del(`${roleIdKey}${id}`);
+    redis.del(`${roleIdKey}${roleId}`);
   }
 
   return role;
 };
 
 // 删除角色
-export const deleteRoleModel = async (id: number, tx = prisma) => {
+export const deleteRole = async (roleId: number, tx = prisma) => {
   const role = await tx.sysRole.update({
     where: {
-      id
+      roleId
     },
     data: {
       deletedAt: now()

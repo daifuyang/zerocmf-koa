@@ -5,7 +5,7 @@ paths:
       description: 根据提供的 JWT 令牌获取当前用户信息。
       operationId: currentUser
       security:
-        - bearerAuth: []
+        - BearerAuth: []
       tags:
         - users
       responses:
@@ -17,7 +17,7 @@ paths:
                 $ref: "#/components/schemas/Response"
               example:
                 {
-                  "id": 1,
+                  "userId": 1,
                   "loginName": "admin",
                   "email": null,
                   "phone": null,
@@ -46,7 +46,7 @@ components:
     User:
       type: object
       properties:
-        id:
+        userId:
           type: integer
           description: 用户ID
         loginName:
@@ -109,7 +109,7 @@ components:
           description: 更新时间
         # 其他用户属性
       required:
-        - id
+        - userId
         - loginName
         - gender
         - userType

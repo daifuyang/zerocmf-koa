@@ -1,0 +1,59 @@
+edition: 3.0.0
+name: zerocmf-app
+access: "default"
+vars:
+  region: "cn-shanghai"
+  functionName: "koa-app"
+resources:
+  start_koa:
+    component: fc3
+    actions:
+      pre-deploy:
+        - run: export PATH=/usr/local/versions/node/v20.8.1/bin:$PATH && npm install
+          path: ./
+        - run: export PATH=/usr/local/versions/node/v20.8.1/bin:$PATH && npm run build
+          path: ./
+    props:
+      region: ${vars.region}
+      description: zerocmf-app
+      runtime: custom.debian10
+      cpu: 0.05
+      memorySize: 128
+      diskSize: 512
+      timeout: 60
+      instanceConcurrency: 100
+      layers:
+        - acs:fc:${vars.region}:official:layers/Nodejs20/versions/1
+        - acs:fc:${vars.region}:1650595695532785:layers/zerocmf-koa/versions/5
+      environmentVariables:
+        PATH: >-
+          /opt/nodejs20/bin:/usr/local/bin/apache-maven/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/ruby/bin
+        DATABASE_URL: ${env('DATABASE_URL')}
+        NODE_PATH: /opt/nodejs/node_modules
+      customRuntimeConfig:
+        command:
+          - node
+          - index.js
+        port: 3000
+      functionName: ${vars.functionName}
+      code: ./dist
+      triggers:
+        - triggerName: httpTrigger
+          triggerType: http
+          triggerConfig:
+            authType: anonymous
+            methods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+  fc3_domain_0:
+    component: fc3-domain
+    props:
+      region: ${vars.region}
+      domainName: auto
+      protocol: HTTP
+      routeConfig:
+        routes:
+          - path: /*
+            functionName: ${vars.functionName}

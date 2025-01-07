@@ -14,9 +14,15 @@ export interface Role {
   /**
    * 排序
    */
-  sort?: number;
+  sortOrder?: number;
   /* 
    * 状态
   */
   status?: number;
+
+  /**
+   * 访问权限
+   */
+  menuIds?: number[];
+  
 }

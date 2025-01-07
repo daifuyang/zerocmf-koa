@@ -6,7 +6,9 @@ import { router } from "./router/router";
 import swaggerRouter from "./router/swagger";
 import { install } from "./lib/install";
 
-install();
+global.ROOT_PATH = __dirname;
+
+install(router);
 
 const app = new Koa();
 app.use(bodyParser());

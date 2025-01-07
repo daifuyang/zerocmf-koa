@@ -10,10 +10,8 @@ export default async function migrateUser() {
     }
   });
   if (!existUser) {
-
     const salt = generateSalt()
     const password = await hashPassword("123456" + salt)
-
     const user = await prisma.sysUser.create({
       data: {
         loginName: "admin",
@@ -26,7 +24,6 @@ export default async function migrateUser() {
         updatedAt: now()
       }
     });
-
     console.log("create admin user", user);
   }
 }

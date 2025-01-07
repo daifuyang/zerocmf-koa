@@ -56,26 +56,19 @@ const options = {
               example: "用户身份已过期"
             }
           }
-        },
-        securitySchemes: {
-          bearerAuth: {
-            type: "http",
-            scheme: "bearer",
-            bearerFormat: "JWT" // 可选
-          }
         }
       },
       securitySchemes: {
-        bearerAuth: {
+        BearerAuth: {
           type: "http",
           scheme: "bearer",
           bearerFormat: "JWT" // 可选
         }
-      },
+      }
     },
     security: [
       {
-        bearerAuth: [] // 全局应用
+        BearerAuth: [] // 全局应用
       }
     ],
     tags: [
@@ -90,9 +83,16 @@ const options = {
       {
         name: "roles",
         description: "角色管理"
+      },
+      {
+        name: "menus",
+        description: "菜单管理"
+      },
+      {
+        name: "apis",
+        description: "接口管理"
       }
     ],
-
     servers: [
       {
         url: "/",
@@ -100,7 +100,7 @@ const options = {
       }
     ]
   },
-  apis: ["**/*.yaml"] // 这里指定包含Swagger注释的文件路径
+  apis: ["src/**/*.yaml"] // 这里指定包含Swagger注释的文件路径
 };
 
 const swaggerSpec = swaggerJSDoc(options);

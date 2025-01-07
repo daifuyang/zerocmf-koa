@@ -11,7 +11,7 @@ export function serializeData(data: any) {
   });
 }
 
-export function generateSalt(length = 4) {
+export function generateSalt(length = 6) {
   return crypto.randomBytes(length).toString('hex').slice(0, length);
 }
 

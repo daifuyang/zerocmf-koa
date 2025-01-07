@@ -1,0 +1,363 @@
+paths:
+  /api/v1/admin/menus:
+    get:
+      summary: 获取系统菜单列表
+      description: 返回系统菜单列表
+      operationId: getMenus
+      security:
+        - BearerAuth: []
+      tags:
+        - menus
+      responses:
+        "200":
+          description: 返回系统菜单列表
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example:
+                {
+                  "code": 1,
+                  "msg": "获取成功！",
+                  "data":
+                    [
+                      {
+                        "menuId": 1,
+                        "menuName": "管理员",
+                        "parentId": 0,
+                        "order": 0,
+                        "path": "/user",
+                        "component": null,
+                        "query": null,
+                        "isFrame": 1,
+                        "isCache": 0,
+                        "menuType": "",
+                        "visible": 0,
+                        "status": 0,
+                        "perms": "user",
+                        "icon": "",
+                        "createdId": 1,
+                        "createdBy": "admin",
+                        "createdAt": 1728805377,
+                        "updatedId": 1,
+                        "updatedBy": "admin",
+                        "updatedAt": 1728805377,
+                        "remark": ""
+                      }
+                    ]
+                }
+    post:
+      summary: 新增菜单
+      description: 新增一个系统菜单
+      operationId: addMenu
+      security:
+        - BearerAuth: []
+      tags:
+        - menus
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MenuRequest"
+            example:
+              {
+                "menuName": "用户管理",
+                "path": "/user",
+                "icon": "user",
+                "parentId": 0,
+                "sortOrder": 1,
+                "component": "User",
+                "query": "",
+                "isFrame": 0,
+                "isCache": 0,
+                "menuType": 1,
+                "visible": 1,
+                "status": 1,
+                "perms": "user:list",
+                "createdId": 1,
+                "createdBy": "admin",
+                "updatedId": 1,
+                "updatedBy": "admin",
+                "remark": "用户管理菜单"
+              }
+      responses:
+        "200":
+          description: 返回新增的菜单信息
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example:
+                {
+                  "code": 1,
+                  "msg": "操作成功！",
+                  "data":
+                    {
+                      "menuId": 2,
+                      "menuName": "用户管理",
+                      "path": "/user",
+                      "icon": "user",
+                      "parentId": 0,
+                      "sortOrder": 1,
+                      "component": "User",
+                      "query": "",
+                      "isFrame": 0,
+                      "isCache": 0,
+                      "menuType": 1,
+                      "visible": 1,
+                      "status": 1,
+                      "perms": "user:list",
+                      "createdId": 1,
+                      "createdBy": "admin",
+                      "createdAt": 1728805377,
+                      "updatedId": 1,
+                      "updatedBy": "admin",
+                      "updatedAt": 1728805377,
+                      "remark": "用户管理菜单"
+                    }
+                }
+        "400":
+          description: 请求参数错误
+        "401":
+          description: 未授权，Token 错误或缺失
+  /api/v1/admin/menus/{id}:
+    get:
+      summary: 获取单个菜单
+      description: 根据菜单 ID 获取系统菜单的详细信息
+      operationId: getMenu
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 菜单的 ID
+          schema:
+            type: integer
+      security:
+        - BearerAuth: []
+      tags:
+        - menus
+      responses:
+        "200":
+          description: 返回指定菜单的详细信息
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example:
+                {
+                  "code": 1,
+                  "msg": "获取成功！",
+                  "data":
+                    {
+                      "menuId": 1,
+                      "menuName": "管理员",
+                      "parentId": 0,
+                      "order": 0,
+                      "path": "/user",
+                      "component": null,
+                      "query": null,
+                      "isFrame": 1,
+                      "isCache": 0,
+                      "menuType": "",
+                      "visible": 0,
+                      "status": 0,
+                      "perms": "user",
+                      "icon": "",
+                      "createdId": 1,
+                      "createdBy": "admin",
+                      "createdAt": 1728805377,
+                      "updatedId": 1,
+                      "updatedBy": "admin",
+                      "updatedAt": 1728805377,
+                      "remark": ""
+                    }
+                }
+        "400":
+          description: 请求参数错误
+        "401":
+          description: 未授权，Token 错误或缺失
+        "404":
+          description: 菜单不存在
+    put:
+      summary: 编辑菜单
+      description: 根据菜单 ID 编辑系统菜单
+      operationId: updateMenu
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 菜单的 ID
+          schema:
+            type: integer
+      security:
+        - BearerAuth: []
+      tags:
+        - menus
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MenuRequest"
+            example:
+              {
+                "menuName": "用户管理",
+                "path": "/user",
+                "icon": "user",
+                "parentId": 0,
+                "sortOrder": 1,
+                "component": "User",
+                "query": "",
+                "isFrame": 0,
+                "isCache": 0,
+                "menuType": 1,
+                "visible": 1,
+                "status": 1,
+                "perms": "user:list",
+                "updatedId": 1,
+                "updatedBy": "admin",
+                "remark": "用户管理菜单"
+              }
+      responses:
+        "200":
+          description: 返回编辑后的菜单信息
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example:
+                {
+                  "code": 1,
+                  "msg": "操作成功！",
+                  "data":
+                    {
+                      "menuId": 1,
+                      "menuName": "用户管理",
+                      "path": "/user",
+                      "icon": "user",
+                      "parentId": 0,
+                      "sortOrder": 1,
+                      "component": "User",
+                      "query": "",
+                      "isFrame": 0,
+                      "isCache": 0,
+                      "menuType": 1,
+                      "visible": 1,
+                      "status": 1,
+                      "perms": "user:list",
+                      "createdId": 1,
+                      "createdBy": "admin",
+                      "createdAt": 1728805377,
+                      "updatedId": 1,
+                      "updatedBy": "admin",
+                      "updatedAt": 1728805377,
+                      "remark": "用户管理菜单"
+                    }
+                }
+        "400":
+          description: 请求参数错误
+        "401":
+          description: 未授权，Token 错误或缺失
+        "404":
+          description: 菜单不存在
+    delete:
+      summary: 删除菜单
+      description: 根据菜单 ID 删除系统菜单
+      operationId: deleteMenu
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 菜单的 ID
+          schema:
+            type: integer
+      security:
+        - BearerAuth: []
+      tags:
+        - menus
+      responses:
+        "200":
+          description: 返回操作结果
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example: { "code": 1, "msg": "删除成功！", "data": null }
+        "400":
+          description: 请求参数错误
+        "401":
+          description: 未授权，Token 错误或缺失
+        "404":
+          description: 菜单不存在
+components:
+  schemas:
+    Response:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: 状态码
+        msg:
+          type: string
+          description: 提示信息
+        data:
+          type: object
+          description: 返回数据
+    MenuRequest:
+      type: object
+      properties:
+        menuName:
+          type: string
+          description: 菜单名称
+        path:
+          type: string
+          description: 路由地址
+        icon:
+          type: string
+          description: 菜单图标
+        parentId:
+          type: integer
+          description: 父菜单 ID
+        sortOrder:
+          type: integer
+          description: 排序
+        component:
+          type: string
+          description: 组件路径
+        query:
+          type: string
+          description: 路由参数
+        isFrame:
+          type: integer
+          description: 是否为外链 （0否 1是）
+        isCache:
+          type: integer
+          description: 是否缓存（0不缓存 1缓存）
+        menuType:
+          type: integer
+          description: 菜单类型 （0目录 1菜单 2按钮）
+        visible:
+          type: integer
+          description: 菜单状态（0隐藏 1显示）
+        status:
+          type: integer
+          description: 菜单状态（0停用 1正常）
+        perms:
+          type: string
+          description: 权限标识
+        createdId:
+          type: integer
+          description: 创建人 ID
+        createdBy:
+          type: string
+          description: 创建人
+        updatedId:
+          type: integer
+          description: 更新人 ID
+        updatedBy:
+          type: string
+          description: 更新人
+        remark:
+          type: string
+          description: 备注

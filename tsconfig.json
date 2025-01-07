@@ -1,14 +1,13 @@
 {
   "compilerOptions": {
     "target": "ES6",
-    "module": "commonjs",
-    "resolveJsonModule": true,
-    "lib": ["ES6", "DOM"],
-    "outDir": "./dist",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
+    "module": "CommonJS",
+    "outDir": "./dist",      // 设置输出目录
+    "rootDir": "./src",
+    "esModuleInterop": true, // 允许默认导入非 ES6 模块
+    "skipLibCheck": true,     // 跳过库文件检查，提升编译速度
     "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"]

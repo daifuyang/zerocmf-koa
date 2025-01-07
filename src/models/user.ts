@@ -6,8 +6,8 @@ import { sysUser, Prisma } from "@prisma/client";
 
 const userIdKey = "user:id:";
 // 根据id获取用户
-export const getUserById = async (id: number, tx = prisma) => {
-  const cache = await redis.get(`${userIdKey}${id}`);
+export const getUserById = async (userId: number, tx = prisma) => {
+  const cache = await redis.get(`${userIdKey}${userId}`);
   let user: sysUser | null = null;
   if (cache) {
     user = JSON.parse(cache);
@@ -16,13 +16,13 @@ export const getUserById = async (id: number, tx = prisma) => {
   if (!user) {
     user = await tx.sysUser.findUnique({
       where: {
-        id,
+        userId,
         deletedAt: 0
       }
     });
 
     if (user) {
-      redis.set(`${userIdKey}${{ id }}`, serializeData(user));
+      redis.set(`${userIdKey}${{ userId }}`, serializeData(user));
     }
   }
 
@@ -40,7 +40,7 @@ export const getUserCount = async (where: Prisma.sysUserWhereInput = {}, tx = pr
 };
 
 // 获取用户列表
-export const getUsersModel = async (
+export const getUserList = async (
   page: number = 1,
   pageSize: number,
   where: Prisma.sysUserWhereInput = {},
@@ -71,14 +71,14 @@ export const getUsersModel = async (
 };
 
 // 根据条件获取单个用户
-export const getUserModel = (where: Prisma.sysUserWhereUniqueInput, tx = prisma) => {
+export const getUser = (where: Prisma.sysUserWhereUniqueInput, tx = prisma) => {
   return tx.sysUser.findUnique({
     where
   });
 };
 
 // 创建用户
-export const createUserModel = async (data: Prisma.sysUserCreateInput, tx = prisma) => {
+export const createUser = async (data: Prisma.sysUserCreateInput, tx = prisma) => {
   const user = await tx.sysUser.create({
     data
   });
@@ -86,31 +86,31 @@ export const createUserModel = async (data: Prisma.sysUserCreateInput, tx = pris
 };
 
 // 更新用户
-export const updateUserModel = async (id: number, data: Prisma.sysUserCreateInput, tx = prisma) => {
+export const updateUser = async (userId: number, data: Prisma.sysUserCreateInput, tx = prisma) => {
   const user = await tx.sysUser.update({
     where: {
-      id
+      userId
     },
     data
   });
   if (user) {
-    redis.del(`${userIdKey}:${id}`);
+    redis.del(`${userIdKey}:${userId}`);
   }
   return user;
 };
 
 // 删除用户
-export const deleteUserModel = async (id: number, tx = prisma) => {
+export const deleteUser = async (userId: number, tx = prisma) => {
   const user = await tx.sysUser.update({
     where: {
-      id
+      userId
     },
     data: {
       deletedAt: now()
     }
   });
   if (user) {
-    redis.del(`${userIdKey}:${id}`);
+    redis.del(`${userIdKey}:${userId}`);
   }
   return user;
 };

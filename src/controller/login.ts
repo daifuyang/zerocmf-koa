@@ -4,7 +4,7 @@ import response from "@/lib/response";
 import { LoginReq } from "@/typings/login";
 import { sysUser } from "@prisma/client";
 import { Context } from "koa";
-import { getUserModel } from "@/models/user";
+import { getUser } from "@/models/user";
 import { parseJson } from "@/lib/request";
 import { createUserToken } from "@/models/userToken";
 import { calculateExpiresAt } from "@/lib/date";
@@ -38,6 +38,7 @@ const accountEnum = {
 };
 
 export const Login = async (ctx: Context) => {
+  
   const { account, password, loginType = "account", phoneType } = parseJson(ctx) as LoginReq;
 
   if (!account) {
@@ -50,15 +51,15 @@ export const Login = async (ctx: Context) => {
   switch (loginType) {
     case "email":
       // 邮箱登录逻辑
-      user = await getUserModel({ email: account });
+      user = await getUser({ email: account });
       break;
     case "phone":
       // 手机号登录逻辑
-      user = await getUserModel({ phone: account });
+      user = await getUser({ phone: account });
       break;
     case "account":
       // 用户名登录逻辑
-      user = await getUserModel({ loginName: account });
+      user = await getUser({ loginName: account });
       break;
   }
   // 检查用户是否存在
@@ -78,7 +79,6 @@ export const Login = async (ctx: Context) => {
   }
 
   if (user?.password) {
-
     const pwd = password + user.salt;
 
     // 验证密码
@@ -92,13 +92,15 @@ export const Login = async (ctx: Context) => {
     return;
   }
 
+  const { userId } = user;
+
   // 生成JWT token
   const expiresIn = jwtSecretExpire;
-  const accessToken = jwt.sign({ userId: user.id }, jwtSecret, { expiresIn });
+  const accessToken = jwt.sign({ userId }, jwtSecret, { expiresIn });
 
   // 生成refresh token
   const reExpiresIn = jwtRefreshSecretExpire;
-  const refreshToken = jwt.sign({ userId: user.id }, jwtRefreshSecret, {
+  const refreshToken = jwt.sign({ userId }, jwtRefreshSecret, {
     expiresIn: reExpiresIn
   });
 
@@ -106,7 +108,7 @@ export const Login = async (ctx: Context) => {
   const reExpiresAt = calculateExpiresAt(reExpiresIn);
 
   const userToken = await createUserToken({
-    userId: user.id,
+    userId,
     accessToken,
     refreshToken,
     expiresAt,

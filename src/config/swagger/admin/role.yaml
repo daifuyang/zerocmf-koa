@@ -5,7 +5,7 @@ paths:
       description: 返回用户角色的分页列表。
       operationId: getRoles
       security:
-        - bearerAuth: []
+        - BearerAuth: []
       tags:
         - roles
 
@@ -59,7 +59,7 @@ paths:
                       "data":
                         [
                           {
-                            "id": 1,
+                            "roleId": 1,
                             "name": "超级管理员",
                             "description": "超级管理员",
                             "sort": 0,
@@ -68,7 +68,7 @@ paths:
                             "updatedAt": "0"
                           },
                           {
-                            "id": 2,
+                            "roleId": 2,
                             "name": "普通管理员",
                             "description": "普通管理员",
                             "sort": 0,
@@ -84,7 +84,7 @@ paths:
       description: 创建一个新的用户角色。
       operationId: addRole
       security:
-        - bearerAuth: []
+        - BearerAuth: []
       tags:
         - roles
       requestBody:
@@ -106,7 +106,7 @@ paths:
                   "msg": "创建成功！",
                   "data":
                     {
-                      "id": 1,
+                      "roleId": 1,
                       "name": "管理员",
                       "description": "负责管理系统的管理员角色",
                       "sort": 1,
@@ -116,17 +116,17 @@ paths:
                     }
                 }
 
-  /api/v1/admin/roles/{id}:
+  /api/v1/admin/roles/{roleId}:
     get:
       summary: 获取单个角色
       description: 根据id获取单个角色
       operationId: getRole
       security:
-        - bearerAuth: []
+        - BearerAuth: []
       tags:
         - roles
       parameters:
-        - name: id
+        - name: roleId
           in: path
           description: 角色唯一标识符
           required: true
@@ -145,7 +145,7 @@ paths:
                   "msg": "获取成功！",
                   "data":
                     {
-                      "id": 1,
+                      "roleId": 1,
                       "name": "管理员",
                       "description": "负责管理系统的管理员角色",
                       "sort": 1,
@@ -154,16 +154,16 @@ paths:
                       "updatedAt": "12345678910"
                     }
                 }
-    post:
+    put:
       summary: 更新用户角色
       description: 更新指定id的用户角色
       operationId: updateRole
       security:
-        - bearerAuth: []
+        - BearerAuth: []
       tags:
         - roles
       parameters:
-        - name: id
+        - name: roleId
           in: path
           description: 角色唯一标识符
           required: true
@@ -188,7 +188,7 @@ paths:
                   "msg": "更新成功！",
                   "data":
                     {
-                      "id": 1,
+                      "roleId": 1,
                       "name": "超级管理员",
                       "description": "超级管理员",
                       "sort": 1,
@@ -202,11 +202,11 @@ paths:
       description: 删除指定id的用户角色
       operationId: deleteRole
       security:
-        - bearerAuth: []
+        - BearerAuth: []
       tags:
         - roles
       parameters:
-        - name: id
+        - name: roleId
           in: path
           required: true
           schema:
@@ -225,7 +225,7 @@ paths:
                   "msg": "删除成功！",
                   "data":
                     {
-                      "id": 1,
+                      "roleId": 1,
                       "name": "超级管理员",
                       "description": "超级管理员",
                       "sort": 1,

@@ -1,7 +1,8 @@
-import menus from "@/migrate/data/menus.json";
 import { createMenu, getMenuByName, updateMenu } from "@/models/menu";
 import { now } from "@/lib/date";
 import { sysMenu } from "@prisma/client";
+import path from "path";
+import { getFileJson } from "@/lib/file";
 
 interface MenuItem {
   perms: string;
@@ -9,7 +10,7 @@ interface MenuItem {
   path: string;
   status?: number;
   visible?: number;
-  menuType?: string;
+  menuType?: number;
   children?: MenuItem[]; // 子菜单，递归定义
 }
 
@@ -17,7 +18,8 @@ interface MenuItem {
 async function parseMenuItems(menuItems: MenuItem[], parentId: number = 0) {
   for (const item of menuItems) {
     // 打印菜单的名称和路径
-    let menuType = item.menuType || "D";
+    let menuType = item.menuType || 0;
+    menuType = Number(menuType);
     const menu = await getMenuByName(item.menuName);
     let menuModel: sysMenu
     if (menu?.menuId) {
@@ -28,7 +30,7 @@ async function parseMenuItems(menuItems: MenuItem[], parentId: number = 0) {
         path: item.path,
         perms: item.perms,
         icon: "",
-        order: 0,
+        sortOrder: 0,
         updatedId: 1,
         updatedBy: "admin",
         visible: item?.visible == 0 ? 0 : 1,
@@ -44,7 +46,7 @@ async function parseMenuItems(menuItems: MenuItem[], parentId: number = 0) {
         path: item.path,
         perms: item.perms,
         icon: "",
-        order: 0,
+        sortOrder: 0,
         visible: item?.visible == 0 ? 0 : 1,
         status: item?.status == 0 ? 0 : 1,
         createdId: 1,
@@ -63,5 +65,9 @@ async function parseMenuItems(menuItems: MenuItem[], parentId: number = 0) {
 }
 
 export default async function migrateMenu() {
+
+  const filePath = path.join(global.ROOT_PATH, 'config/migrate/menus.json');
+  // fs从本地文件读取json文件
+  const menus = getFileJson(filePath);
   parseMenuItems(menus);
 }
