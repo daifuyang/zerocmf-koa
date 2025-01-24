@@ -94,6 +94,7 @@ model sysMenu {
   @@map("sys_menu")
 }
 
+// 权限表
 model casbinRule {
   ptype String
   v0    String
@@ -107,6 +108,7 @@ model casbinRule {
   @@map("casbin_rule")
 }
 
+// 系统接口表
 model sysApi {
   id          Int     @id @default(autoincrement())
   path        String // 路径
@@ -115,6 +117,110 @@ model sysApi {
   group       String? // 分组
 
   @@unique([path, method])
-  @@index([id])
   @@map("sys_api")
+}
+
+// 接口菜单关系表
+model sysMenuApi {
+  menuId Int @map("menu_id")
+  apiId  Int @map("api_id")
+
+  @@unique([menuId, apiId])
+  @@map("sys_menu_api")
+}
+
+// 文章表
+model cmsArticle {
+  articleId      Int                      @id @default(autoincrement()) @map("article")
+  postFormat     Int?                     @default(1) @map("post_format") @db.TinyInt() // 文章格式
+  seoTitle       String?                  @map("seo_title") @db.VarChar(100) // 三要素标题，用于seo优化
+  seoKeywords    String?                  @map("seo_keywords") @db.VarChar(255) // 三要素关键词，用于seo优化
+  seoDescription String?                  @map("seo_description") @db.VarChar(255) // 三要素描述，用于seo优化
+  thumbnail      String?                  @map("thumbnail") @db.VarChar(255) // 封面
+  title          String                   @map("title") @db.VarChar(100) // 标题
+  content        String?                  @map("content") @db.LongText // 内容
+  keywords       String?                  @map("keywords") @db.VarChar(255) // 关键词
+  excerpt        String?                  @map("excerpt") @db.VarChar(255) // 摘要
+  source         String?                  @map("source") @db.VarChar(255) // 文章来源
+  isTop          Int?                     @map("is_top") @db.TinyInt() // 置顶
+  hits           Int?                     @map("hits") // 点击数
+  favorites      Int?                     @map("favorites") // 收藏数
+  likes          Int?                     @map("likes") // 点赞数
+  comments       Int?                     @map("comments") // 点赞数
+  more           Json?                    @map("more") @db.Json // 扩展属性
+  articleStatus  Int?                     @default(1) @map("article_status") @db.TinyInt // 文章状态
+  commentStatus  Int?                     @default(1) @map("comment_status") @db.TinyInt // 评论状态
+  order          Int?                     @map("order") // 排序
+  publishedAt    Int?                     @map("published_at") // 发布时间
+  createId       Int                      @map("create_id")
+  creator        String                   @map("creator") @db.VarChar(50)
+  updateId       Int                      @map("update_id")
+  updater        String                   @map("updater") @db.VarChar(50)
+  createdAt      Int                      @map("created_at")
+  updatedAt      Int                      @map("updated_at")
+  deletedAt      Int                      @default(0) @map("deleted_at")
+  categories     cmsArticleCategoryPost[]
+  articleTags    cmsArticleTagPost[]
+
+  @@map("cms_article")
+}
+
+// 文章分类表
+model cmsArticleCategory {
+  articleCategoryId Int                      @id @default(autoincrement()) @map("articleCategoryId")
+  parentId          Int                      @map("parent_id") // 分类id
+  seoTitle          String?                  @map("seo_title") @db.VarChar(100) // 三要素标题，用于seo优化
+  seoKeywords       String?                  @map("seo_keywords") @db.VarChar(255) // 三要素关键词，用于seo优化
+  seoDescription    String?                  @map("seo_description") @db.VarChar(255) // 三要素描述，用于seo优化
+  name              String                   @map("name") @db.VarChar(100)
+  icon              String?                  @map("icon") @db.VarChar(255) // 分类图标 
+  description       String?                  @map("description") @db.VarChar(255)
+  status            Int?                     @default(1) @map("status") @db.TinyInt()
+  articleCount      Int                      @map("article_count") // 文章数
+  path              String                   @map("path") @db.VarChar(255)
+  order             Int?                     @map("order") // 排序
+  createId          Int                      @map("create_id")
+  creator           String                   @map("creator") @db.VarChar(50)
+  updateId          Int                      @map("update_id")
+  updater           String                   @map("updater") @db.VarChar(50)
+  createdAt         Int                      @map("created_at")
+  updatedAt         Int                      @map("updated_at")
+  deletedAt         Int                      @default(0) @map("deleted_at")
+  articles          cmsArticleCategoryPost[]
+
+  @@map("cms_article_category")
+}
+
+// 文章和分类关联表
+model cmsArticleCategoryPost {
+  articleId         Int                @map("article_id") // 文章id
+  articleCategoryId Int                @map("article_category_id") //分类id
+  order             Int?               @map("order") // 排序
+  article           cmsArticle         @relation(fields: [articleId], references: [articleId])
+  articleCategory   cmsArticleCategory @relation(fields: [articleCategoryId], references: [articleCategoryId])
+
+  @@unique([articleId, articleCategoryId])
+  @@map("cms_article_category_post")
+}
+
+// 文章标签表
+model cmsArticleTag {
+  tagId        Int                 @id @default(autoincrement()) // 标签id
+  name         String              @unique // 标签名称
+  status       Int                 @default(1) // 状态
+  articleCount Int                 @map("article_count") // 文章数
+  articles     cmsArticleTagPost[]
+
+  @@map("cms_article_tag")
+}
+
+// 文章和标签关联表
+model cmsArticleTagPost {
+  articleId  Int           @map("article_id") // 文章id
+  tagId      Int           @map("tag_id") // 标签id
+  article    cmsArticle    @relation(fields: [articleId], references: [articleId])
+  articleTag cmsArticleTag @relation(fields: [tagId], references: [tagId])
+
+  @@unique([articleId, tagId])
+  @@map("cms_article_tag_post")
 }

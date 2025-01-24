@@ -1,0 +1,18 @@
+paths:
+  /api/v1/admin/apis:
+    get:
+      summary: 获取系统接口列表
+      description: 返回系统接口列表
+      operationId: getApis
+      security:
+        - BearerAuth: []
+      tags:
+        - apis
+      responses:
+        "200":
+          description: 返回系统接口列表
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example: { "code": 1, "msg": "获取成功！", "data": [] }

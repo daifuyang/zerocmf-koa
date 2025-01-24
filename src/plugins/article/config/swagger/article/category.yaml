@@ -1,0 +1,189 @@
+paths:
+  /api/v1/admin/article-categories:
+    get:
+      summary: 获取文章分类列表
+      description: 返回文章分类列表，支持分页
+      operationId: getArticleCategoryList
+      security:
+        - BearerAuth: []
+      tags:
+        - article-categories
+      parameters:
+        - name: current
+          in: query
+          description: 当前页码
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          description: 每页条数
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - name: isTree
+          in: query
+          description: 是否返回树形结构
+          required: false
+      responses:
+        "200":
+          description: 返回文章分类列表
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example: { "code": 1, "msg": "获取成功！", "data": { "total": 100, "data": [], "current": 1, "pageSize": 10 } }
+
+    post:
+      summary: 添加文章分类
+      description: 添加一个新的文章分类
+      operationId: addArticleCategory
+      security:
+        - BearerAuth: []
+      tags:
+        - article-categories
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                parentId:
+                  type: integer
+                  description: 父分类ID
+                  example: 0
+                name:
+                  type: string
+                  description: 分类名称
+                  example: "技术"
+                description:
+                  type: string
+                  description: 分类描述
+                  example: "技术相关文章"
+                icon:
+                  type: string
+                  description: 分类图标
+                  example: "icon-tech"
+                order:
+                  type: integer
+                  description: 排序
+                  example: 1
+                status:
+                  type: integer
+                  description: 状态
+                  example: 1
+      responses:
+        "200":
+          description: 返回添加的文章分类
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example: { "code": 1, "msg": "添加成功！", "data": { "articleCategoryId": 1, "name": "技术", "description": "技术相关文章", "icon": "icon-tech", "order": 1, "status": 1 } }
+
+  /api/v1/admin/article-categories/{articleCategoryId}:
+    get:
+      summary: 获取文章分类详情
+      description: 根据ID获取文章分类详情
+      operationId: getArticleCategory
+      security:
+        - BearerAuth: []
+      tags:
+        - article-categories
+      parameters:
+        - name: articleCategoryId
+          in: path
+          description: 文章分类ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 返回文章分类详情
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example: { "code": 1, "msg": "获取成功！", "data": { "articleCategoryId": 1, "name": "技术", "description": "技术相关文章", "icon": "icon-tech", "order": 1, "status": 1 } }
+
+    put:
+      summary: 修改文章分类
+      description: 根据ID修改文章分类
+      operationId: updateArticleCategory
+      security:
+        - BearerAuth: []
+      tags:
+        - article-categories
+      parameters:
+        - name: articleCategoryId
+          in: path
+          description: 文章分类ID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                parentId:
+                  type: integer
+                  description: 父分类ID
+                  example: 0
+                name:
+                  type: string
+                  description: 分类名称
+                  example: "技术"
+                description:
+                  type: string
+                  description: 分类描述
+                  example: "技术相关文章"
+                icon:
+                  type: string
+                  description: 分类图标
+                  example: "icon-tech"
+                order:
+                  type: integer
+                  description: 排序
+                  example: 1
+                status:
+                  type: integer
+                  description: 状态
+                  example: 1
+      responses:
+        "200":
+          description: 返回修改后的文章分类
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example: { "code": 1, "msg": "修改成功！", "data": { "articleCategoryId": 1, "name": "技术", "description": "技术相关文章", "icon": "icon-tech", "order": 1, "status": 1 } }
+
+    delete:
+      summary: 删除文章分类
+      description: 根据ID删除文章分类
+      operationId: deleteArticleCategory
+      security:
+        - BearerAuth: []
+      tags:
+        - article-categories
+      parameters:
+        - name: articleCategoryId
+          in: path
+          description: 文章分类ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 返回删除结果
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example: { "code": 1, "msg": "删除成功！", "data": null }

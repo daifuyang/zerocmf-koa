@@ -1,0 +1,195 @@
+paths:
+  /api/v1/admin/articles:
+    get:
+      summary: 获取文章列表
+      description: 返回文章列表，支持分页
+      operationId: getArticleList
+      security:
+        - BearerAuth: []
+      tags:
+        - articles
+      parameters:
+        - name: current
+          in: query
+          description: 当前页码
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          description: 每页条数
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        "200":
+          description: 返回文章列表
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example: { "code": 1, "msg": "获取成功！", "data": { "total": 100, "data": [], "current": 1, "pageSize": 10 } }
+
+    post:
+      summary: 创建文章
+      description: 创建一篇新的文章
+      operationId: createArticle
+      security:
+        - BearerAuth: []
+      tags:
+        - articles
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                categoryIds:
+                  type: array
+                  description: 分类ID列表
+                  items:
+                    type: integer
+                  example: [1, 2]
+                title:
+                  type: string
+                  description: 文章标题
+                  example: "文章标题"
+                content:
+                  type: string
+                  description: 文章内容
+                  example: "文章内容"
+                excerpt:
+                  type: string
+                  description: 文章摘要
+                  example: "文章摘要"
+                keywords:
+                  type: array
+                  description: 文章关键词
+                  items:
+                    type: string
+                  example: ["关键词1", "关键词2"]
+                publishedAt:
+                  type: string
+                  format: date-time
+                  description: 发布时间
+                  example: "2023-10-01T00:00:00Z"
+      responses:
+        "200":
+          description: 返回创建的文章
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example: { "code": 1, "msg": "创建成功！", "data": { "articleId": 1, "title": "文章标题", "content": "文章内容", "excerpt": "文章摘要", "keywords": "关键词1,关键词2", "publishedAt": "2023-10-01T00:00:00Z" } }
+
+  /api/v1/admin/articles/{articleId}:
+    get:
+      summary: 获取文章详情
+      description: 根据ID获取文章详情
+      operationId: getArticle
+      security:
+        - BearerAuth: []
+      tags:
+        - articles
+      parameters:
+        - name: articleId
+          in: path
+          description: 文章ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 返回文章详情
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example: { "code": 1, "msg": "获取成功！", "data": { "articleId": 1, "title": "文章标题", "content": "文章内容", "excerpt": "文章摘要", "keywords": "关键词1,关键词2", "publishedAt": "2023-10-01T00:00:00Z" } }
+
+    put:
+      summary: 更新文章
+      description: 根据ID更新文章
+      operationId: updateArticle
+      security:
+        - BearerAuth: []
+      tags:
+        - articles
+      parameters:
+        - name: articleId
+          in: path
+          description: 文章ID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                categoryIds:
+                  type: array
+                  description: 分类ID列表
+                  items:
+                    type: integer
+                  example: [1, 2]
+                title:
+                  type: string
+                  description: 文章标题
+                  example: "文章标题"
+                content:
+                  type: string
+                  description: 文章内容
+                  example: "文章内容"
+                excerpt:
+                  type: string
+                  description: 文章摘要
+                  example: "文章摘要"
+                keywords:
+                  type: array
+                  description: 文章关键词
+                  items:
+                    type: string
+                  example: ["关键词1", "关键词2"]
+                publishedAt:
+                  type: string
+                  format: date-time
+                  description: 发布时间
+                  example: "2023-10-01T00:00:00Z"
+      responses:
+        "200":
+          description: 返回更新后的文章
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example: { "code": 1, "msg": "更新成功！", "data": { "articleId": 1, "title": "文章标题", "content": "文章内容", "excerpt": "文章摘要", "keywords": "关键词1,关键词2", "publishedAt": "2023-10-01T00:00:00Z" } }
+
+    delete:
+      summary: 删除文章
+      description: 根据ID删除文章
+      operationId: deleteArticle
+      security:
+        - BearerAuth: []
+      tags:
+        - articles
+      parameters:
+        - name: articleId
+          in: path
+          description: 文章ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 返回删除结果
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example: { "code": 1, "msg": "删除成功！", "data": null }

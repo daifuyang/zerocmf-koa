@@ -25,19 +25,27 @@ export function formatFields(data: DataItem[], mappings: Mapping[]) {
     mappings.forEach((mapping) => {
       const { fromField, toField, format = "YYYY-MM-DD HH:mm:ss" } = mapping;
       if (item[fromField]) {
-        item[toField] = dayjs.unix(Number(item[fromField])).format(format); 
+        item[toField] = dayjs.unix(Number(item[fromField])).format(format);
       }
     });
   });
 }
 
+export function formatField(item: DataItem, mappings: Mapping[]) {
+  mappings.forEach((mapping) => {
+    const { fromField, toField, format = "YYYY-MM-DD HH:mm:ss" } = mapping;
+    if (item[fromField]) {
+      item[toField] = dayjs.unix(Number(item[fromField])).format(format);
+    }
+  });
+}
 
 export function calculateExpiresAt(jwtExpire: string) {
   const match = jwtExpire.match(/(\d+)([a-zA-Z]+)/);
-  if (!match) throw new Error('Invalid jwtExpire format');
-  
+  if (!match) throw new Error("Invalid jwtExpire format");
+
   const value = parseInt(match[1], 10);
   const unit = match[2] as dayjs.ManipulateType; // 将字符串类型转换为dayjs的类型
-  
+
   return dayjs().add(value, unit).unix();
 }

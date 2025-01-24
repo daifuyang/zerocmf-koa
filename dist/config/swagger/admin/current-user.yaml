@@ -1,0 +1,118 @@
+paths:
+  /api/v1/currentUser:
+    get:
+      summary: 获取当前用户信息
+      description: 根据提供的 JWT 令牌获取当前用户信息。
+      operationId: currentUser
+      security:
+        - BearerAuth: []
+      tags:
+        - users
+      responses:
+        "200":
+          description: 成功获取用户信息
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example:
+                {
+                  "userId": 1,
+                  "loginName": "admin",
+                  "email": null,
+                  "phone": null,
+                  "nickname": "admin",
+                  "realName": null,
+                  "gender": 0,
+                  "birthday": null,
+                  "userType": 1,
+                  "name": null,
+                  "avatar": null,
+                  "loginIp": null,
+                  "loginTime": null,
+                  "status": 1,
+                  "createdAt": "1723613053",
+                  "updatedAt": "1723613053"
+                }
+        "401":
+          description: 未授权或身份已过期
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnAuthorized"
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        userId:
+          type: integer
+          description: 用户ID
+        loginName:
+          type: string
+          description: 登录名
+        email:
+          type: string
+          nullable: true # 表示 email 字段可以为 null
+          description: 邮箱地址，可以为空
+        phone:
+          type: string
+          nullable: true
+          description: 手机号，可以为空
+        nickname:
+          type: string
+          nullable: true
+          description: 昵称
+        realName:
+          type: string
+          nullable: true
+          description: 真实姓名，可以为空
+        gender:
+          type: integer
+          description: "性别 (0: 未知, 1: 男, 2: 女)"
+        birthday:
+          type: string
+          format: date
+          nullable: true
+          description: 生日，可以为空
+        userType:
+          type: integer
+          description: 用户类型
+        name:
+          type: string
+          nullable: true
+          description: 名字，可以为空
+        avatar:
+          type: string
+          nullable: true
+          description: 头像URL，可以为空
+        loginIp:
+          type: string
+          nullable: true
+          description: 最后登录IP，可以为空
+        loginTime:
+          type: string
+          format: date-time
+          nullable: true
+          description: 最后登录时间，可以为空
+        status:
+          type: integer
+          description: 用户状态
+        createdAt:
+          type: string
+          format: date-time
+          description: 创建时间
+        updatedAt:
+          type: string
+          format: date-time
+          description: 更新时间
+        # 其他用户属性
+      required:
+        - userId
+        - loginName
+        - gender
+        - userType
+        - status
+        - createdAt
+        - updatedAt
