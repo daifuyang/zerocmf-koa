@@ -1,21 +1,19 @@
 edition: 3.0.0
-name: zerocmf-app
+name: zerocmf-koa
 access: "default"
 vars:
   region: "cn-shanghai"
-  functionName: "koa-app"
+  functionName: "zerocmf-koa"
 resources:
   start_koa:
     component: fc3
     actions:
       pre-deploy:
-        - run: export PATH=/usr/local/versions/node/v20.8.1/bin:$PATH && npm install
-          path: ./
-        - run: export PATH=/usr/local/versions/node/v20.8.1/bin:$PATH && npm run build
+        - run: node ./scripts/deploy.js
           path: ./
     props:
       region: ${vars.region}
-      description: zerocmf-app
+      description: zerocmf-koa
       runtime: custom.debian10
       cpu: 0.05
       memorySize: 128

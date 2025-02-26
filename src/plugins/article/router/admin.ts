@@ -14,7 +14,12 @@ import {
   updateArticleController
 } from "../controller/article";
 import { getTagListController, deleteTagController } from "../controller/tag";
-export default function initRouter(adminRouter: Router) {
+import { adminPrefix } from "@/cmf/constants/router";
+import { auth } from "@/cmf/middlewares/auth";
+import apiAccess from "@/cmf/middlewares/apiAccess";
+export default function initRouter() {
+  const adminRouter = new Router({ prefix: adminPrefix });
+  adminRouter.use(auth, apiAccess);
   adminRouter.get("/article-categories", getCategoryListController);
   adminRouter.get("/article-categories/:articleCategoryId", getCategoryController);
   adminRouter.post("/article-categories", createCategoryController);
@@ -29,4 +34,5 @@ export default function initRouter(adminRouter: Router) {
   // 标签相关
   adminRouter.get("/article-tags", getTagListController);
   adminRouter.delete("/article-tags/:tagId", deleteTagController);
+  return adminRouter;
 }

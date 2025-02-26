@@ -18,7 +18,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response"
+                $ref: "#/components/schemas/LoginResp"
               example:
                 {
                   "code": 1,
@@ -35,14 +35,23 @@ paths:
 components:
   schemas:
     LoginType:
-      {
-        "type": "string",
-        "description": "登录类型，可以是 'email'、'phone' 或 'account'",
-        "enum": ["email", "phone", "account"]
-      }
+      type: string
+      description: 登录类型，可以是 'email'、'phone' 或 'account'
+      enum:
+        - email
+        - phone
+        - account
+    PhoneLoginType:
+      type: string
+      description: 手机登录类型，当使用手机号登录时可以选择 'sms' 短信验证码登录
+      enum:
+        - sms
+        - password
     LoginReq:
-      required: [account, password]
       type: object
+      required:
+        - account
+        - password
       properties:
         account:
           type: string
@@ -51,15 +60,31 @@ components:
           type: string
           description: 用户的登录密码，使用密码登录时必须提供
         loginType:
-           "$ref": "#/components/schemas/LoginType"
+          $ref: "#/components/schemas/LoginType"
         phoneType:
-          type: string
-          description: 手机登录类型，当使用手机号登录时可以选择 'sms' 短信验证码登录
-          enum: [sms, password]
-      example:
-        account: "admin"
-        password: "123456"
+          $ref: "#/components/schemas/PhoneLoginType"
+      examples:
+        email_login:
+          summary: 使用邮箱登录
+          value:
+            account: "admin@example.com"
+            password: "123456"
+            loginType: "email"
+        phone_password_login:
+          summary: 使用手机及密码登录
+          value:
+            account: "1234567890"
+            password: "123456"
+            loginType: "phone"
+            phoneType: "password"
+        phone_sms_login:
+          summary: 使用手机短信验证码登录
+          value:
+            account: "1234567890"
+            loginType: "phone"
+            phoneType: "sms"
     TokenData:
+      type: object
       required:
         - accessToken
         - expiresAt
@@ -73,7 +98,7 @@ components:
         expiresAt:
           type: integer
           description: 访问令牌过期时间
-          example: "1694149600"
+          example: 1694149600
         refreshToken:
           type: string
           description: 刷新令牌
@@ -81,4 +106,11 @@ components:
         reExpiresAt:
           type: integer
           description: 刷新令牌过期时间
-          example: "1694149600"
+          example: 1694149600
+    LoginResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/TokenData"

@@ -8,8 +8,10 @@ import {
     getArticleController,
     getArticleListController,
   } from "../controller/article";
-export default function initRouter(router: Router) {
+export default function initRouter() {
+    const router = new Router();
     router.get("/article-categories", getCategoryListController);
     router.get("/articles", getArticleListController);
     router.get("/articles/:articleId", getArticleController);
+    return router;
 }

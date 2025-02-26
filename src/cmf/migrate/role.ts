@@ -2,6 +2,7 @@ import { now } from "@/lib/date";
 import { getFileJson } from "@/lib/file";
 import { getRoleById, getRoleByName, createRole, updateRole } from "../models/role";
 import path from "path";
+import { MENU_JSON } from "@/constants/path";
 
 // 数据库迁移角色表
 export default async function migrateRole() {
@@ -16,7 +17,7 @@ export default async function migrateRole() {
     });
   }
 
-  const filePath = path.join(global.ROOT_PATH, "config/migrate/menus.json");
+  const filePath = path.join(MENU_JSON);
   const roles = getFileJson(filePath);
 
   for (const element of roles) {

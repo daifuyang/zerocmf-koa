@@ -14,5 +14,65 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response"
-              example: { "code": 1, "msg": "获取成功！", "data": [] }
+                $ref: "#/components/schemas/ApiResp"
+              example:
+                {
+                  "code": 1,
+                  "msg": "获取成功！",
+                  "data":
+                    [
+                      {
+                        "id": 1,
+                        "path": "/api/v1/admin/roles",
+                        "method": "get",
+                        "description": null,
+                        "group": null
+                      },
+                      {
+                        "id": 2,
+                        "path": "/api/v1/admin/roles/:roleId",
+                        "method": "get",
+                        "description": null,
+                        "group": null
+                      },
+                      {
+                        "id": 3,
+                        "path": "/api/v1/admin/roles",
+                        "method": "post",
+                        "description": null,
+                        "group": null
+                      }
+                    ]
+                }
+components:
+  schemas:
+    ApiResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/Api"
+    Api:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: API ID
+          example: 1
+        path:
+          type: string
+          description: API 路径
+          example: "/api/v1/admin/roles"
+        method:
+          type: string
+          description: HTTP 方法
+          example: "get"
+        description:
+          type: string
+          nullable: true
+          description: API 描述
+        group:
+          type: string
+          nullable: true
+          description: API 分组

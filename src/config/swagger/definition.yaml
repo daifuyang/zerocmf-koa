@@ -13,18 +13,23 @@ components:
         msg:
           type: string
           description: Response message
-        data:
-          oneOf:
-            - type: object
-              description: Response data
-              additionalProperties: true
-            - type: array
-              items:
-                type: object
-              description: Response data
-            - type: string
-            - type: number
-            - type: boolean
+    
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          description: 当前页码
+          example: 1
+        pageSize:
+          type: integer
+          description: 每页显示的数据条数
+          example: 10
+        total:
+          type: integer
+          description: 总数据条数
+          example: 2
+    
     UnAuthorized:
       type: object
       required:
@@ -52,6 +57,10 @@ tags:
     description: 菜单管理
   - name: apis
     description: 接口管理
+  - name: options
+    description: 系统设置
+  - name: medias
+    description: 媒体资源
 servers:
   - url: /
     description: Local server

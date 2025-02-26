@@ -28,6 +28,9 @@ import { getApisController } from "../controller/admin/api";
 import { adminPrefix } from "../constants/router";
 import apiAccess from "../middlewares/apiAccess";
 
+import { getOptionController, setOptionController } from "../controller/admin/options";
+import { addMediaController, getMediaListController } from "../controller/admin/media";
+
 const adminRouter = new Router({ prefix: adminPrefix });
 adminRouter.use(auth, apiAccess);
 adminRouter.get("/", home);
@@ -53,7 +56,18 @@ adminRouter.post("/menus", addMenuController);
 adminRouter.put("/menus/:menuId", updateMenuController);
 adminRouter.delete("/menus/:menuId", deleteMenuController);
 
-//  接口管理
+// 接口管理
 adminRouter.get("/apis", getApisController);
+
+// 系统设置
+adminRouter.get("/options/:name", getOptionController);
+adminRouter.post("/options/:name", setOptionController);
+
+// 媒体管理
+adminRouter.get("/medias", getMediaListController)
+// adminRouter.get("/medias/:mediaId", )
+adminRouter.post("/medias", addMediaController)
+// adminRouter.put("/medias/:mediaId")
+// adminRouter.delete("/medias/:mediaId")
 
 export default adminRouter;

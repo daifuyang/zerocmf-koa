@@ -14,7 +14,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response"
+                $ref: "#/components/schemas/UserResp"
               example:
                 {
                   "userId": 1,
@@ -43,6 +43,13 @@ paths:
 
 components:
   schemas:
+    UserResp:
+      allOf:
+        - $ref: '#/components/schemas/Response'
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/User"
     User:
       type: object
       properties:

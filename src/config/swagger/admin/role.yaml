@@ -8,7 +8,6 @@ paths:
         - BearerAuth: []
       tags:
         - roles
-
       parameters:
         - name: "page"
           in: "query"
@@ -46,7 +45,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response"
+                $ref: "#/components/schemas/RoleListResp"
               example:
                 {
                   "code": 1,
@@ -92,14 +91,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Role"
+              $ref: "#/components/schemas/RoleReq"
       responses:
         "200":
           description: 创建成功。
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response"
+                $ref: "#/components/schemas/RoleResp"
               example:
                 {
                   "code": 1,
@@ -115,7 +114,6 @@ paths:
                       "updatedAt": "12345678910"
                     }
                 }
-
   /api/v1/admin/roles/{roleId}:
     get:
       summary: 获取单个角色
@@ -138,7 +136,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response"
+                $ref: "#/components/schemas/RoleResp"
               example:
                 {
                   "code": 1,
@@ -174,14 +172,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Role"
+              $ref: "#/components/schemas/RoleReq"
       responses:
         "200":
           description: 更新成功。
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response"
+                $ref: "#/components/schemas/RoleResp"
               example:
                 {
                   "code": 1,
@@ -218,7 +216,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response"
+                $ref: "#/components/schemas/RoleResp"
               example:
                 {
                   "code": 1,
@@ -237,7 +235,7 @@ paths:
 
 components:
   schemas:
-    Role:
+    RoleReq:
       type: object
       properties:
         name:
@@ -256,3 +254,63 @@ components:
           type: integer
           description: 角色状态，1表示启用，0表示禁用
           example: 1
+    RoleListResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              oneOf:
+                - type: object
+                  properties:
+                    pagination:
+                      $ref: "#/components/schemas/Pagination"
+                    data:
+                      type: array
+                      description: 角色列表
+                      items:
+                        $ref: "#/components/schemas/Role"
+                  required:
+                    - pagination
+                    - roles
+                - type: array
+                  description: 角色列表，不包含分页信息
+                  items:
+                    $ref: "#/components/schemas/Role"
+    RoleResp:
+      allOf:
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/Role"
+    Role:
+      type: object
+      properties:
+        roleId:
+          type: integer
+          description: 角色ID
+          example: 1
+        name:
+          type: string
+          description: 角色名称
+          example: "超级管理员"
+        description:
+          type: string
+          description: 角色描述
+          example: "超级管理员"
+        sort:
+          type: integer
+          description: 排序权重
+          example: 0
+        status:
+          type: integer
+          description: 状态（例如：1-启用，0-禁用）
+          example: 1
+        createdAt:
+          type: string
+          description: 创建时间
+          example: "0" # 假设为时间戳或特定格式的时间字符串
+        updatedAt:
+          type: string
+          description: 更新时间
+          example: "0" # 假设为时间戳或特定格式的时间字符串

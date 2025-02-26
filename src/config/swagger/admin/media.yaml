@@ -1,0 +1,275 @@
+paths:
+  /api/v1/admin/medias:
+    get:
+      summary: 获取媒体资源列表
+      description: 返回媒体资源的分页列表。
+      operationId: getMedias
+      security:
+        - BearerAuth: []
+      tags:
+        - medias
+      parameters:
+        - name: "current"
+          in: "query"
+          required: false
+          description: "当前页"
+          schema:
+            type: "integer"
+        - name: "pageSize"
+          in: "query"
+          required: false
+          description: "每页数量"
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: 媒体资源的分页列表。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaListResp"
+              example:
+                {
+                  "code": 1,
+                  "msg": "获取成功！",
+                  "data":
+                    {
+                      "page": 1,
+                      "pageSize": 10,
+                      "total": 2,
+                      "data":
+                        [
+                          {
+                            "mediaId": 1,
+                            "type": "image",
+                            "url": "/uploads/2023/10/image1.jpg",
+                            "createdAt": "1725349743",
+                            "updatedAt": "1725354179"
+                          },
+                          {
+                            "mediaId": 2,
+                            "type": "video",
+                            "url": "/uploads/2023/10/video1.mp4",
+                            "createdAt": "1725349743",
+                            "updatedAt": "1725354179"
+                          }
+                        ]
+                    }
+                }
+    post:
+      summary: 添加媒体资源
+      description: 添加一个新的媒体资源。
+      operationId: addMedia
+      security:
+        - BearerAuth: []
+      tags:
+        - medias
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                type:
+                  type: string
+                  description: 文件类型，例如 image 或 video
+      responses:
+        "200":
+          description: 创建成功。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaResp"
+              example:
+                {
+                  "code": 1,
+                  "msg": "上传成功！",
+                  "data":
+                    {
+                      "mediaId": 1,
+                      "type": "image",
+                      "url": "/uploads/2023/10/image1.jpg",
+                      "createdAt": "1725349743",
+                      "updatedAt": "1725354179"
+                    }
+                }
+
+  /api/v1/admin/medias/{mediaId}:
+    get:
+      summary: 获取单个媒体资源
+      description: 根据id获取单个媒体资源
+      operationId: getMedia
+      security:
+        - BearerAuth: []
+      tags:
+        - medias
+      parameters:
+        - name: mediaId
+          in: path
+          description: 媒体资源唯一标识符
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 单个媒体资源信息。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaResp"
+              example:
+                {
+                  "code": 1,
+                  "msg": "获取成功！",
+                  "data":
+                    {
+                      "mediaId": 1,
+                      "type": "image",
+                      "url": "/uploads/2023/10/image1.jpg",
+                      "createdAt": "1725349743",
+                      "updatedAt": "1725354179"
+                    }
+                }
+    put:
+      summary: 更新媒体资源
+      description: 更新指定id的媒体资源
+      operationId: updateMedia
+      security:
+        - BearerAuth: []
+      tags:
+        - medias
+      parameters:
+        - name: mediaId
+          in: path
+          description: 媒体资源唯一标识符
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                type:
+                  type: string
+                  description: 文件类型，例如 image 或 video
+      responses:
+        "200":
+          description: 更新成功。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaResp"
+              example:
+                {
+                  "code": 1,
+                  "msg": "更新成功！",
+                  "data":
+                    {
+                      "mediaId": 1,
+                      "type": "image",
+                      "url": "/uploads/2023/10/image1.jpg",
+                      "createdAt": "1725349743",
+                      "updatedAt": "1725354179"
+                    }
+                }
+    delete:
+      summary: 删除媒体资源
+      description: 删除指定id的媒体资源
+      operationId: deleteMedia
+      security:
+        - BearerAuth: []
+      tags:
+        - medias
+      parameters:
+        - name: mediaId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: 删除成功。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaResp"
+              example:
+                {
+                  "code": 1,
+                  "msg": "删除成功！",
+                  "data":
+                    {
+                      "mediaId": 1,
+                      "type": "image",
+                      "url": "/uploads/2023/10/image1.jpg",
+                      "createdAt": "1725349743",
+                      "updatedAt": "1725354179"
+                    }
+                }
+
+components:
+  schemas:
+    MediaListResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              oneOf:
+                - type: object
+                  properties:
+                    pagination:
+                      $ref: "#/components/schemas/Pagination"
+                    roles:
+                      type: array
+                      description: 角色列表
+                      items:
+                        $ref: "#/components/schemas/Media"
+                  required:
+                    - pagination
+                    - roles
+                - type: array
+                  description: 角色列表，不包含分页信息
+                  items:
+                    $ref: "#/components/schemas/Media"
+    MediaResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/MediaListResp"
+    Media:
+      type: object
+      properties:
+        mediaId:
+          type: integer
+          description: 媒体资源ID
+          example: 1
+        type:
+          type: string
+          description: 媒体资源类型
+          example: "image"
+        url:
+          type: string
+          description: 媒体资源URL
+          example: "/uploads/2023/10/image1.jpg"
+        createdAt:
+          type: string
+          description: 创建时间戳
+          example: "1725349743"
+        updatedAt:
+          type: string
+          description: 更新时间戳
+          example: "1725354179"

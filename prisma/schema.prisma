@@ -66,6 +66,15 @@ model sysRole {
   @@map("sys_role")
 }
 
+// 系统配置表
+model sysOption {
+  optionName  String @map("option_name") @db.VarChar(64)
+  optionValue String @map("option_value") @db.Text
+
+  @@unique([optionName])
+  @@map("sys_option")
+}
+
 // 菜单表
 model sysMenu {
   menuId    Int     @id @default(autoincrement()) @map("menu_id") // 菜单ID
@@ -127,6 +136,28 @@ model sysMenuApi {
 
   @@unique([menuId, apiId])
   @@map("sys_menu_api")
+}
+
+// 媒体资源表
+model sysMedia {
+  mediaId    Int    @map("media_id") @id @default(autoincrement())
+  fileSize   BigInt @map("file_size") @db.BigInt
+  fileKey    String @map("file_key") @db.VarChar(64)
+  remarkName String @map("remark_name") @db.VarChar(100)
+  fileName   String @map("file_name") @db.VarChar(100)
+  filePath   String @map("file_path") @db.VarChar(100)
+  resolution String @db.VarChar(32)
+  fileMd5    String @map("file_md5") @db.VarChar(32)
+  fileSha1   String @map("file_sha1") @db.VarChar(40)
+  suffix     String @db.VarChar(10)
+  assetType  Int    @map("type") @db.TinyInt
+  status     Int    @default(1) @db.TinyInt
+  createdId  Int?   @map("created_id")
+  createdBy  String @default("") @map("created_by") @db.VarChar(64)
+  createdAt  Int?   @map("created_at")
+  deletedAt  Int    @default(0) @map("delete_at") // 删除时间，使用 int 类型
+
+  @@map("sys_media")
 }
 
 // 文章表

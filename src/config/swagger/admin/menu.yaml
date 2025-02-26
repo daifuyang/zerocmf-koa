@@ -14,7 +14,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response"
+                $ref: "#/components/schemas/MenuResp"
               example:
                 {
                   "code": 1,
@@ -59,7 +59,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/MenuRequest"
+              $ref: "#/components/schemas/MenuReq"
             example:
               {
                 "menuName": "用户管理",
@@ -87,7 +87,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response"
+                $ref: "#/components/schemas/MenuResp"
               example:
                 {
                   "code": 1,
@@ -120,7 +120,7 @@ paths:
         "400":
           description: 请求参数错误
         "401":
-          description: 未授权，Token 错误或缺失
+          description: 未授权Token 错误或缺失
   /api/v1/admin/menus/{menuId}:
     get:
       summary: 获取单个菜单
@@ -143,7 +143,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response"
+                $ref: "#/components/schemas/MenuResp"
               example:
                 {
                   "code": 1,
@@ -199,7 +199,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/MenuRequest"
+              $ref: "#/components/schemas/MenuReq"
             example:
               {
                 "menuName": "用户管理",
@@ -225,7 +225,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response"
+                $ref: "#/components/schemas/MenuResp"
               example:
                 {
                   "code": 1,
@@ -282,7 +282,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response"
+                $ref: "#/components/schemas/MenuResp"
               example: { "code": 1, "msg": "删除成功！", "data": null }
         "400":
           description: 请求参数错误
@@ -292,19 +292,7 @@ paths:
           description: 菜单不存在
 components:
   schemas:
-    Response:
-      type: object
-      properties:
-        code:
-          type: integer
-          description: 状态码
-        msg:
-          type: string
-          description: 提示信息
-        data:
-          type: object
-          description: 返回数据
-    MenuRequest:
+    MenuReq:
       type: object
       properties:
         menuName:
@@ -361,3 +349,113 @@ components:
         remark:
           type: string
           description: 备注
+    MenuListResp:
+      allOf:
+        - $ref: "#/components/schemas/MenuResp"
+        - type: object
+          properties:
+            data:
+              oneOf:
+                - type: object
+                  properties:
+                    pagination:
+                      $ref: "#/components/schemas/Pagination"
+                    roles:
+                      type: array
+                      description: 角色列表
+                      items:
+                        $ref: "#/components/schemas/Menu"
+                  required:
+                    - pagination
+                    - roles
+                - type: array
+                  description: 角色列表，不包含分页信息
+                  items:
+                    $ref: "#/components/schemas/Menu"
+    Menu:
+      type: object
+      properties:
+        menuId:
+          type: integer
+          description: 菜单ID
+          example: 2
+        menuName:
+          type: string
+          description: 菜单名称
+          example: "用户管理"
+        path:
+          type: string
+          description: 路由路径
+          example: "/user"
+        icon:
+          type: string
+          description: 菜单图标
+          example: "user"
+        parentId:
+          type: integer
+          description: 父级菜单ID，0表示顶级菜单
+          example: 0
+        sortOrder:
+          type: integer
+          description: 排序权重
+          example: 1
+        component:
+          type: string
+          description: 组件路径或名称
+          example: "User"
+        query:
+          type: string
+          description: 查询参数
+          example: ""
+        isFrame:
+          type: integer
+          description: 是否为外部链接（例如：0-否，1-是）
+          example: 0
+        isCache:
+          type: integer
+          description: 是否缓存页面（例如：0-否，1-是）
+          example: 0
+        menuType:
+          type: integer
+          description: 菜单类型（例如：1-目录，2-菜单，3-按钮）
+          example: 1
+        visible:
+          type: integer
+          description: 是否可见（例如：0-隐藏，1-显示）
+          example: 1
+        status:
+          type: integer
+          description: 状态（例如：0-禁用，1-启用）
+          example: 1
+        perms:
+          type: string
+          description: 权限标识
+          example: "user:list"
+        createdId:
+          type: integer
+          description: 创建者ID
+          example: 1
+        createdBy:
+          type: string
+          description: 创建者名称
+          example: "admin"
+        createdAt:
+          type: integer
+          description: 创建时间，Unix时间戳格式
+          example: 1728805377
+        updatedId:
+          type: integer
+          description: 更新者ID
+          example: 1
+        updatedBy:
+          type: string
+          description: 更新者名称
+          example: "admin"
+        updatedAt:
+          type: integer
+          description: 更新时间，Unix时间戳格式
+          example: 1728805377
+        remark:
+          type: string
+          description: 备注信息
+          example: "用户管理菜单"

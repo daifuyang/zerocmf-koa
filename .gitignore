@@ -4,3 +4,9 @@ prisma/migrations
 pnpm-lock.yaml
 .env
 .vscode
+public
+dist
+
+# 函数计算
+layer
+prisma/migrations

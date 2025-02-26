@@ -1,43 +1,84 @@
-const fs = require('fs');
+const fs = require('fs').promises;
 const path = require('path');
 
-// 定义上级目录路径
-const parentDir = path.join(__dirname, '..');
-const distDirPath = path.join(parentDir, 'dist');
-const swaggerDirPath = path.join(parentDir, 'src');
-
-/**
- * 递归复制源目录下的所有 .yaml 文件到目标目录，保持源目录的层级结构
- * @param {string} srcDir 源目录
- * @param {string} destDir 目标目录
- */
-function copyYamlFiles(srcDir, destDir) {
-  // 确保目标目录存在
-  if (!fs.existsSync(destDir)) {
-    fs.mkdirSync(destDir, { recursive: true });
-  }
-
-  // 读取源目录的所有文件
-  const files = fs.readdirSync(srcDir);
-
-  files.forEach(file => {
-    const srcFilePath = path.join(srcDir, file);
-    const destFilePath = path.join(destDir, file);
-
-    // 如果是目录，则递归复制
-    if (fs.statSync(srcFilePath).isDirectory()) {
-      copyYamlFiles(srcFilePath, destFilePath);
-    } else if (file.endsWith('.yaml')) {
-      // 如果是 .yaml 文件，复制到目标目录
-      fs.copyFileSync(srcFilePath, destFilePath);
-      console.log(`复制文件: ${file}`);
+// 删除文件或目录（包括非空目录）
+async function remove(destination) {
+    try {
+        const stats = await fs.stat(destination);
+        if (stats.isDirectory()) {
+            // 递归删除目录下的所有内容
+            const files = await fs.readdir(destination);
+            for (let file of files) {
+                const filePath = path.join(destination, file);
+                await remove(filePath);
+            }
+            // 删除空目录本身
+            await fs.rmdir(destination);
+        } else {
+            // 删除文件
+            await fs.unlink(destination);
+        }
+    } catch (error) {
+        console.error(`删除失败: ${error.message}`);
     }
-  });
-}
-// 执行脚本
-function execute() {
-  copyYamlFiles(swaggerDirPath, distDirPath)
 }
 
-// 运行脚本
-execute();
+// 复制文件或目录
+async function copy(source, destination) {
+    try {
+        // 如果目标存在则先删除
+        try {
+            await fs.access(destination);
+            await remove(destination);
+        } catch (error) {
+            // 目标不存在的情况不需要处理
+        }
+
+        const stats = await fs.stat(source);
+
+        if (stats.isFile()) {
+            // 复制文件
+            await fs.mkdir(path.dirname(destination), { recursive: true });
+            await fs.copyFile(source, destination);
+        } else if (stats.isDirectory()) {
+            // 复制目录
+            await fs.mkdir(destination, { recursive: true });
+            const files = await fs.readdir(source);
+            for (let file of files) {
+                const srcPath = path.join(source, file);
+                const destPath = path.join(destination, file);
+                await copy(srcPath, destPath);
+            }
+        }
+    } catch (error) {
+        console.error(`操作失败: ${error.message}`);
+    }
+}
+
+// 计算根目录
+const ROOT_DIR = path.resolve(__dirname, '..');
+
+// 打包配置
+const PACKAGING_CONFIG = [
+    { source: path.join(ROOT_DIR, 'package.json'), target: path.join(ROOT_DIR, 'dist/package.json') },
+    { source: path.join(ROOT_DIR, '.env'), target: path.join(ROOT_DIR, 'dist/.env') },
+    { source: path.join(ROOT_DIR, 'prisma'), target: path.join(ROOT_DIR, 'dist/prisma') },
+    { source: path.join(ROOT_DIR, 'src/config'), target: path.join(ROOT_DIR, 'dist/src/config') }
+].map(item => ({
+    source: item.source,
+    target: path.relative(ROOT_DIR, item.target) // 将目标路径转换为相对于项目根目录的路径
+}));
+
+// 根据配置执行打包
+async function packageApp() {
+    for (const item of PACKAGING_CONFIG) {
+        const sourcePath = item.source;
+        const destinationPath = path.join(ROOT_DIR, item.target);
+        await copy(sourcePath, destinationPath)
+            .then(() => console.log(`${item.source} 复制完成`))
+            .catch(error => console.error(`发生错误: ${error}`));
+    }
+}
+
+// 执行打包
+packageApp();
