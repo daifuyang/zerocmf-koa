@@ -15,7 +15,7 @@ datasource db {
 
 // 用户表
 model sysUser {
-  userId    Int     @id @default(autoincrement())
+  userId    Int     @id @default(autoincrement()) @map("user_id")
   loginName String? @unique @map("login_name") // 用户名可选，因为可能使用手机号或邮箱作为主要登录方式
   email     String? @unique // 邮箱可选，因为可能使用手机号作为主要登录方式
   phone     String? @unique // 手机号可选，可以支持手机号登录
@@ -31,9 +31,9 @@ model sysUser {
   loginAt   Int?    @map("login_at") // 最后登录时间
   status    Int     @default(1) @db.TinyInt // 用户状态，0 表示正常，1 表示禁用
   remark    String  @default("") @map("remark") @db.VarChar(500) // 备注
-  createdAt Int     @map("create_at") // 使用 UNIX 时间戳（毫秒）
-  updatedAt Int     @map("update_at") // 更新时间，使用 int 类型
-  deletedAt Int     @default(0) @map("delete_at") // 删除时间，使用 int 类型
+  createdAt Int     @map("created_at") // 使用 UNIX 时间戳（毫秒）
+  updatedAt Int     @map("updated_at") // 更新时间，使用 int 类型
+  deletedAt Int     @default(0) @map("deleted_at") // 删除时间，使用 int 类型
 
   @@index([userId, loginName, phone, email])
   @@map("sys_user")
@@ -140,24 +140,44 @@ model sysMenuApi {
 
 // 媒体资源表
 model sysMedia {
-  mediaId    Int    @map("media_id") @id @default(autoincrement())
-  fileSize   BigInt @map("file_size") @db.BigInt
-  fileKey    String @map("file_key") @db.VarChar(64)
-  remarkName String @map("remark_name") @db.VarChar(100)
-  fileName   String @map("file_name") @db.VarChar(100)
-  filePath   String @map("file_path") @db.VarChar(100)
-  resolution String @db.VarChar(32)
-  fileMd5    String @map("file_md5") @db.VarChar(32)
-  fileSha1   String @map("file_sha1") @db.VarChar(40)
-  suffix     String @db.VarChar(10)
-  assetType  Int    @map("type") @db.TinyInt
-  status     Int    @default(1) @db.TinyInt
+  mediaId    Int     @id @default(autoincrement()) @map("media_id") ///   主键ID
+  fileSize   BigInt  @map("file_size") @db.BigInt /// 文件大小
+  fileKey    String  @map("file_key") @db.VarChar(64) /// 文件唯一标识符或密钥
+  remarkName String  @map("remark_name") @db.VarChar(100) /// 备注名称
+  fileName   String  @map("file_name") @db.VarChar(100) /// 文件原始名称
+  filePath   String  @map("file_path") @db.VarChar(100) /// 文件在服务器上的路径
+  resolution String? @db.VarChar(32) /// 分辨率
+  fileMd5    String  @map("file_md5") @db.VarChar(32) /// 文件MD5哈希值
+  fileSha1   String  @map("file_sha1") @db.VarChar(40) /// 文件SHA1哈希值
+  extension  String  @db.VarChar(10) /// 文件扩展名
+  mimetype   String  @map("mimetype") @db.VarChar(100) /// 文件MIME类型
+  mediaType  Int     @map("media_type") @db.TinyInt /// 资源类型
+  status     Int     @default(1) @db.TinyInt /// 1.表示启用 2.表示禁用
+  categoryId Int?    @map("category_id") /// 分类ID
+  createdId  Int?    @map("created_id") /// 创建者的ID
+  createdBy  String  @default("") @map("created_by") @db.VarChar(64)
+  createdAt  Int?    @map("created_at")
+  deletedAt  Int     @default(0) @map("delete_at") // 删除时间，使用 int 类型
+
+  @@map("sys_media")
+}
+
+// 媒体资源分类表
+model sysMediaCategory {
+  categoryId Int    @id @default(autoincrement()) @map("category_id")
+  parentId   Int    @default(0) @map("parent_id")
+  name       String @map("name") @db.VarChar(50)
+  sortOrder  Int    @default(1) @map("sort_order") @db.TinyInt
+  status     Int    @default(1) @map("status") @db.TinyInt
   createdId  Int?   @map("created_id")
   createdBy  String @default("") @map("created_by") @db.VarChar(64)
   createdAt  Int?   @map("created_at")
+  updatedId  Int?   @map("updated_id")
+  updatedBy  String @default("") @map("updated_by") @db.VarChar(64)
+  updatedAt  Int?   @map("updated_at")
   deletedAt  Int    @default(0) @map("delete_at") // 删除时间，使用 int 类型
 
-  @@map("sys_media")
+  @@map("sys_media_category")
 }
 
 // 文章表
@@ -172,6 +192,7 @@ model cmsArticle {
   content        String?                  @map("content") @db.LongText // 内容
   keywords       String?                  @map("keywords") @db.VarChar(255) // 关键词
   excerpt        String?                  @map("excerpt") @db.VarChar(255) // 摘要
+  author         String?                  @map("author") @db.VarChar(50) // 作者
   source         String?                  @map("source") @db.VarChar(255) // 文章来源
   isTop          Int?                     @map("is_top") @db.TinyInt() // 置顶
   hits           Int?                     @map("hits") // 点击数

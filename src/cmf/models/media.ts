@@ -1,6 +1,5 @@
+import { now } from "@/lib/date";
 import prisma from "@/lib/prisma";
-import redis from "@/lib/redis";
-import { serializeData } from "@/lib/util";
 import { Prisma } from "@prisma/client";
 
 // 获取媒体数量
@@ -37,4 +36,42 @@ export const getMediaList = async (
     }
   });
   return media;
+};
+
+// 保存上传成功的路径信息
+export const saveMedia = async (
+  media: Prisma.sysMediaCreateInput,
+  tx = prisma
+) => {
+  const result = await tx.sysMedia.create({
+    data: media
+  });
+  return result;
+};
+
+// 批量保存
+export const saveMediaList = async (
+  mediaList: Prisma.sysMediaCreateInput[],
+  tx = prisma
+) => {
+  const result = await tx.sysMedia.createMany({
+    data: mediaList
+  });
+  return result;
+};
+
+// 删除
+export const deleteMedia = async (
+  mediaId: number,
+  tx = prisma
+) => {
+  const result = await tx.sysMedia.update({
+    where: {
+      mediaId
+    },
+    data: {
+      deletedAt: now()
+    }
+  });
+  return result;
 };

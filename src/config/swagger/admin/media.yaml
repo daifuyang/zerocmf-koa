@@ -77,6 +77,9 @@ paths:
                 type:
                   type: string
                   description: 文件类型，例如 image 或 video
+                categoryId:
+                  type: integer
+                  description: 媒体资源分类ID
       responses:
         "200":
           description: 创建成功。
@@ -227,18 +230,15 @@ components:
           properties:
             data:
               oneOf:
-                - type: object
-                  properties:
-                    pagination:
-                      $ref: "#/components/schemas/Pagination"
-                    roles:
-                      type: array
-                      description: 角色列表
-                      items:
-                        $ref: "#/components/schemas/Media"
-                  required:
-                    - pagination
-                    - roles
+                - allOf:
+                    - $ref: "#/components/schemas/Pagination"
+                    - type: object
+                      properties:
+                        medias:
+                          type: array
+                          description: 媒体资源列表
+                          items:
+                            $ref: "#/components/schemas/Media"
                 - type: array
                   description: 角色列表，不包含分页信息
                   items:

@@ -1,6 +1,9 @@
 import path from "path";
 import fs from "fs";
+import { v4 as uuidv4 } from "uuid";
+import crypto from "crypto";
 import { PUBLIC_PATH } from "@/constants/path";
+import { Context } from "koa";
 /**
  * 从 config/migrate 目录读取 menus.json 文件
  * @returns {Object} 解析后的菜单数据
@@ -19,7 +22,7 @@ export function getFileJson(filePath?: string) {
 }
 
 // 获取当前日期的文件夹名称
-export function getDateName(): string {
+export function getDateFolder(): string {
   const date = new Date();
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0"); // 月份补零
@@ -33,9 +36,9 @@ export function getUploadName(): string {
 }
 
 // 获取当前日期的文件夹路径
-export function getDateFolder(): string {
+export function getUploadFolder(): string {
   const uploadName = getUploadName();
-  return path.join(PUBLIC_PATH, getUploadName(), getDateName());
+  return path.join(uploadName, getDateFolder());
 }
 
 /**
@@ -58,31 +61,65 @@ export function formatFileSize(size: number): string {
 // 保存文件的辅助函数
 export function saveFile(file: any): {
   filePath: string;
-  prevPath: string;
-  size: string;
+  fileKey: string;
+  fileName: string;
+  remarkName: string;
+  fileSize: number;
   mimetype: string;
+  extension: string;
 } {
-  const origin = global.request.origin;
-
   const { originalFilename, filepath, size, mimetype } = file;
-  const dateFolder = getDateFolder();
-
   // 生成文件保存路径
-  const newPath = path.join(dateFolder, originalFilename);
+  const extension = originalFilename.split(".").pop(); // 获取文件扩展名
+  
+  const fileKey = uuidv4(); // 新的文件名
+  const newFileName = `${fileKey}.${extension}`; // 新的文件名带后缀;
+  const uploadFilePath = path.join(getUploadFolder(), newFileName); // 文件根路径
+  const targetPath = path.join(PUBLIC_PATH, uploadFilePath); // 文件存储路径
 
   // 将文件移动到目标文件夹
-  fs.renameSync(filepath, newPath);
-  const uploadName = getUploadName();
-  const filePath = path.join("/", uploadName, getDateName(), originalFilename);
-  const prevPath = path.join(origin, filePath);
-
-  // 格式化文件大小
-  const formattedSize = formatFileSize(size);
+  fs.renameSync(filepath, targetPath);
+  const filePath = path.join("/", uploadFilePath);
 
   return {
     filePath,
-    prevPath,
-    size: formattedSize,
+    fileKey,
+    fileName: originalFilename,
+    remarkName: originalFilename,
+    fileSize: size,
+    extension,
     mimetype
   };
+}
+
+// 计算文件的哈希值
+export async function calculateHashes(filePath): Promise<{ fileMd5: string; fileSha1: string }> {
+  return new Promise((resolve, reject) => {
+    const md5Hash = crypto.createHash("md5");
+    const sha1Hash = crypto.createHash("sha1");
+
+    const fileStream = fs.createReadStream(filePath);
+
+    fileStream.on("data", (chunk) => {
+      md5Hash.update(chunk);
+      sha1Hash.update(chunk);
+    });
+
+    fileStream.on("end", () => {
+      resolve({
+        fileMd5: md5Hash.digest("hex"),
+        fileSha1: sha1Hash.digest("hex")
+      });
+    });
+
+    fileStream.on("error", reject);
+  });
+}
+
+export function getPrevPath(ctx: Context) {
+  const { origin } = ctx.request;
+  const proto = ctx.get("X-Forwarded-Proto");
+  const forwardedHost = ctx.get("X-Forwarded-Host");
+  const originPath = proto ? `${proto}://${forwardedHost}` : `http://${forwardedHost}`;
+  return forwardedHost ? originPath : origin;
 }

@@ -9,6 +9,7 @@ import { install } from "./lib/install";
 import registerPlugins from "./plugins";
 import fs from "fs";
 import { PUBLIC_PATH, UPLOAD_DIR } from "./constants/path";
+import path from "path";
 
 const cmf = {
   router,
@@ -24,25 +25,12 @@ if (cmf.migrate) {
 }
 
 // 检查并创建上传目录
-if (!fs.existsSync(UPLOAD_DIR)) {
-  fs.mkdirSync(UPLOAD_DIR, { recursive: true }); // recursive: true 确保创建多级目录
+const uploadPath = path.resolve(PUBLIC_PATH, "tmp");
+if (!fs.existsSync(uploadPath)) {
+  fs.mkdirSync(uploadPath, { recursive: true }); // recursive: true 确保创建多级目录
 }
 
 const app = new Koa();
-
-app.use(async (ctx, next) => {
-  try {
-    global.request = ctx.request;
-    await next();
-  } catch (err) {
-    console.error(err);
-    ctx.status = err.status || 500;
-    ctx.body = {
-      code: ctx.status,
-      message: err.message
-    };
-  }
-});
 
 app.use(
   koaStatic(PUBLIC_PATH, {
@@ -54,7 +42,7 @@ app.use(
   bodyParser({
     multipart: true,
     formidable: {
-      uploadDir: UPLOAD_DIR,
+      uploadDir: uploadPath,
       keepExtensions: true
     }
   })

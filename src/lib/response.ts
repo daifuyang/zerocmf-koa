@@ -1,3 +1,5 @@
+import { convertToJson } from "./util";
+
 export interface JsonResult<T> {
   code: number;
   msg: string;
@@ -13,21 +15,21 @@ const json: JsonResult<null> = {
 function success(msg: string, data: any = null) {
   json.code = 1;
   json.msg = msg;
-  json.data = data;
+  json.data = convertToJson(data);
   return json;
 }
 
 function error(msg: string, data: any = null, log = false) {
   json.code = 0;
   json.msg = msg;
-  json.data = data;
+  json.data = convertToJson(data);
   return json;
 }
 
 function errorWithCode(code: number, msg: string, data: any = null) {
   json.code = code;
   json.msg = msg;
-  json.data = data;
+  json.data = convertToJson(data);
   return json;
 }
 

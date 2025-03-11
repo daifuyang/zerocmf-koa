@@ -29,7 +29,8 @@ import { adminPrefix } from "../constants/router";
 import apiAccess from "../middlewares/apiAccess";
 
 import { getOptionController, setOptionController } from "../controller/admin/options";
-import { addMediaController, getMediaListController } from "../controller/admin/media";
+import { addMediaController, deleteMediaController, getMediaListController } from "../controller/admin/media";
+import { addMediaCategoryController, deleteMediaCategoryController, getMediaCategoryController, getMediaCategoryListController, getMediaCategoryTreeController, updateMediaCategoryController } from "../controller/admin/mediaCategory";
 
 const adminRouter = new Router({ prefix: adminPrefix });
 adminRouter.use(auth, apiAccess);
@@ -68,6 +69,14 @@ adminRouter.get("/medias", getMediaListController)
 // adminRouter.get("/medias/:mediaId", )
 adminRouter.post("/medias", addMediaController)
 // adminRouter.put("/medias/:mediaId")
-// adminRouter.delete("/medias/:mediaId")
+adminRouter.delete("/medias/:mediaId", deleteMediaController)
+
+// 媒体分类管理
+adminRouter.get("/media-categories", getMediaCategoryListController)
+adminRouter.get("/media-categories/tree", getMediaCategoryTreeController)
+adminRouter.get("/media-categories/:categoryId", getMediaCategoryController)
+adminRouter.post("/media-categories", addMediaCategoryController)
+adminRouter.put("/media-categories/:categoryId", updateMediaCategoryController)
+adminRouter.delete("/media-categories/:categoryId", deleteMediaCategoryController)
 
 export default adminRouter;

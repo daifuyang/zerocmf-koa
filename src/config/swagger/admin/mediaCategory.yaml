@@ -1,0 +1,269 @@
+paths:
+  /api/v1/admin/media-categories:
+    get:
+      summary: 获取媒体分类列表
+      description: 返回媒体分类列表，支持分页
+      operationId: getMediaCategoryList
+      security:
+        - BearerAuth: []
+      tags:
+        - media-categories
+      parameters:
+        - name: current
+          in: query
+          description: 当前页码
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          description: 每页条数
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        "200":
+          description: 返回媒体分类列表
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaCategoryListResp"
+    post:
+      summary: 添加媒体分类
+      description: 添加一个新的媒体分类
+      operationId: addMediaCategory
+      security:
+        - BearerAuth: []
+      tags:
+        - media-categories
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                parentId:
+                  type: integer
+                  description: 父分类ID
+                  example: 0
+                name:
+                  type: string
+                  description: 分类名称
+                  example: "测试分类"
+              required:
+                - name
+      responses:
+        "200":
+          description: 返回添加的媒体分类
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaCategoryResp"
+  /api/v1/admin/media-categories/tree:
+    get:
+      summary: 获取媒体分类树形结构
+      description: 根据父级ID获取媒体分类的树形结构
+      operationId: getMediaCategoryTree
+      security:
+        - BearerAuth: []
+      tags:
+        - media-categories
+      parameters:
+        - name: parentId
+          in: query
+          description: 父级分类ID，默认为0表示获取顶级分类
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: 返回媒体分类树形结构
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaCategoryListResp"
+              example:
+                code: 1
+                msg: "获取成功！"
+                data:
+                  - categoryId: 1
+                    parentId: 0
+                    name: "图片"
+                    status: 1
+                    createdAt: 1737708748
+                    updatedAt: 1737708748
+                    deletedAt: 0
+                    children:
+                      - categoryId: 2
+                        parentId: 1
+                        name: "风景图片"
+                        status: 1
+                        createdAt: 1737708748
+                        updatedAt: 1737708748
+                        deletedAt: 0
+                      - categoryId: 3
+                        parentId: 1
+                        name: "人物图片"
+                        status: 1
+                        createdAt: 1737708748
+                        updatedAt: 1737708748
+                        deletedAt: 0
+                  - categoryId: 4
+                    parentId: 0
+                    name: "视频"
+                    status: 1
+                    createdAt: 1737708748
+                    updatedAt: 1737708748
+                    deletedAt: 0
+  /api/v1/admin/media-categories/{categoryId}:
+    get:
+      summary: 获取媒体分类详情
+      description: 根据ID获取媒体分类详情
+      operationId: getMediaCategory
+      security:
+        - BearerAuth: []
+      tags:
+        - media-categories
+      parameters:
+        - name: categoryId
+          in: path
+          description: 媒体分类ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 返回媒体分类详情
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaCategoryResp"
+    put:
+      summary: 修改媒体分类
+      description: 根据ID修改媒体分类
+      operationId: updateMediaCategory
+      security:
+        - BearerAuth: []
+      tags:
+        - media-categories
+      parameters:
+        - name: categoryId
+          in: path
+          description: 媒体分类ID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                parentId:
+                  type: integer
+                  description: 父分类ID
+                  example: 0
+                name:
+                  type: string
+                  description: 分类名称
+                  example: "测试分类"
+              required:
+                - name
+      responses:
+        "200":
+          description: 返回修改后的媒体分类
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaCategoryResp"
+    delete:
+      summary: 删除媒体分类
+      description: 根据ID删除媒体分类
+      operationId: deleteMediaCategory
+      security:
+        - BearerAuth: []
+      tags:
+        - media-categories
+      parameters:
+        - name: categoryId
+          in: path
+          description: 媒体分类ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 返回删除结果
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaCategoryResp"
+components:
+  schemas:
+    MediaCategoryListResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              oneOf:
+                - allOf:
+                    - $ref: "#/components/schemas/Pagination"
+                    - type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/MediaCategory"
+                - type: array
+                  description: 媒体分类列表，不包含分页信息
+                  items:
+                    $ref: "#/components/schemas/MediaCategory"
+    MediaCategoryResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/MediaCategory"
+    MediaCategory:
+      type: object
+      properties:
+        categoryId:
+          type: integer
+          description: 分类ID
+          example: 1
+        parentId:
+          type: integer
+          description: 父级分类ID，0表示顶级分类
+          example: 0
+        name:
+          type: string
+          description: 分类名称
+          example: "测试分类"
+        status:
+          type: integer
+          description: 分类状态（例如：1-启用，0-禁用）
+          example: 1
+        createdAt:
+          type: integer
+          description: 创建时间，Unix时间戳格式
+          example: 1737708748
+        updatedAt:
+          type: integer
+          description: 更新时间，Unix时间戳格式
+          example: 1737708748
+        deletedAt:
+          type: integer
+          description: 删除时间，Unix时间戳格式，0表示未删除
+          example: 0
+        children:
+          type: array
+          description: 子分类列表，仅在树形结构返回时有效
+          items:
+            $ref: "#/components/schemas/MediaCategory"

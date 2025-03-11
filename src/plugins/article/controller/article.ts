@@ -22,6 +22,8 @@ import {
 import { compressHTML } from "@/lib/html";
 import { createArticleTagPost } from "../models/articleTagPost";
 import { createTagService } from "../service/tag";
+import dayjs from "dayjs";
+import { auth } from '@/cmf/middlewares/auth';
 
 // 获取文章列表
 export async function getArticleListController(ctx: Context) {
@@ -125,7 +127,7 @@ export async function saveArticle(ctx: Context, articleId: number | null) {
   const { userId, loginName } = ctx.state.user;
 
   const json = await parseJson(ctx);
-  const { categoryIds, title, excerpt, publishedAt } = json;
+  const { categoryIds, title, excerpt, publishedAt = dayjs().unix(), thumbnail, author = loginName } = json;
   let { content = "" } = json;
 
   content = compressHTML(content);
@@ -171,7 +173,9 @@ export async function saveArticle(ctx: Context, articleId: number | null) {
           content,
           keywords,
           excerpt,
+          thumbnail,
           publishedAt,
+          author,
           createId: userId,
           creator: loginName,
           updateId: userId,

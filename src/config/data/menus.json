@@ -117,6 +117,26 @@
                 ]
             },
             {
+                "perms": "system:media",
+                "menuName": "媒体素材",
+                "path": "/system/media",
+                "children": [
+                    {
+                        "perms": "system:media:list",
+                        "menuName": "媒体列表",
+                        "path": "/system/media/list",
+                        "visible": 0,
+                        "menuType": 1
+                    },
+                    {
+                        "perms": "system:media:upload",
+                        "menuName": "上传",
+                        "visible": 0,
+                        "menuType": 2
+                    }
+                ]
+            },
+            {
                 "perms": "system:upload",
                 "menuName": "上传设置",
                 "path": "/system/upload"

@@ -49,7 +49,7 @@ function filterFileTypes(fileTypes: any): any {
       for (const key of VALID_FILE_TYPE_KEYS) {
         if (fileTypes[type][key] !== undefined) {
           let value = fileTypes[type][key];
-          if( key === "uploadMaxFileSize") {
+          if (key === "uploadMaxFileSize") {
             value = Number(value);
           }
           filteredFileTypes[type][key] = value;
@@ -69,41 +69,45 @@ export async function setOptionController(ctx: Context) {
     return;
   }
 
-  const inValue: Value = {
-    maxFiles: 20,
-    chunkSize: 512,
-    fileTypes: {
-      image: {
-        uploadMaxFileSize: 10240,
-        extensions: ["jpg", "jpeg", "png", "gif", "bmp4"]
-      },
-      video: {
-        uploadMaxFileSize: 10240,
-        extensions: ["mp4", "avi", "wmv", "rm", "rmvb", "mkv"]
-      },
-      audio: {
-        uploadMaxFileSize: 10240,
-        extensions: ["mp3", "wma", "wav"]
-      },
-      file: {
-        uploadMaxFileSize: 10240,
-        extensions: ["txt", "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "zip", "rar"]
+  let setValue = "";
+
+  if (name === "upload") {
+    const inValue: Value = {
+      maxFiles: 20,
+      chunkSize: 512,
+      fileTypes: {
+        image: {
+          uploadMaxFileSize: 10240,
+          extensions: ["jpg", "jpeg", "png", "gif", "bmp4"]
+        },
+        video: {
+          uploadMaxFileSize: 10240,
+          extensions: ["mp4", "avi", "wmv", "rm", "rmvb", "mkv"]
+        },
+        audio: {
+          uploadMaxFileSize: 10240,
+          extensions: ["mp3", "wma", "wav"]
+        },
+        file: {
+          uploadMaxFileSize: 10240,
+          extensions: ["txt", "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "zip", "rar"]
+        }
       }
+    };
+
+    if (value.maxFiles != undefined) {
+      inValue.maxFiles = value.maxFiles;
     }
-  };
+    if (value.chunkSize != undefined) {
+      inValue.chunkSize = value.chunkSize;
+    }
 
-  if (value.maxFiles != undefined) {
-    inValue.maxFiles = value.maxFiles;
+    if (value.fileTypes != undefined) {
+      inValue.fileTypes = filterFileTypes(value.fileTypes);
+    }
+    setValue = JSON.stringify(inValue);
   }
-  if (value.chunkSize != undefined) {
-    inValue.chunkSize = value.chunkSize;
-  }
-
-  if (value.fileTypes != undefined) {
-    inValue.fileTypes = filterFileTypes(value.fileTypes);
-  }
-  const inValueStr = JSON.stringify(inValue);
-  await setOptionValue(name, inValueStr);
-  ctx.body = response.success("设置成功！", inValue);
+  await setOptionValue(name, setValue);
+  ctx.body = response.success("设置成功！", setValue);
   return;
 }

@@ -17,7 +17,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@prisma/client": "^6.1.0",
+    "@prisma/client": "latest",
     "bcrypt": "^5.1.1",
     "casbin": "^5.36.0",
     "casbin-prisma-adapter": "^1.7.0",
@@ -34,7 +34,7 @@
     "lodash": "^4.17.21",
     "sanitize-html": "^2.14.0",
     "swagger-jsdoc": "^6.2.8",
-    "uuid": "^11.0.3"
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
@@ -48,7 +48,7 @@
     "copy-webpack-plugin": "^12.0.2",
     "cross-env": "^7.0.3",
     "nodemon": "^3.1.4",
-    "prisma": "^6.1.0",
+    "prisma": "latest",
     "terser-webpack-plugin": "^5.3.11",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",

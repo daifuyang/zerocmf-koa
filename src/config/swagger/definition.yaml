@@ -61,6 +61,8 @@ tags:
     description: 系统设置
   - name: medias
     description: 媒体资源
+  - name: media-categories
+    description: 媒体分类
 servers:
   - url: /
     description: Local server
