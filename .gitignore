@@ -1,6 +1,5 @@
 node_modules
 install
-prisma/migrations
 pnpm-lock.yaml
 .env
 .vscode
@@ -9,4 +8,3 @@ dist
 
 # 函数计算
 layer
-prisma/migrations
