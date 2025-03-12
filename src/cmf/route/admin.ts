@@ -31,6 +31,14 @@ import apiAccess from "../middlewares/apiAccess";
 import { getOptionController, setOptionController } from "../controller/admin/options";
 import { addMediaController, deleteMediaController, getMediaListController } from "../controller/admin/media";
 import { addMediaCategoryController, deleteMediaCategoryController, getMediaCategoryController, getMediaCategoryListController, getMediaCategoryTreeController, updateMediaCategoryController } from "../controller/admin/mediaCategory";
+import {
+  getDeptListController,
+  getDeptTreeController,
+  getDeptController,
+  createDeptController,
+  updateDeptController,
+  deleteDeptController,
+} from "../controller/admin/dept";
 
 const adminRouter = new Router({ prefix: adminPrefix });
 adminRouter.use(auth, apiAccess);
@@ -78,5 +86,13 @@ adminRouter.get("/media-categories/:categoryId", getMediaCategoryController)
 adminRouter.post("/media-categories", addMediaCategoryController)
 adminRouter.put("/media-categories/:categoryId", updateMediaCategoryController)
 adminRouter.delete("/media-categories/:categoryId", deleteMediaCategoryController)
+
+// 部门管理
+adminRouter.get("/depts", getDeptListController)
+adminRouter.get("/depts/tree", getDeptTreeController)
+adminRouter.get("/depts/:deptId", getDeptController)
+adminRouter.post("/depts", createDeptController)
+adminRouter.put("/depts/:deptId", updateDeptController)
+adminRouter.delete("/depts/:deptId", deleteDeptController)
 
 export default adminRouter;

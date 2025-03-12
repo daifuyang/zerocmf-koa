@@ -142,35 +142,35 @@
                 "path": "/system/upload"
             },
             {
-                "perms": "system:department",
+                "perms": "system:dept",
                 "menuName": "部门管理",
-                "path": "/system/department",
+                "path": "/system/dept",
                 "children": [
                     {
-                        "perms": "system:department:list",
+                        "perms": "system:dept:list",
                         "menuName": "部门列表",
-                        "path": "/system/department/list",
+                        "path": "/system/dept/list",
                         "visible": 0,
                         "menuType": 1
                     },
                     {
-                        "perms": "system:department:add",
+                        "perms": "system:dept:add",
                         "menuName": "添加部门",
-                        "path": "/system/department/add",
+                        "path": "/system/dept/add",
                         "visible": 0,
                         "menuType": 2
                     },
                     {
-                        "perms": "system:department:edit",
+                        "perms": "system:dept:edit",
                         "menuName": "编辑部门",
-                        "path": "/system/department/edit/:id",
+                        "path": "/system/dept/edit/:id",
                         "visible": 0,
                         "menuType": 2
                     },
                     {
-                        "perms": "system:department:delete",
+                        "perms": "system:dept:delete",
                         "menuName": "删除部门",
-                        "path": "/system/department/delete/:id",
+                        "path": "/system/dept/delete/:id",
                         "visible": 0,
                         "menuType": 2
                     }

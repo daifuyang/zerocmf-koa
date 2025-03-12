@@ -1,0 +1,451 @@
+paths:
+  /api/v1/admin/depts:
+    get:
+      summary: 获取部门列表
+      description: 返回所有部门的列表数据。
+      operationId: getDeptList
+      security:
+        - BearerAuth: []
+      tags:
+        - depts
+      responses:
+        "200":
+          description: 部门列表数据。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeptListResp"
+              example:
+                {
+                  "code": 1,
+                  "msg": "获取成功！",
+                  "data":
+                    [
+                      {
+                        "deptId": 1,
+                        "deptName": "总公司",
+                        "parentId": 0,
+                        "sortOrder": 1,
+                        "leader": "张三",
+                        "phone": "13800138000",
+                        "email": "zhangsan@example.com",
+                        "status": 1,
+                        "createdId": 1,
+                        "createdBy": "admin",
+                        "createdAt": "1723613053",
+                        "updatedAt": "1723613053",
+                        "deletedAt": "0"
+                      },
+                      {
+                        "deptId": 2,
+                        "deptName": "研发部",
+                        "parentId": 1,
+                        "sortOrder": 1,
+                        "leader": "李四",
+                        "phone": "13900139000",
+                        "email": "lisi@example.com",
+                        "status": 1,
+                        "createdId": 1,
+                        "createdBy": "admin",
+                        "createdAt": "1723613053",
+                        "updatedAt": "1723613053",
+                        "deletedAt": "0"
+                      }
+                    ]
+                }
+    post:
+      summary: 添加部门
+      description: 创建一个新的部门。
+      operationId: createDept
+      security:
+        - BearerAuth: []
+      tags:
+        - depts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeptReq"
+      responses:
+        "200":
+          description: 创建成功。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeptResp"
+              example:
+                {
+                  "code": 1,
+                  "msg": "添加成功",
+                  "data":
+                    {
+                      "deptId": 3,
+                      "deptName": "市场部",
+                      "parentId": 1,
+                      "sortOrder": 2,
+                      "leader": "王五",
+                      "phone": "13700137000",
+                      "email": "wangwu@example.com",
+                      "status": 1,
+                      "createdId": 1,
+                      "createdBy": "admin",
+                      "createdAt": "1723613053",
+                      "updatedAt": "1723613053",
+                      "deletedAt": "0"
+                    }
+                }
+  /api/v1/admin/depts/tree:
+    get:
+      summary: 获取部门树结构
+      description: 返回部门的树形结构数据。
+      operationId: getDeptTree
+      security:
+        - BearerAuth: []
+      tags:
+        - depts
+      responses:
+        "200":
+          description: 部门树形结构数据。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeptTreeResp"
+              example:
+                {
+                  "code": 1,
+                  "msg": "获取成功！",
+                  "data":
+                    [
+                      {
+                        "deptId": 1,
+                        "deptName": "总公司",
+                        "parentId": 0,
+                        "sortOrder": 1,
+                        "leader": "张三",
+                        "phone": "13800138000",
+                        "email": "zhangsan@example.com",
+                        "status": 1,
+                        "createdAt": "1723613053",
+                        "updatedAt": "1723613053",
+                        "children": [
+                          {
+                            "deptId": 2,
+                            "deptName": "研发部",
+                            "parentId": 1,
+                            "sortOrder": 1,
+                            "leader": "李四",
+                            "phone": "13900139000",
+                            "email": "lisi@example.com",
+                            "status": 1,
+                            "createdAt": "1723613053",
+                            "updatedAt": "1723613053",
+                            "children": []
+                          },
+                          {
+                            "deptId": 3,
+                            "deptName": "市场部",
+                            "parentId": 1,
+                            "sortOrder": 2,
+                            "leader": "王五",
+                            "phone": "13700137000",
+                            "email": "wangwu@example.com",
+                            "status": 1,
+                            "createdAt": "1723613053",
+                            "updatedAt": "1723613053",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                }
+  /api/v1/admin/depts/{deptId}:
+    get:
+      summary: 获取部门详情
+      description: 根据ID获取部门详情。
+      operationId: getDept
+      security:
+        - BearerAuth: []
+      tags:
+        - depts
+      parameters:
+        - name: deptId
+          in: path
+          description: 部门唯一标识符
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 部门详情数据。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeptResp"
+              example:
+                {
+                  "code": 1,
+                  "msg": "获取成功！",
+                  "data":
+                    {
+                      "deptId": 1,
+                      "deptName": "总公司",
+                      "parentId": 0,
+                      "sortOrder": 1,
+                      "leader": "张三",
+                      "phone": "13800138000",
+                      "email": "zhangsan@example.com",
+                      "status": 1,
+                      "createdId": 1,
+                      "createdBy": "admin",
+                      "createdAt": "1723613053",
+                      "updatedAt": "1723613053",
+                      "deletedAt": "0"
+                    }
+                }
+    put:
+      summary: 更新部门
+      description: 更新指定ID的部门信息。
+      operationId: updateDept
+      security:
+        - BearerAuth: []
+      tags:
+        - depts
+      parameters:
+        - name: deptId
+          in: path
+          description: 部门唯一标识符
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeptReq"
+      responses:
+        "200":
+          description: 更新成功。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeptResp"
+              example:
+                {
+                  "code": 1,
+                  "msg": "更新成功",
+                  "data":
+                    {
+                      "deptId": 1,
+                      "deptName": "总公司（已更新）",
+                      "parentId": 0,
+                      "sortOrder": 1,
+                      "leader": "张三",
+                      "phone": "13800138000",
+                      "email": "zhangsan@example.com",
+                      "status": 1,
+                      "updatedId": 1,
+                      "updatedBy": "admin",
+                      "createdAt": "1723613053",
+                      "updatedAt": "1723618053",
+                      "deletedAt": "0"
+                    }
+                }
+    delete:
+      summary: 删除部门
+      description: 删除指定ID的部门。
+      operationId: deleteDept
+      security:
+        - BearerAuth: []
+      tags:
+        - depts
+      parameters:
+        - name: deptId
+          in: path
+          description: 部门唯一标识符
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 删除成功。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example:
+                {
+                  "code": 1,
+                  "msg": "删除成功"
+                }
+
+components:
+  schemas:
+    DeptReq:
+      type: object
+      properties:
+        deptName:
+          type: string
+          description: 部门名称
+          example: "研发部"
+        parentId:
+          type: integer
+          description: 父部门ID，0表示顶级部门
+          example: 1
+        sortOrder:
+          type: integer
+          description: 排序序号
+          example: 1
+        leader:
+          type: string
+          description: 部门负责人
+          example: "张三"
+        phone:
+          type: string
+          description: 联系电话
+          example: "13800138000"
+        email:
+          type: string
+          description: 邮箱
+          example: "zhangsan@example.com"
+        status:
+          type: integer
+          description: 部门状态，0表示禁用，1表示启用
+          enum: [0, 1]
+          example: 1
+      required:
+        - deptName
+    
+    DeptInfo:
+      type: object
+      properties:
+        deptId:
+          type: integer
+          description: 部门ID
+          example: 1
+        deptName:
+          type: string
+          description: 部门名称
+          example: "研发部"
+        parentId:
+          type: integer
+          description: 父部门ID
+          example: 0
+        sortOrder:
+          type: integer
+          description: 排序序号
+          example: 1
+        leader:
+          type: string
+          description: 部门负责人
+          example: "张三"
+        phone:
+          type: string
+          description: 联系电话
+          example: "13800138000"
+        email:
+          type: string
+          description: 邮箱
+          example: "zhangsan@example.com"
+        status:
+          type: integer
+          description: 部门状态，0表示禁用，1表示启用
+          example: 1
+        createdId:
+          type: integer
+          description: 创建人ID
+          example: 1
+        createdBy:
+          type: string
+          description: 创建人
+          example: "admin"
+        createdAt:
+          type: string
+          description: 创建时间
+          example: "1723613053"
+        updatedAt:
+          type: string
+          description: 更新时间
+          example: "1723613053"
+        deletedAt:
+          type: string
+          description: 删除时间，0表示未删除
+          example: "0"
+    
+    DeptTreeInfo:
+      type: object
+      properties:
+        deptId:
+          type: integer
+          description: 部门ID
+          example: 1
+        deptName:
+          type: string
+          description: 部门名称
+          example: "研发部"
+        parentId:
+          type: integer
+          description: 父部门ID
+          example: 0
+        sortOrder:
+          type: integer
+          description: 排序序号
+          example: 1
+        leader:
+          type: string
+          description: 部门负责人
+          example: "张三"
+        phone:
+          type: string
+          description: 联系电话
+          example: "13800138000"
+        email:
+          type: string
+          description: 邮箱
+          example: "zhangsan@example.com"
+        status:
+          type: integer
+          description: 部门状态，0表示禁用，1表示启用
+          example: 1
+        createdAt:
+          type: string
+          description: 创建时间
+          example: "1723613053"
+        updatedAt:
+          type: string
+          description: 更新时间
+          example: "1723613053"
+        children:
+          type: array
+          description: 子部门列表
+          items:
+            $ref: "#/components/schemas/DeptTreeInfo"
+    
+    DeptResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/DeptInfo"
+    
+    DeptListResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: "#/components/schemas/DeptInfo"
+    
+    DeptTreeResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: "#/components/schemas/DeptTreeInfo"
