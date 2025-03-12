@@ -1,3 +1,4 @@
+import { SWAGGER_APIS } from "@/constants/path";
 import Router from "koa-router";
 import swaggerJSDoc from "swagger-jsdoc";
 
@@ -6,12 +7,12 @@ const options = {
   swaggerDefinition: {
     openapi: "3.0.0",
     info: {
-      title: "NextCMS API Documentation",
+      title: "ZeroCMF API Documentation",
       version: "1.0.0",
-      description: "API documentation for NextCMS project"
+      description: "API documentation for ZeroCMF project"
     },
   },
-  apis: ["src/**/*.yaml"] // 这里指定包含Swagger注释的文件路径
+  apis: [SWAGGER_APIS] // 这里指定包含Swagger注释的文件路径
 };
 
 const swaggerSpec = swaggerJSDoc(options);
