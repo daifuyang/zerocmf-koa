@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["prismaSchemaFolder"]
 }
 
 datasource db {
@@ -180,99 +181,34 @@ model sysMediaCategory {
   @@map("sys_media_category")
 }
 
-// 文章表
-model cmsArticle {
-  articleId      Int                      @id @default(autoincrement()) @map("article")
-  postFormat     Int?                     @default(1) @map("post_format") @db.TinyInt() // 文章格式
-  seoTitle       String?                  @map("seo_title") @db.VarChar(100) // 三要素标题，用于seo优化
-  seoKeywords    String?                  @map("seo_keywords") @db.VarChar(255) // 三要素关键词，用于seo优化
-  seoDescription String?                  @map("seo_description") @db.VarChar(255) // 三要素描述，用于seo优化
-  thumbnail      String?                  @map("thumbnail") @db.VarChar(255) // 封面
-  title          String                   @map("title") @db.VarChar(100) // 标题
-  content        String?                  @map("content") @db.LongText // 内容
-  keywords       String?                  @map("keywords") @db.VarChar(255) // 关键词
-  excerpt        String?                  @map("excerpt") @db.VarChar(255) // 摘要
-  author         String?                  @map("author") @db.VarChar(50) // 作者
-  source         String?                  @map("source") @db.VarChar(255) // 文章来源
-  isTop          Int?                     @map("is_top") @db.TinyInt() // 置顶
-  hits           Int?                     @map("hits") // 点击数
-  favorites      Int?                     @map("favorites") // 收藏数
-  likes          Int?                     @map("likes") // 点赞数
-  comments       Int?                     @map("comments") // 点赞数
-  more           Json?                    @map("more") @db.Json // 扩展属性
-  articleStatus  Int?                     @default(1) @map("article_status") @db.TinyInt // 文章状态
-  commentStatus  Int?                     @default(1) @map("comment_status") @db.TinyInt // 评论状态
-  order          Int?                     @map("order") // 排序
-  publishedAt    Int?                     @map("published_at") // 发布时间
-  createId       Int                      @map("create_id")
-  creator        String                   @map("creator") @db.VarChar(50)
-  updateId       Int                      @map("update_id")
-  updater        String                   @map("updater") @db.VarChar(50)
-  createdAt      Int                      @map("created_at")
-  updatedAt      Int                      @map("updated_at")
-  deletedAt      Int                      @default(0) @map("deleted_at")
-  categories     cmsArticleCategoryPost[]
-  articleTags    cmsArticleTagPost[]
+// 部门表
+model sysDept {
+  deptId     Int     @id @default(autoincrement()) @map("dept_id") // 部门ID
+  parentId   Int     @default(0) @map("parent_id") // 父部门ID
+  ancestors  String? @map("ancestors") @db.VarChar(255) // 祖级列表
+  deptName   String  @map("dept_name") @db.VarChar(50) // 部门名称
+  sortOrder  Int     @default(1) @map("sort_order") @db.TinyInt // 显示顺序
+  leader     String? @map("leader") @db.VarChar(20) // 负责人
+  phone      String? @map("phone") @db.VarChar(11) // 联系电话
+  email      String? @map("email") @db.VarChar(50) // 邮箱
+  status     Int     @default(1) @db.TinyInt // 部门状态（0停用 1正常）
+  createdId  Int?    @map("created_id") // 创建者ID
+  createdBy  String  @default("") @map("created_by") @db.VarChar(64) // 创建者
+  createdAt  Int?    @map("created_at") // 创建时间
+  updatedId  Int?    @map("updated_id") // 更新者ID
+  updatedBy  String  @default("") @map("updated_by") @db.VarChar(64) // 更新者
+  updatedAt  Int?    @map("updated_at") // 更新时间
+  deletedAt  Int     @default(0) @map("deleted_at") // 删除时间
 
-  @@map("cms_article")
+  @@index([deptId, parentId, deptName])
+  @@map("sys_dept")
 }
 
-// 文章分类表
-model cmsArticleCategory {
-  articleCategoryId Int                      @id @default(autoincrement()) @map("articleCategoryId")
-  parentId          Int                      @map("parent_id") // 分类id
-  seoTitle          String?                  @map("seo_title") @db.VarChar(100) // 三要素标题，用于seo优化
-  seoKeywords       String?                  @map("seo_keywords") @db.VarChar(255) // 三要素关键词，用于seo优化
-  seoDescription    String?                  @map("seo_description") @db.VarChar(255) // 三要素描述，用于seo优化
-  name              String                   @map("name") @db.VarChar(100)
-  icon              String?                  @map("icon") @db.VarChar(255) // 分类图标 
-  description       String?                  @map("description") @db.VarChar(255)
-  status            Int?                     @default(1) @map("status") @db.TinyInt()
-  articleCount      Int                      @map("article_count") // 文章数
-  path              String                   @map("path") @db.VarChar(255)
-  order             Int?                     @map("order") // 排序
-  createId          Int                      @map("create_id")
-  creator           String                   @map("creator") @db.VarChar(50)
-  updateId          Int                      @map("update_id")
-  updater           String                   @map("updater") @db.VarChar(50)
-  createdAt         Int                      @map("created_at")
-  updatedAt         Int                      @map("updated_at")
-  deletedAt         Int                      @default(0) @map("deleted_at")
-  articles          cmsArticleCategoryPost[]
+// 用户与部门关联表
+model sysUserDept {
+  userId Int @map("user_id") // 用户ID
+  deptId Int @map("dept_id") // 部门ID
 
-  @@map("cms_article_category")
-}
-
-// 文章和分类关联表
-model cmsArticleCategoryPost {
-  articleId         Int                @map("article_id") // 文章id
-  articleCategoryId Int                @map("article_category_id") //分类id
-  order             Int?               @map("order") // 排序
-  article           cmsArticle         @relation(fields: [articleId], references: [articleId])
-  articleCategory   cmsArticleCategory @relation(fields: [articleCategoryId], references: [articleCategoryId])
-
-  @@unique([articleId, articleCategoryId])
-  @@map("cms_article_category_post")
-}
-
-// 文章标签表
-model cmsArticleTag {
-  tagId        Int                 @id @default(autoincrement()) // 标签id
-  name         String              @unique // 标签名称
-  status       Int                 @default(1) // 状态
-  articleCount Int                 @map("article_count") // 文章数
-  articles     cmsArticleTagPost[]
-
-  @@map("cms_article_tag")
-}
-
-// 文章和标签关联表
-model cmsArticleTagPost {
-  articleId  Int           @map("article_id") // 文章id
-  tagId      Int           @map("tag_id") // 标签id
-  article    cmsArticle    @relation(fields: [articleId], references: [articleId])
-  articleTag cmsArticleTag @relation(fields: [tagId], references: [tagId])
-
-  @@unique([articleId, tagId])
-  @@map("cms_article_tag_post")
+  @@unique([userId, deptId])
+  @@map("sys_user_dept")
 }
