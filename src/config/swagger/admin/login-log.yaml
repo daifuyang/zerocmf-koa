@@ -1,0 +1,265 @@
+paths:
+  /api/v1/admin/login-logs:
+    get:
+      tags:
+        - login-logs
+      summary: 获取登录日志列表
+      description: 分页获取登录日志列表
+      operationId: getLoginLogList
+      parameters:
+        - name: current
+          in: query
+          description: 当前页码
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          description: 每页记录数
+          schema:
+            type: integer
+            default: 10
+        - name: ipaddr
+          in: query
+          description: 登录IP地址
+          schema:
+            type: string
+        - name: loginName
+          in: query
+          description: 登录账号
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: 登录状态（0成功 1失败）
+          schema:
+            type: integer
+            enum: [0, 1]
+        - name: startTime
+          in: query
+          description: 开始时间（时间戳）
+          schema:
+            type: integer
+        - name: endTime
+          in: query
+          description: 结束时间（时间戳）
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功获取登录日志列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: 获取登录日志列表成功
+                  data:
+                    type: object
+                    properties:
+                      list:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/LoginLog'
+                      total:
+                        type: integer
+                        example: 100
+                      current:
+                        type: integer
+                        example: 1
+                      pageSize:
+                        type: integer
+                        example: 10
+    delete:
+      tags:
+        - login-logs
+      summary: 删除登录日志
+      description: 批量删除登录日志
+      operationId: removeLoginLog
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: integer
+                  example: [1, 2, 3]
+      responses:
+        '200':
+          description: 成功删除登录日志
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: 删除登录日志成功
+                  data:
+                    type: object
+
+  /api/v1/admin/login-logs/{id}:
+    get:
+      tags:
+        - login-logs
+      summary: 获取登录日志详情
+      description: 根据ID获取登录日志详情
+      operationId: getLoginLogDetail
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 登录日志ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功获取登录日志详情
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: 获取登录日志详情成功
+                  data:
+                    $ref: '#/components/schemas/LoginLog'
+
+  /api/v1/admin/login-logs/clean:
+    delete:
+      tags:
+        - login-logs
+      summary: 清空登录日志
+      description: 清空所有登录日志
+      operationId: cleanLoginLog
+      responses:
+        '200':
+          description: 成功清空登录日志
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: 清空登录日志成功
+                  data:
+                    type: object
+
+  /api/v1/admin/login-logs/export:
+    get:
+      tags:
+        - login-logs
+      summary: 导出登录日志
+      description: 导出登录日志数据
+      operationId: exportLoginLog
+      parameters:
+        - name: ipaddr
+          in: query
+          description: 登录IP地址
+          schema:
+            type: string
+        - name: loginName
+          in: query
+          description: 登录账号
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: 登录状态（0成功 1失败）
+          schema:
+            type: integer
+            enum: [0, 1]
+        - name: startTime
+          in: query
+          description: 开始时间（时间戳）
+          schema:
+            type: integer
+        - name: endTime
+          in: query
+          description: 结束时间（时间戳）
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功导出登录日志
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: 导出登录日志成功
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LoginLog'
+
+components:
+  schemas:
+    LoginLog:
+      type: object
+      properties:
+        infoId:
+          type: integer
+          description: 访问ID
+          example: 1
+        loginName:
+          type: string
+          description: 登录账号
+          example: admin
+        ipaddr:
+          type: string
+          description: 登录IP地址
+          example: 127.0.0.1
+        loginLocation:
+          type: string
+          description: 登录地点
+          example: 内网IP
+        browser:
+          type: string
+          description: 浏览器类型
+          example: Chrome 98.0.4758.102
+        os:
+          type: string
+          description: 操作系统
+          example: Windows 10
+        status:
+          type: integer
+          description: 登录状态（0成功 1失败）
+          example: 0
+        msg:
+          type: string
+          description: 提示消息
+          example: 登录成功
+        loginTime:
+          type: integer
+          description: 访问时间（时间戳）
+          example: 1647321600
+        userId:
+          type: integer
+          description: 用户ID
+          example: 1

@@ -2,11 +2,42 @@ import { Context } from 'koa';
 import * as deptModel from '@/cmf/models/dept';
 import { now } from '@/lib/date';
 import response from '@/lib/response';
+import dayjs from 'dayjs';
 
 // 获取部门列表
 export const getDeptListController = async (ctx: Context) => {
   try {
-    const depts = await deptModel.getDeptList();
+    const { deptName, leader, startTime, endTime, status } = ctx.query;
+    
+    const where: any = {};
+    
+    if (deptName) {
+      where.deptName = {
+        contains: deptName as string
+      };
+    }
+    
+    if (leader) {
+      where.leader = {
+        contains: leader as string
+      };
+    }
+    
+    if (startTime || endTime) {
+      where.createdAt = {};
+      if (startTime) {
+        where.createdAt.gte = dayjs(startTime as string).unix();
+      }
+      if (endTime) {
+        where.createdAt.lte = dayjs(endTime as string).unix();
+      }
+    }
+    
+    if (status) {
+      where.status = Number(status);
+    }
+    
+    const depts = await deptModel.getDeptList(where);
     return ctx.body = response.success('获取成功', depts);
   } catch (err: any) {
     return ctx.body = response.error(err.message);
@@ -16,7 +47,37 @@ export const getDeptListController = async (ctx: Context) => {
 // 获取部门树结构
 export const getDeptTreeController = async (ctx: Context) => {
   try {
-    const deptTree = await deptModel.getDeptTree();
+    const { deptName, leader, startTime, endTime, status } = ctx.query;
+    
+    const where: any = {};
+    
+    if (deptName) {
+      where.deptName = {
+        contains: deptName as string
+      };
+    }
+    
+    if (leader) {
+      where.leader = {
+        contains: leader as string
+      };
+    }
+    
+    if (startTime || endTime) {
+      where.createdAt = {};
+      if (startTime) {
+        where.createdAt.gte = dayjs(startTime as string).unix();
+      }
+      if (endTime) {
+        where.createdAt.lte = dayjs(endTime as string).unix();
+      }
+    }
+    
+    if (status) {
+      where.status = Number(status);
+    }
+    
+    const deptTree = await deptModel.getDeptTree(where);
     return ctx.body = response.success('获取成功', deptTree);
   } catch (err: any) {
     return ctx.body = response.error(err.message);

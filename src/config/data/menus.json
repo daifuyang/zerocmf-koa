@@ -252,11 +252,24 @@
                 "path": "/system/log",
                 "children": [
                     {
-                        "perms": "system:log:list",
-                        "menuName": "日志列表",
-                        "path": "/system/log/list",
-                        "visible": 0,
-                        "menuType": 1
+                        "perms": "system:log:login",
+                        "menuName": "登录日志",
+                        "path": "/system/log/login",
+                        "children": [
+                            {
+                                "perms": "system:log:login:list",
+                                "menuName": "日志列表",
+                                "path": "/system/log/login/list",
+                                "visible": 0,
+                                "menuType": 1
+                            },
+                            {
+                                "perms": "system:log:login:delete",
+                                "menuName": "删除登录日志",
+                                "visible": 0,
+                                "menuType": 2
+                            }
+                        ]
                     }
                 ]
             }

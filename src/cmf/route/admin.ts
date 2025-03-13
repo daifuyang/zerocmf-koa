@@ -9,6 +9,13 @@ import {
   deleteRoleController
 } from "../controller/admin/role";
 import {
+  getLoginLogList,
+  getLoginLogDetail,
+  removeLoginLog,
+  cleanLoginLog,
+  exportLoginLog
+} from "../controller/admin/loginLog";
+import {
   getUsersController,
   getUserController,
   addUserController,
@@ -39,6 +46,26 @@ import {
   updateDeptController,
   deleteDeptController,
 } from "../controller/admin/dept";
+import {
+  getPostListController,
+  getPostController,
+  createPostController,
+  updatePostController,
+  deletePostController
+} from "../controller/admin/post";
+import {
+  getDictTypeListController,
+  getDictTypeInfoController,
+  createDictTypeController,
+  updateDictTypeController,
+  deleteDictTypeController,
+  getDictDataListController,
+  getDictDataByTypeController,
+  getDictDataInfoController,
+  createDictDataController,
+  updateDictDataController,
+  deleteDictDataController
+} from "../controller/admin/dict";
 
 const adminRouter = new Router({ prefix: adminPrefix });
 adminRouter.use(auth, apiAccess);
@@ -94,5 +121,34 @@ adminRouter.get("/depts/:deptId", getDeptController)
 adminRouter.post("/depts", createDeptController)
 adminRouter.put("/depts/:deptId", updateDeptController)
 adminRouter.delete("/depts/:deptId", deleteDeptController)
+
+// 岗位管理
+adminRouter.get("/posts", getPostListController)
+adminRouter.get("/posts/:postId", getPostController)
+adminRouter.post("/posts", createPostController)
+adminRouter.put("/posts/:postId", updatePostController)
+adminRouter.delete("/posts/:postId", deletePostController)
+
+// 登录日志管理
+adminRouter.get("/login-logs", getLoginLogList)
+adminRouter.get("/login-logs/:id", getLoginLogDetail)
+adminRouter.delete("/login-logs", removeLoginLog)
+adminRouter.delete("/login-logs/clean", cleanLoginLog)
+adminRouter.get("/login-logs/export", exportLoginLog)
+
+// 字典类型管理
+adminRouter.get("/dict/types", getDictTypeListController);
+adminRouter.get("/dict/types/:dictId", getDictTypeInfoController);
+adminRouter.post("/dict/types", createDictTypeController);
+adminRouter.put("/dict/types/:dictId", updateDictTypeController);
+adminRouter.delete("/dict/types/:dictId", deleteDictTypeController);
+
+// 字典数据管理
+adminRouter.get("/dict/data", getDictDataListController);
+adminRouter.get("/dict/data/type/:dictType", getDictDataByTypeController);
+adminRouter.get("/dict/data/:dictCode", getDictDataInfoController);
+adminRouter.post("/dict/data", createDictDataController);
+adminRouter.put("/dict/data/:dictCode", updateDictDataController);
+adminRouter.delete("/dict/data/:dictCode", deleteDictDataController);
 
 export default adminRouter;

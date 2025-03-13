@@ -241,24 +241,36 @@ export const getDeptsByUserId = async (userId: number, tx = prisma) => {
 };
 
 // 获取部门树结构
-export const getDeptTree = async (tx = prisma) => {
-  const depts = await getDeptList({}, tx);
+export const getDeptTree = async (where: any = {}, tx = prisma) => {
+  // 获取符合条件的部门列表
+  const depts = await getDeptList(where, tx);
+  
+  // 直接构建树形结构
   return buildDeptTree(depts);
 };
 
 // 构建部门树结构
-function buildDeptTree(depts: any[], parentId: number = 0) {
+function buildDeptTree(depts: any[]) {
+  const deptMap = new Map(depts.map(dept => [dept.deptId, dept]));
   const tree: any[] = [];
-  
+
+  // 建立父子关系映射（支持搜索模式）
   depts.forEach(dept => {
-    if (dept.parentId === parentId) {
-      const children = buildDeptTree(depts, dept.deptId);
-      if (children.length > 0) {
-        dept.children = children;
-      }
+    const parentId = dept.parentId;
+    // 当父节点存在于当前结果集时才建立父子关系
+    if (deptMap.has(parentId)) {
+      const parent = deptMap.get(parentId);
+      if (!parent.children) parent.children = [];
+      parent.children.push(dept);
+    } else {
+      // 允许单独节点成为根节点
       tree.push(dept);
     }
   });
-  
-  return tree;
-};
+
+  // 最后过滤掉没有子节点且不符合条件的空父节点
+  return tree.filter(dept => 
+    dept.children?.length > 0 ||  // 保留有子节点的
+    !deptMap.has(dept.parentId)    // 保留本身就是叶子节点的
+  );
+}

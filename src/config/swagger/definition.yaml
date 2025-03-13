@@ -63,6 +63,12 @@ tags:
     description: 媒体资源
   - name: media-categories
     description: 媒体分类
+  - name: depts
+    description: 部门管理
+  - name: posts
+    description: 岗位管理
+  - name: login-logs
+    description: 登录日志管理
 servers:
   - url: /
     description: Local server

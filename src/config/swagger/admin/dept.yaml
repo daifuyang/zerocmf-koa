@@ -8,6 +8,43 @@ paths:
         - BearerAuth: []
       tags:
         - depts
+      parameters:
+        - name: deptName
+          in: query
+          description: 部门名称（模糊查询）
+          required: false
+          schema:
+            type: string
+          example: "研发"
+        - name: leader
+          in: query
+          description: 负责人姓名（模糊查询）
+          required: false
+          schema:
+            type: string
+          example: "张三"
+        - name: status
+          in: query
+          description: 部门状态（0-禁用，1-启用）
+          required: false
+          schema:
+            type: integer
+            enum: [0, 1]
+          example: 1
+        - name: startTime
+          in: query
+          description: 创建时间范围-开始时间（时间戳）
+          required: false
+          schema:
+            type: string
+          example: "1723613000"
+        - name: endTime
+          in: query
+          description: 创建时间范围-结束时间（时间戳）
+          required: false
+          schema:
+            type: string
+          example: "1723613999"
       responses:
         "200":
           description: 部门列表数据。
@@ -104,6 +141,43 @@ paths:
         - BearerAuth: []
       tags:
         - depts
+      parameters:
+        - name: deptName
+          in: query
+          description: 部门名称（模糊查询）
+          required: false
+          schema:
+            type: string
+          example: "研发"
+        - name: leader
+          in: query
+          description: 负责人姓名（模糊查询）
+          required: false
+          schema:
+            type: string
+          example: "张三"
+        - name: status
+          in: query
+          description: 部门状态（0-禁用，1-启用）
+          required: false
+          schema:
+            type: integer
+            enum: [0, 1]
+          example: 1
+        - name: startTime
+          in: query
+          description: 创建时间范围-开始时间（时间戳）
+          required: false
+          schema:
+            type: string
+          example: "1723613000"
+        - name: endTime
+          in: query
+          description: 创建时间范围-结束时间（时间戳）
+          required: false
+          schema:
+            type: string
+          example: "1723613999"
       responses:
         "200":
           description: 部门树形结构数据。

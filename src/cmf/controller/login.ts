@@ -8,6 +8,8 @@ import { getUser } from "../models/user";
 import { parseJson } from "@/lib/request";
 import { createUserToken } from "../models/userToken";
 import { calculateExpiresAt } from "@/lib/date";
+import { getClientInfo } from "@/lib/clientInfo";
+import { createLoginLog } from "../models/loginLog";
 import {
   jwtRefreshSecret,
   jwtRefreshSecretExpire,
@@ -40,8 +42,28 @@ const accountEnum = {
 export const Login = async (ctx: Context) => {
   
   const { account, password, loginType = "account", phoneType } = parseJson(ctx) as LoginReq;
+  
+  // 获取客户端信息
+  const clientInfo = getClientInfo(ctx);
+  
+  // 准备登录日志基本信息
+  const loginLogBase = {
+    loginName: account,
+    ipaddr: clientInfo.ip,
+    loginLocation: clientInfo.location,
+    browser: clientInfo.browser,
+    os: clientInfo.os,
+    loginTime: Math.floor(Date.now() / 1000)
+  };
 
   if (!account) {
+    // 记录登录失败日志
+    await createLoginLog({
+      ...loginLogBase,
+      status: 1, // 失败
+      msg: `${accountEnum[loginType]}不能为空`
+    });
+    
     ctx.body = response.error(`${accountEnum[loginType]}不能为空`);
     return;
   }
@@ -62,8 +84,16 @@ export const Login = async (ctx: Context) => {
       user = await getUser({ loginName: account });
       break;
   }
+  
   // 检查用户是否存在
   if (!user) {
+    // 记录登录失败日志
+    await createLoginLog({
+      ...loginLogBase,
+      status: 1, // 失败
+      msg: "用户不存在"
+    });
+    
     ctx.body = response.error("用户不存在");
     return;
   }
@@ -74,6 +104,14 @@ export const Login = async (ctx: Context) => {
   }
 
   if (!password) {
+    // 记录登录失败日志
+    await createLoginLog({
+      ...loginLogBase,
+      status: 1, // 失败
+      userId: user.userId,
+      msg: "密码不能为空"
+    });
+    
     ctx.body = response.error("密码不能为空");
     return;
   }
@@ -84,10 +122,26 @@ export const Login = async (ctx: Context) => {
     // 验证密码
     const isPasswordValid = await bcrypt.compare(pwd, user.password);
     if (!isPasswordValid) {
+      // 记录登录失败日志
+      await createLoginLog({
+        ...loginLogBase,
+        status: 1, // 失败
+        userId: user.userId,
+        msg: "密码错误"
+      });
+      
       ctx.body = response.error("密码错误");
       return;
     }
   } else {
+    // 记录登录失败日志
+    await createLoginLog({
+      ...loginLogBase,
+      status: 1, // 失败
+      userId: user.userId,
+      msg: "密码错误"
+    });
+    
     ctx.body = response.error("密码错误");
     return;
   }
@@ -116,9 +170,25 @@ export const Login = async (ctx: Context) => {
   });
 
   if (!userToken) {
+    // 记录登录失败日志
+    await createLoginLog({
+      ...loginLogBase,
+      status: 0, // 失败
+      userId: user.userId,
+      msg: "登录失败"
+    });
+    
     ctx.body = response.error("登录失败");
     return;
   }
+
+  // 记录登录成功日志
+  await createLoginLog({
+    ...loginLogBase,
+    status: 1, // 成功
+    userId: user.userId,
+    msg: "登录成功"
+  });
 
   ctx.body = response.success("登录成功！", { accessToken, expiresAt, refreshToken, reExpiresAt });
 };

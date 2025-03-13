@@ -1,0 +1,342 @@
+paths:
+  /api/v1/admin/posts:
+    get:
+      summary: 获取岗位列表
+      description: 返回所有岗位的列表数据。
+      operationId: getPostList
+      security:
+        - BearerAuth: []
+      tags:
+        - posts
+      parameters:
+        - name: postCode
+          in: query
+          description: 岗位编码
+          required: false
+          schema:
+            type: string
+          example: "CEO"
+        - name: postName
+          in: query
+          description: 岗位名称
+          required: false
+          schema:
+            type: string
+          example: "董事长"
+        - name: status
+          in: query
+          description: 岗位状态，0表示禁用，1表示启用
+          required: false
+          schema:
+            type: integer
+            enum: [0, 1]
+          example: 1
+        - name: startTime
+          in: query
+          description: 创建时间范围的开始时间
+          required: false
+          schema:
+            type: string
+            format: date-time
+          example: "2025-03-14 00:00:00"
+        - name: endTime
+          in: query
+          description: 创建时间范围的结束时间
+          required: false
+          schema:
+            type: string
+            format: date-time
+          example: "2025-03-15 00:00:00"
+      responses:
+        "200":
+          description: 岗位列表数据。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostListResp"
+              example:
+                {
+                  "code": 1,
+                  "msg": "获取成功！",
+                  "data":
+                    [
+                      {
+                        "postId": 1,
+                        "postCode": "CEO",
+                        "postName": "董事长",
+                        "sortOrder": 1,
+                        "status": 1,
+                        "remark": "公司最高领导职务",
+                        "createdId": 1,
+                        "createdBy": "admin",
+                        "createdAt": "1723613053",
+                        "updatedAt": "1723613053",
+                        "deletedAt": "0"
+                      }
+                    ]
+                }
+    post:
+      summary: 添加岗位
+      description: 创建一个新的岗位。
+      operationId: createPost
+      security:
+        - BearerAuth: []
+      tags:
+        - posts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostReq"
+      responses:
+        "200":
+          description: 创建成功。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostResp"
+              example:
+                {
+                  "code": 1,
+                  "msg": "添加成功",
+                  "data":
+                    {
+                      "postId": 3,
+                      "postCode": "PM",
+                      "postName": "产品经理",
+                      "sortOrder": 3,
+                      "status": 1,
+                      "remark": "负责产品规划与设计",
+                      "createdId": 1,
+                      "createdBy": "admin",
+                      "createdAt": "1723613053",
+                      "updatedAt": "1723613053",
+                      "deletedAt": "0"
+                    }
+                }
+  /api/v1/admin/posts/{postId}:
+    get:
+      summary: 获取岗位详情
+      description: 根据ID获取岗位详情。
+      operationId: getPost
+      security:
+        - BearerAuth: []
+      tags:
+        - posts
+      parameters:
+        - name: postId
+          in: path
+          description: 岗位唯一标识符
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 岗位详情数据。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostResp"
+              example:
+                {
+                  "code": 1,
+                  "msg": "获取成功！",
+                  "data":
+                    {
+                      "postId": 1,
+                      "postCode": "CEO",
+                      "postName": "董事长",
+                      "sortOrder": 1,
+                      "status": 1,
+                      "remark": "公司最高领导职务",
+                      "createdId": 1,
+                      "createdBy": "admin",
+                      "createdAt": "1723613053",
+                      "updatedAt": "1723613053",
+                      "deletedAt": "0"
+                    }
+                }
+    put:
+      summary: 更新岗位
+      description: 更新指定ID的岗位信息。
+      operationId: updatePost
+      security:
+        - BearerAuth: []
+      tags:
+        - posts
+      parameters:
+        - name: postId
+          in: path
+          description: 岗位唯一标识符
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostReq"
+      responses:
+        "200":
+          description: 更新成功。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostResp"
+              example:
+                {
+                  "code": 1,
+                  "msg": "更新成功",
+                  "data":
+                    {
+                      "postId": 1,
+                      "postCode": "CEO",
+                      "postName": "董事长（已更新）",
+                      "sortOrder": 1,
+                      "status": 1,
+                      "remark": "公司最高领导职务",
+                      "updatedId": 1,
+                      "updatedBy": "admin",
+                      "createdAt": "1723613053",
+                      "updatedAt": "1723618053",
+                      "deletedAt": "0"
+                    }
+                }
+    delete:
+      summary: 删除岗位
+      description: 删除指定ID的岗位。
+      operationId: deletePost
+      security:
+        - BearerAuth: []
+      tags:
+        - posts
+      parameters:
+        - name: postId
+          in: path
+          description: 岗位唯一标识符
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 删除成功。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example:
+                {
+                  "code": 1,
+                  "msg": "删除成功"
+                }
+
+components:
+  schemas:
+    PostReq:
+      type: object
+      properties:
+        postCode:
+          type: string
+          description: 岗位编码
+          example: "CEO"
+        postName:
+          type: string
+          description: 岗位名称
+          example: "董事长"
+        sortOrder:
+          type: integer
+          description: 排序序号
+          example: 1
+        status:
+          type: integer
+          description: 岗位状态，0表示禁用，1表示启用
+          enum: [0, 1]
+          example: 1
+        remark:
+          type: string
+          description: 备注
+          example: "公司最高领导职务"
+      required:
+        - postCode
+        - postName
+    
+    PostInfo:
+      type: object
+      properties:
+        postId:
+          type: integer
+          description: 岗位ID
+          example: 1
+        postCode:
+          type: string
+          description: 岗位编码
+          example: "CEO"
+        postName:
+          type: string
+          description: 岗位名称
+          example: "董事长"
+        sortOrder:
+          type: integer
+          description: 排序序号
+          example: 1
+        status:
+          type: integer
+          description: 岗位状态，0表示禁用，1表示启用
+          enum: [0, 1]
+          example: 1
+        remark:
+          type: string
+          description: 备注
+          example: "公司最高领导职务"
+        createdId:
+          type: integer
+          description: 创建者ID
+          example: 1
+        createdBy:
+          type: string
+          description: 创建者名称
+          example: "admin"
+        createdAt:
+          type: string
+          description: 创建时间
+          example: "1723613053"
+        updatedAt:
+          type: string
+          description: 更新时间
+          example: "1723613053"
+        deletedAt:
+          type: string
+          description: 删除时间，0表示未删除
+          example: "0"
+    
+    PostResp:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: 响应状态码
+          example: 1
+        msg:
+          type: string
+          description: 响应消息
+          example: "获取成功！"
+        data:
+          $ref: "#/components/schemas/PostInfo"
+    
+    PostListResp:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: 响应状态码
+          example: 1
+        msg:
+          type: string
+          description: 响应消息
+          example: "获取成功！"
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/PostInfo"

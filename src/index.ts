@@ -8,7 +8,7 @@ import swaggerRouter from "./router/swagger";
 import { install } from "./lib/install";
 import registerPlugins from "./plugins";
 import fs from "fs";
-import { PUBLIC_PATH, UPLOAD_DIR } from "./constants/path";
+import { PUBLIC_PATH } from "./constants/path";
 import path from "path";
 
 const cmf = {

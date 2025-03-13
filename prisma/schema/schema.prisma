@@ -212,3 +212,92 @@ model sysUserDept {
   @@unique([userId, deptId])
   @@map("sys_user_dept")
 }
+
+// 岗位表
+model sysPost {
+  postId     Int     @id @default(autoincrement()) @map("post_id") // 岗位ID
+  postCode   String  @map("post_code") @db.VarChar(64) // 岗位编码
+  postName   String  @map("post_name") @db.VarChar(50) // 岗位名称
+  sortOrder  Int     @default(1) @map("sort_order") @db.TinyInt // 显示顺序
+  status     Int     @default(1) @db.TinyInt // 岗位状态（0停用 1正常）
+  remark     String  @default("") @map("remark") @db.VarChar(500) // 备注
+  createdId  Int?    @map("created_id") // 创建者ID
+  createdBy  String  @default("") @map("created_by") @db.VarChar(64) // 创建者
+  createdAt  Int?    @map("created_at") // 创建时间
+  updatedId  Int?    @map("updated_id") // 更新者ID
+  updatedBy  String  @default("") @map("updated_by") @db.VarChar(64) // 更新者
+  updatedAt  Int?    @map("updated_at") // 更新时间
+  deletedAt  Int     @default(0) @map("deleted_at") // 删除时间
+
+  @@index([postId, postCode, postName])
+  @@map("sys_post")
+}
+
+// 用户与岗位关联表
+model sysUserPost {
+  userId Int @map("user_id") // 用户ID
+  postId Int @map("post_id") // 岗位ID
+
+  @@unique([userId, postId])
+  @@map("sys_user_post")
+}
+
+// 系统访问日志表
+model sysLoginLog {
+  infoId        Int     @id @default(autoincrement()) @map("info_id") // 访问ID
+  loginName     String? @map("login_name") @db.VarChar(50) // 登录账号
+  ipaddr        String? @map("ipaddr") @db.VarChar(128) // 登录IP地址
+  loginLocation String? @map("login_location") @db.VarChar(255) // 登录地点
+  browser       String? @map("browser") @db.VarChar(50) // 浏览器类型
+  os            String? @map("os") @db.VarChar(50) // 操作系统
+  status        Int     @default(1) @map("status") @db.TinyInt // 登录状态（1成功 0失败）
+  msg           String? @map("msg") @db.VarChar(255) // 提示消息
+  loginTime     Int?    @map("login_time") // 访问时间
+  userId        Int?    @map("user_id") // 用户ID
+
+  @@index([infoId, loginName, ipaddr, status, loginTime])
+  @@map("sys_login_log")
+}
+
+// 字典类型表
+model sysDictType {
+  dictId     Int     @id @default(autoincrement()) @map("dict_id") // 字典主键
+  dictName   String  @default("") @map("dict_name") @db.VarChar(100) // 字典名称
+  dictType   String  @unique @default("") @map("dict_type") @db.VarChar(100) // 字典类型
+  status     Int     @default(1) @db.TinyInt // 状态（0停用 1正常）
+  remark     String? @map("remark") @db.VarChar(500) // 备注
+  createdId  Int?    @map("created_id") // 创建者ID
+  createdBy  String  @default("") @map("created_by") @db.VarChar(64) // 创建者
+  createdAt  Int?    @map("created_at") // 创建时间
+  updatedId  Int?    @map("updated_id") // 更新者ID
+  updatedBy  String  @default("") @map("updated_by") @db.VarChar(64) // 更新者
+  updatedAt  Int?    @map("updated_at") // 更新时间
+  deletedAt  Int     @default(0) @map("deleted_at") // 删除时间
+
+  @@index([dictId, dictType])
+  @@map("sys_dict_type")
+}
+
+// 字典数据表
+model sysDictData {
+  dictCode   Int     @id @default(autoincrement()) @map("dict_code") // 字典编码
+  dictSort   Int     @default(0) @map("dict_sort") // 字典排序
+  dictLabel  String  @default("") @map("dict_label") @db.VarChar(100) // 字典标签
+  dictValue  String  @default("") @map("dict_value") @db.VarChar(100) // 字典键值
+  dictType   String  @default("") @map("dict_type") @db.VarChar(100) // 字典类型
+  cssClass   String? @map("css_class") @db.VarChar(100) // 样式属性（其他样式扩展）
+  listClass  String? @map("list_class") @db.VarChar(100) // 表格回显样式
+  isDefault  Int     @default(0) @map("is_default") @db.TinyInt // 是否默认（0否 1是）
+  status     Int     @default(1) @db.TinyInt // 状态（0停用 1正常）
+  remark     String? @map("remark") @db.VarChar(500) // 备注
+  createdId  Int?    @map("created_id") // 创建者ID
+  createdBy  String  @default("") @map("created_by") @db.VarChar(64) // 创建者
+  createdAt  Int?    @map("created_at") // 创建时间
+  updatedId  Int?    @map("updated_id") // 更新者ID
+  updatedBy  String  @default("") @map("updated_by") @db.VarChar(64) // 更新者
+  updatedAt  Int?    @map("updated_at") // 更新时间
+  deletedAt  Int     @default(0) @map("deleted_at") // 删除时间
+
+  @@index([dictCode, dictType])
+  @@map("sys_dict_data")
+}

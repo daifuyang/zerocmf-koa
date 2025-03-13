@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "cross-env NODE_ENV=development npx nodemon",
-    "build": "webpack --config webpack.config.js",
+    "build": "tsc && tsc-alias && node ./scripts/deploy.js",
     "migrate": "prisma migrate dev",
     "deploy": "prisma generate && prisma migrate deploy"
   },
@@ -19,6 +19,7 @@
   "license": "MIT",
   "dependencies": {
     "@prisma/client": "latest",
+    "@types/ua-parser-js": "^0.7.39",
     "bcrypt": "^5.1.1",
     "casbin": "^5.36.0",
     "casbin-prisma-adapter": "^1.7.0",
@@ -35,6 +36,7 @@
     "lodash": "^4.17.21",
     "sanitize-html": "^2.14.0",
     "swagger-jsdoc": "^6.2.8",
+    "ua-parser-js": "^2.0.2",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
@@ -53,6 +55,7 @@
     "terser-webpack-plugin": "^5.3.11",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.11",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.2",
     "webpack": "^5.97.1",
