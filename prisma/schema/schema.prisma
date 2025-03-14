@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["prismaSchemaFolder"]
 }
 
@@ -183,22 +183,22 @@ model sysMediaCategory {
 
 // 部门表
 model sysDept {
-  deptId     Int     @id @default(autoincrement()) @map("dept_id") // 部门ID
-  parentId   Int     @default(0) @map("parent_id") // 父部门ID
-  ancestors  String? @map("ancestors") @db.VarChar(255) // 祖级列表
-  deptName   String  @map("dept_name") @db.VarChar(50) // 部门名称
-  sortOrder  Int     @default(1) @map("sort_order") @db.TinyInt // 显示顺序
-  leader     String? @map("leader") @db.VarChar(20) // 负责人
-  phone      String? @map("phone") @db.VarChar(11) // 联系电话
-  email      String? @map("email") @db.VarChar(50) // 邮箱
-  status     Int     @default(1) @db.TinyInt // 部门状态（0停用 1正常）
-  createdId  Int?    @map("created_id") // 创建者ID
-  createdBy  String  @default("") @map("created_by") @db.VarChar(64) // 创建者
-  createdAt  Int?    @map("created_at") // 创建时间
-  updatedId  Int?    @map("updated_id") // 更新者ID
-  updatedBy  String  @default("") @map("updated_by") @db.VarChar(64) // 更新者
-  updatedAt  Int?    @map("updated_at") // 更新时间
-  deletedAt  Int     @default(0) @map("deleted_at") // 删除时间
+  deptId    Int     @id @default(autoincrement()) @map("dept_id") // 部门ID
+  parentId  Int     @default(0) @map("parent_id") // 父部门ID
+  ancestors String? @map("ancestors") @db.VarChar(255) // 祖级列表
+  deptName  String  @map("dept_name") @db.VarChar(50) // 部门名称
+  sortOrder Int     @default(1) @map("sort_order") @db.TinyInt // 显示顺序
+  leader    String? @map("leader") @db.VarChar(20) // 负责人
+  phone     String? @map("phone") @db.VarChar(11) // 联系电话
+  email     String? @map("email") @db.VarChar(50) // 邮箱
+  status    Int     @default(1) @db.TinyInt // 部门状态（0停用 1正常）
+  createdId Int?    @map("created_id") // 创建者ID
+  createdBy String  @default("") @map("created_by") @db.VarChar(64) // 创建者
+  createdAt Int?    @map("created_at") // 创建时间
+  updatedId Int?    @map("updated_id") // 更新者ID
+  updatedBy String  @default("") @map("updated_by") @db.VarChar(64) // 更新者
+  updatedAt Int?    @map("updated_at") // 更新时间
+  deletedAt Int     @default(0) @map("deleted_at") // 删除时间
 
   @@index([deptId, parentId, deptName])
   @@map("sys_dept")
@@ -215,19 +215,19 @@ model sysUserDept {
 
 // 岗位表
 model sysPost {
-  postId     Int     @id @default(autoincrement()) @map("post_id") // 岗位ID
-  postCode   String  @map("post_code") @db.VarChar(64) // 岗位编码
-  postName   String  @map("post_name") @db.VarChar(50) // 岗位名称
-  sortOrder  Int     @default(1) @map("sort_order") @db.TinyInt // 显示顺序
-  status     Int     @default(1) @db.TinyInt // 岗位状态（0停用 1正常）
-  remark     String  @default("") @map("remark") @db.VarChar(500) // 备注
-  createdId  Int?    @map("created_id") // 创建者ID
-  createdBy  String  @default("") @map("created_by") @db.VarChar(64) // 创建者
-  createdAt  Int?    @map("created_at") // 创建时间
-  updatedId  Int?    @map("updated_id") // 更新者ID
-  updatedBy  String  @default("") @map("updated_by") @db.VarChar(64) // 更新者
-  updatedAt  Int?    @map("updated_at") // 更新时间
-  deletedAt  Int     @default(0) @map("deleted_at") // 删除时间
+  postId    Int    @id @default(autoincrement()) @map("post_id") // 岗位ID
+  postCode  String @map("post_code") @db.VarChar(64) // 岗位编码
+  postName  String @map("post_name") @db.VarChar(50) // 岗位名称
+  sortOrder Int    @default(1) @map("sort_order") @db.TinyInt // 显示顺序
+  status    Int    @default(1) @db.TinyInt // 岗位状态（0停用 1正常）
+  remark    String @default("") @map("remark") @db.VarChar(500) // 备注
+  createdId Int?   @map("created_id") // 创建者ID
+  createdBy String @default("") @map("created_by") @db.VarChar(64) // 创建者
+  createdAt Int?   @map("created_at") // 创建时间
+  updatedId Int?   @map("updated_id") // 更新者ID
+  updatedBy String @default("") @map("updated_by") @db.VarChar(64) // 更新者
+  updatedAt Int?   @map("updated_at") // 更新时间
+  deletedAt Int    @default(0) @map("deleted_at") // 删除时间
 
   @@index([postId, postCode, postName])
   @@map("sys_post")
@@ -261,18 +261,18 @@ model sysLoginLog {
 
 // 字典类型表
 model sysDictType {
-  dictId     Int     @id @default(autoincrement()) @map("dict_id") // 字典主键
-  dictName   String  @default("") @map("dict_name") @db.VarChar(100) // 字典名称
-  dictType   String  @unique @default("") @map("dict_type") @db.VarChar(100) // 字典类型
-  status     Int     @default(1) @db.TinyInt // 状态（0停用 1正常）
-  remark     String? @map("remark") @db.VarChar(500) // 备注
-  createdId  Int?    @map("created_id") // 创建者ID
-  createdBy  String  @default("") @map("created_by") @db.VarChar(64) // 创建者
-  createdAt  Int?    @map("created_at") // 创建时间
-  updatedId  Int?    @map("updated_id") // 更新者ID
-  updatedBy  String  @default("") @map("updated_by") @db.VarChar(64) // 更新者
-  updatedAt  Int?    @map("updated_at") // 更新时间
-  deletedAt  Int     @default(0) @map("deleted_at") // 删除时间
+  dictId    Int     @id @default(autoincrement()) @map("dict_id") // 字典主键
+  dictName  String  @default("") @map("dict_name") @db.VarChar(100) // 字典名称
+  dictType  String  @unique @default("") @map("dict_type") @db.VarChar(100) // 字典类型
+  status    Int     @default(1) @db.TinyInt // 状态（0停用 1正常）
+  remark    String? @map("remark") @db.VarChar(500) // 备注
+  createdId Int?    @map("created_id") // 创建者ID
+  createdBy String  @default("") @map("created_by") @db.VarChar(64) // 创建者
+  createdAt Int?    @map("created_at") // 创建时间
+  updatedId Int?    @map("updated_id") // 更新者ID
+  updatedBy String  @default("") @map("updated_by") @db.VarChar(64) // 更新者
+  updatedAt Int?    @map("updated_at") // 更新时间
+  deletedAt Int     @default(0) @map("deleted_at") // 删除时间
 
   @@index([dictId, dictType])
   @@map("sys_dict_type")
@@ -280,24 +280,48 @@ model sysDictType {
 
 // 字典数据表
 model sysDictData {
-  dictCode   Int     @id @default(autoincrement()) @map("dict_code") // 字典编码
-  dictSort   Int     @default(0) @map("dict_sort") // 字典排序
-  dictLabel  String  @default("") @map("dict_label") @db.VarChar(100) // 字典标签
-  dictValue  String  @default("") @map("dict_value") @db.VarChar(100) // 字典键值
-  dictType   String  @default("") @map("dict_type") @db.VarChar(100) // 字典类型
-  cssClass   String? @map("css_class") @db.VarChar(100) // 样式属性（其他样式扩展）
-  listClass  String? @map("list_class") @db.VarChar(100) // 表格回显样式
-  isDefault  Int     @default(0) @map("is_default") @db.TinyInt // 是否默认（0否 1是）
-  status     Int     @default(1) @db.TinyInt // 状态（0停用 1正常）
-  remark     String? @map("remark") @db.VarChar(500) // 备注
-  createdId  Int?    @map("created_id") // 创建者ID
-  createdBy  String  @default("") @map("created_by") @db.VarChar(64) // 创建者
-  createdAt  Int?    @map("created_at") // 创建时间
-  updatedId  Int?    @map("updated_id") // 更新者ID
-  updatedBy  String  @default("") @map("updated_by") @db.VarChar(64) // 更新者
-  updatedAt  Int?    @map("updated_at") // 更新时间
-  deletedAt  Int     @default(0) @map("deleted_at") // 删除时间
+  dictCode  Int     @id @default(autoincrement()) @map("dict_code") // 字典编码
+  dictSort  Int     @default(0) @map("dict_sort") // 字典排序
+  dictLabel String  @default("") @map("dict_label") @db.VarChar(100) // 字典标签
+  dictValue String  @default("") @map("dict_value") @db.VarChar(100) // 字典键值
+  dictType  String  @default("") @map("dict_type") @db.VarChar(100) // 字典类型
+  cssClass  String? @map("css_class") @db.VarChar(100) // 样式属性（其他样式扩展）
+  listClass String? @map("list_class") @db.VarChar(100) // 表格回显样式
+  isDefault Int     @default(0) @map("is_default") @db.TinyInt // 是否默认（0否 1是）
+  status    Int     @default(1) @db.TinyInt // 状态（0停用 1正常）
+  remark    String? @map("remark") @db.VarChar(500) // 备注
+  createdId Int?    @map("created_id") // 创建者ID
+  createdBy String  @default("") @map("created_by") @db.VarChar(64) // 创建者
+  createdAt Int?    @map("created_at") // 创建时间
+  updatedId Int?    @map("updated_id") // 更新者ID
+  updatedBy String  @default("") @map("updated_by") @db.VarChar(64) // 更新者
+  updatedAt Int?    @map("updated_at") // 更新时间
+  deletedAt Int     @default(0) @map("deleted_at") // 删除时间
 
   @@index([dictCode, dictType])
   @@map("sys_dict_data")
+}
+
+// 操作日志表
+model sysOperationLog {
+  operId        Int     @id @default(autoincrement()) @map("oper_id") // 日志主键
+  title         String? @map("title") @db.VarChar(50) // 模块标题
+  businessType  Int     @default(0) @map("business_type") // 业务类型（0其它 1新增 2修改 3删除）
+  method        String? @map("method") @db.VarChar(100) // 方法名称
+  requestMethod String? @map("request_method") @db.VarChar(10) // 请求方式
+  operatorType  Int     @default(0) @map("operator_type") // 操作类别（0其它 1后台用户 2手机端用户）
+  operName      String? @map("oper_name") @db.VarChar(50) // 操作人员
+  deptName      String? @map("dept_name") @db.VarChar(50) // 部门名称
+  operUrl       String? @map("oper_url") @db.VarChar(255) // 请求URL
+  operIp        String? @map("oper_ip") @db.VarChar(128) // 主机地址
+  operLocation  String? @map("oper_location") @db.VarChar(255) // 操作地点
+  operParam     String? @map("oper_param") @db.Text // 请求参数
+  jsonResult    String? @map("json_result") @db.Text // 返回参数
+  status        Int     @default(1) @map("status") @db.TinyInt // 操作状态（0异常 1正常）
+  errorMsg      String? @map("error_msg") @db.Text // 错误消息
+  operAt        Int?    @map("oper_time") // 操作时间
+  userId        Int?    @map("user_id") // 用户ID
+
+  @@index([operId])
+  @@map("sys_operation_log")
 }

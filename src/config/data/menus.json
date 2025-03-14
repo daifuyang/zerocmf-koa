@@ -14,25 +14,61 @@
                         "menuName": "管理员列表",
                         "path": "/user/admin/list",
                         "visible": 0,
-                        "menuType": 1
+                        "menuType": 1,
+                        "apis": [
+                            {
+                                "method": "get",
+                                "path": "/api/v1/admin/users"
+                            }
+                        ]
+                    },
+                    {
+                        "perms": "user:admin:detail",
+                        "menuName": "管理员详情",
+                        "visible": 0,
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "get",
+                                "path": "/api/v1/admin/users/:userId"
+                            }
+                        ]
                     },
                     {
                         "perms": "user:admin:add",
                         "menuName": "添加管理员",
                         "visible": 0,
-                        "menuType": 2
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "post",
+                                "path": "/api/v1/admin/users"
+                            }
+                        ]
                     },
                     {
                         "perms": "user:admin:edit",
                         "menuName": "编辑管理员",
                         "visible": 0,
-                        "menuType": 2
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "put",
+                                "path": "/api/v1/admin/users/:userId"
+                            }
+                        ]
                     },
                     {
                         "perms": "user:admin:delete",
                         "menuName": "删除管理员",
                         "visible": 0,
-                        "menuType": 2
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "delete",
+                                "path": "/api/v1/admin/users/:userId"
+                            }
+                        ]
                     }
                 ]
             },
@@ -46,25 +82,61 @@
                         "menuName": "角色列表",
                         "path": "/user/role/list",
                         "visible": 0,
-                        "menuType": 1
+                        "menuType": 1,
+                        "apis": [
+                            {
+                                "method": "get",
+                                "path": "/api/v1/admin/roles"
+                            }
+                        ]
                     },
                     {
                         "perms": "user:role:add",
                         "menuName": "添加角色",
                         "visible": 0,
-                        "menuType": 2
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "post",
+                                "path": "/api/v1/admin/roles"
+                            }
+                        ]
+                    },
+                    {
+                        "perms": "user:role:detail",
+                        "menuName": "角色详情",
+                        "visible": 0,
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "get",
+                                "path": "/api/v1/admin/roles/:roleId"
+                            }
+                        ]
                     },
                     {
                         "perms": "user:role:edit",
                         "menuName": "编辑角色",
                         "visible": 0,
-                        "menuType": 2
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "put",
+                                "path": "/api/v1/admin/roles/:roleId"
+                            }
+                        ]
                     },
                     {
                         "perms": "user:role:delete",
                         "menuName": "删除角色",
                         "visible": 0,
-                        "menuType": 2
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "delete",
+                                "path": "/api/v1/admin/roles/:roleId"
+                            }
+                        ]
                     }
                 ]
             }
@@ -85,25 +157,61 @@
                         "menuName": "菜单列表",
                         "path": "/system/menu/list",
                         "visible": 0,
-                        "menuType": 1
+                        "menuType": 1,
+                        "apis": [
+                            {
+                                "method": "get",
+                                "path": "/api/v1/admin/menus"
+                            }
+                        ]
                     },
                     {
                         "perms": "system:menu:add",
                         "menuName": "添加菜单",
                         "visible": 0,
-                        "menuType": 2
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "post",
+                                "path": "/api/v1/admin/menus"
+                            }
+                        ]
+                    },
+                    {
+                        "perms": "system:menu:detail",
+                        "menuName": "菜单详情",
+                        "visible": 0,
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "get",
+                                "path": "/api/v1/admin/menus/:menuId"
+                            }
+                        ]
                     },
                     {
                         "perms": "system:menu:edit",
                         "menuName": "编辑菜单",
                         "visible": 0,
-                        "menuType": 2
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "put",
+                                "path": "/api/v1/admin/menus/:menuId"
+                            }
+                        ]
                     },
                     {
                         "perms": "system:menu:delete",
                         "menuName": "删除菜单",
                         "visible": 0,
-                        "menuType": 2
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "delete",
+                                "path": "/api/v1/admin/menus/:menuId"
+                            }
+                        ]
                     }
                 ]
             },
@@ -117,20 +225,62 @@
                         "menuName": "媒体列表",
                         "path": "/system/media/list",
                         "visible": 0,
-                        "menuType": 1
+                        "menuType": 1,
+                        "apis": [
+                            {
+                                "method": "get",
+                                "path": "/api/v1/admin/medias"
+                            }
+                        ]
+                    },
+                    {
+                        "perms": "system:media:tree",
+                        "menuName": "媒体分类列表",
+                        "visible": 0,
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "get",
+                                "path": "/api/v1/admin/medias/tree"
+                            }
+                        ]
                     },
                     {
                         "perms": "system:media:upload",
                         "menuName": "上传",
                         "visible": 0,
-                        "menuType": 2
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "post",
+                                "path": "/api/v1/admin/medias"
+                            }
+                        ]
                     }
                 ]
             },
             {
                 "perms": "system:upload",
                 "menuName": "上传设置",
-                "path": "/system/upload"
+                "path": "/system/upload",
+                "apis": [
+                    {
+                        "method": "get",
+                        "path": "/api/v1/admin/uploads"
+                    }
+                ]
+            },
+            {
+                "perms": "system:upload:save",
+                "menuName": "保存上传",
+                "visible": 0,
+                "menuType": 2,
+                "apis": [
+                    {
+                        "method": "post",
+                        "path": "/api/v1/admin/uploads"
+                    }
+                ]
             },
             {
                 "perms": "system:dept",
@@ -142,25 +292,61 @@
                         "menuName": "部门列表",
                         "path": "/system/dept/list",
                         "visible": 0,
-                        "menuType": 1
+                        "menuType": 1,
+                        "apis": [
+                            {
+                                "method": "get",
+                                "path": "api/v1/admin/depts/tree"
+                            }
+                        ]
                     },
                     {
                         "perms": "system:dept:add",
                         "menuName": "添加部门",
                         "visible": 0,
-                        "menuType": 2
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "post",
+                                "path": "/api/v1/admin/depts"
+                            }
+                        ]
+                    },
+                    {
+                        "perms": "system:dept:detail",
+                        "menuName": "部门详情",
+                        "visible": 0,
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "get",
+                                "path": "/api/v1/admin/depts/:deptId"
+                            }
+                        ]
                     },
                     {
                         "perms": "system:dept:edit",
                         "menuName": "编辑部门",
                         "visible": 0,
-                        "menuType": 2
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "put",
+                                "path": "/api/v1/admin/depts/:deptId"
+                            }
+                        ]
                     },
                     {
                         "perms": "system:dept:delete",
                         "menuName": "删除部门",
                         "visible": 0,
-                        "menuType": 2
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "delete",
+                                "path": "/api/v1/admin/depts/:deptId"
+                            }
+                        ]
                     }
                 ]
             },
@@ -174,25 +360,61 @@
                         "menuName": "岗位列表",
                         "path": "/system/post/list",
                         "visible": 0,
-                        "menuType": 1
+                        "menuType": 1,
+                        "apis": [
+                            {
+                                "method": "get",
+                                "path": "/api/v1/admin/posts"
+                            }
+                        ]
                     },
                     {
                         "perms": "system:post:add",
                         "menuName": "添加岗位",
                         "visible": 0,
-                        "menuType": 2
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "post",
+                                "path": "/api/v1/admin/posts"
+                            }
+                        ]
+                    },
+                    {
+                        "perms": "system:post:detail",
+                        "menuName": "岗位详情",
+                        "visible": 0,
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "get",
+                                "path": "/api/v1/admin/posts/:postId"
+                            }
+                        ]
                     },
                     {
                         "perms": "system:post:edit",
                         "menuName": "编辑岗位",
                         "visible": 0,
-                        "menuType": 2
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "put",
+                                "path": "/api/v1/admin/posts/:postId"
+                            }
+                        ]
                     },
                     {
                         "perms": "system:post:delete",
                         "menuName": "删除岗位",
                         "visible": 0,
-                        "menuType": 2
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "delete",
+                                "path": "/api/v1/admin/posts/:postId"
+                            }
+                        ]
                     }
                 ]
             },
@@ -206,50 +428,134 @@
                         "menuName": "字典列表",
                         "path": "/system/dict/list",
                         "visible": 0,
-                        "menuType": 1
+                        "menuType": 1,
+                        "apis": [
+                            {
+                                "method": "get",
+                                "path": "/api/v1/admin/dict/types"
+                            }
+                        ]
                     },
                     {
                         "perms": "system:dict:add",
                         "menuName": "添加字典",
                         "visible": 0,
-                        "menuType": 2
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "post",
+                                "path": "/api/v1/admin/dict/types"
+                            }
+                        ]
+                    },
+                    {
+                        "perms": "system:dict:detail",
+                        "menuName": "字典详情",
+                        "visible": 0,
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "get",
+                                "path": "/api/v1/admin/dict/types/:id"
+                            }
+                        ]
                     },
                     {
                         "perms": "system:dict:edit",
                         "menuName": "编辑字典",
                         "visible": 0,
-                        "menuType": 2
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "put",
+                                "path": "/api/v1/admin/dict/types/:id"
+                            }
+                        ]
                     },
                     {
                         "perms": "system:dict:delete",
                         "menuName": "删除字典",
                         "visible": 0,
-                        "menuType": 2
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "delete",
+                                "path": "/api/v1/admin/dict/types/:id"
+                            }
+                        ]
                     },
                     {
                         "perms": "system:dict:data/:id",
                         "menuName": "字典数据",
                         "path": "/system/dict/data/:id",
                         "visible": 0,
-                        "menuType": 1
+                        "menuType": 1,
+                        "apis": [
+                            {
+                                "method": "get",
+                                "path": "/api/v1/admin/dict/data/:id"
+                            }
+                        ]
                     },
                     {
                         "perms": "system:dict:data:add",
                         "menuName": "添加字典数据",
                         "visible": 0,
-                        "menuType": 2
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "post",
+                                "path": "/api/v1/admin/dict/data"
+                            }
+                        ]
+                    },
+                    {
+                        "perms": "system:dict:data:detail",
+                        "menuName": "字典数据详情",
+                        "visible": 0,
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "get",
+                                "path": "/api/v1/admin/dict/data/:id"
+                            }
+                        ]
                     },
                     {
                         "perms": "system:dict:data:edit",
                         "menuName": "编辑字典数据",
                         "visible": 0,
-                        "menuType": 2
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "put",
+                                "path": "/api/v1/admin/dict/data/:id"
+                            }
+                        ]
                     },
                     {
                         "perms": "system:dict:data:delete",
                         "menuName": "删除字典数据",
                         "visible": 0,
-                        "menuType": 2
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "delete",
+                                "path": "/api/v1/admin/dict/data/:id"
+                            }
+                        ]
+                    },
+                    {
+                        "perms": "system:dict:data:batchDelete",
+                        "menuName": "批量删除字典数据",
+                        "visible": 0,
+                        "menuType": 2,
+                        "apis": [
+                            {
+                                "method": "post",
+                                "path": "/api/v1/admin/dict/data/batchDelete"
+                            }
+                        ]
                     }
                 ]
             },
@@ -268,13 +574,57 @@
                                 "menuName": "日志列表",
                                 "path": "/system/log/login/list",
                                 "visible": 0,
-                                "menuType": 1
+                                "menuType": 1,
+                                "apis": [
+                                    {
+                                        "method": "get",
+                                        "path": "/api/v1/admin/login-logs"
+                                    }
+                                ]
                             },
                             {
                                 "perms": "system:log:login:delete",
                                 "menuName": "删除登录日志",
                                 "visible": 0,
-                                "menuType": 2
+                                "menuType": 2,
+                                "apis": [
+                                    {
+                                        "method": "delete",
+                                        "path": "/api/v1/admin/logs/login"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "perms": "system:log:operate",
+                        "menuName": "操作日志",
+                        "path": "/system/log/operate",
+                        "children": [
+                            {
+                                "perms": "system:log:operate:list",
+                                "menuName": "日志列表",
+                                "path": "/system/log/operate/list",
+                                "visible": 0,
+                                "menuType": 1,
+                                "apis": [
+                                    {
+                                        "method": "get",
+                                        "path": "/api/v1/admin/operation-logs"
+                                    }
+                                ]
+                            },
+                            {
+                                "perms": "system:log:operate:delete",
+                                "menuName": "删除日志",
+                                "visible": 0,
+                                "menuType": 2,
+                                "apis": [
+                                    {
+                                        "method": "delete",
+                                        "path": "/api/v1/admin/logs/operate"
+                                    }
+                                ]
                             }
                         ]
                     }

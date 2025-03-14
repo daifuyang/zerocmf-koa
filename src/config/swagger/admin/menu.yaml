@@ -6,6 +6,20 @@ paths:
       operationId: getMenus
       security:
         - BearerAuth: []
+      parameters:
+        - name: menuName
+          in: query
+          required: false
+          description: 菜单名称（支持模糊查询）
+          schema:
+            type: string
+        - name: status
+          in: query
+          required: false
+          description: 菜单状态（0停用 1正常）
+          schema:
+            type: integer
+            enum: [0, 1]
       tags:
         - menus
       responses:

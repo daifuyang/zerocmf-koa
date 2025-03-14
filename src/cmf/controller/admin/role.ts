@@ -131,6 +131,7 @@ async function saveRole(ctx: Context, roleId: number | null) {
         createdAt: now(),
         updatedAt: now()
       });
+      roleId = role.roleId;
       msg = '新增成功！';
     } else {
       role = await updateRole(roleId, {

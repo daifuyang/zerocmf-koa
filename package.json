@@ -11,7 +11,6 @@
     "start": "node index.js",
     "dev": "cross-env NODE_ENV=development npx nodemon",
     "build": "tsc && tsc-alias && node ./scripts/deploy.js",
-    "migrate": "prisma migrate dev",
     "deploy": "prisma generate && prisma migrate deploy"
   },
   "keywords": [],

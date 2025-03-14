@@ -63,8 +63,8 @@ paths:
                             "description": "超级管理员",
                             "sort": 0,
                             "status": 1,
-                            "createdAt": "0",
-                            "updatedAt": "0"
+                            "createdAt": "1723613053",
+                            "updatedAt": "1723613053"
                           },
                           {
                             "roleId": 2,
@@ -72,8 +72,8 @@ paths:
                             "description": "普通管理员",
                             "sort": 0,
                             "status": 1,
-                            "createdAt": "0",
-                            "updatedAt": "0"
+                            "createdAt": "1723613053",
+                            "updatedAt": "1723613053"
                           }
                         ]
                     }
@@ -146,6 +146,7 @@ paths:
                       "roleId": 1,
                       "name": "管理员",
                       "description": "负责管理系统的管理员角色",
+                      "menuIds": [1, 2, 3],
                       "sort": 1,
                       "status": 1,
                       "createdAt": "12345678910",
@@ -189,6 +190,7 @@ paths:
                       "roleId": 1,
                       "name": "超级管理员",
                       "description": "超级管理员",
+                      "menuIds": [1, 2, 3],
                       "sort": 1,
                       "status": 1,
                       "createdAt": "1725349743",
@@ -260,25 +262,28 @@ components:
         - type: object
           properties:
             data:
-              oneOf:
-                - type: object
-                  properties:
-                    pagination:
-                      $ref: "#/components/schemas/Pagination"
-                    data:
-                      type: array
-                      description: 角色列表
-                      items:
-                        $ref: "#/components/schemas/Role"
-                  required:
-                    - pagination
-                    - roles
-                - type: array
-                  description: 角色列表，不包含分页信息
+              type: object
+              properties:
+                page:
+                  type: integer
+                  description: 当前页码
+                  example: 1
+                pageSize:
+                  type: integer
+                  description: 每页数量
+                  example: 10
+                total:
+                  type: integer
+                  description: 总记录数
+                  example: 2
+                data:
+                  type: array
+                  description: 角色列表
                   items:
                     $ref: "#/components/schemas/Role"
     RoleResp:
       allOf:
+        - $ref: "#/components/schemas/Response"
         - type: object
           properties:
             data:
@@ -309,8 +314,15 @@ components:
         createdAt:
           type: string
           description: 创建时间
-          example: "0" # 假设为时间戳或特定格式的时间字符串
+          example: "1723613053"
         updatedAt:
           type: string
           description: 更新时间
-          example: "0" # 假设为时间戳或特定格式的时间字符串
+          example: "1723613053"
+        menuIds:
+          type: array
+          description: 菜单ID列表
+          items:
+            type: integer
+            description: 菜单ID
+            example: 1

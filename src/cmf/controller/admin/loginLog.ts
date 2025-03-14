@@ -21,7 +21,7 @@ export const getLoginLogList = async (ctx: Context) => {
     pageSize
   );
 
-  ctx.body = response.success("获取登录日志列表成功", result);
+  ctx.body = response.success("获取成功！", result);
 };
 
 /**
@@ -32,7 +32,7 @@ export const getLoginLogDetail = async (ctx: Context) => {
   const { id } = ctx.params;
   
   if (!id) {
-    ctx.body = response.error("日志ID不能为空");
+    ctx.body = response.error("日志ID不能为空！");
     return;
   }
 
@@ -40,11 +40,11 @@ export const getLoginLogDetail = async (ctx: Context) => {
   const loginLog = await getLoginLogById(infoId);
 
   if (!loginLog) {
-    ctx.body = response.error("登录日志不存在");
+    ctx.body = response.error("登录日志不存在！");
     return;
   }
 
-  ctx.body = response.success("获取登录日志详情成功", loginLog);
+  ctx.body = response.success("获取成功！", loginLog);
 };
 
 /**

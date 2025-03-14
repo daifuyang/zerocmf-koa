@@ -1,4 +1,4 @@
-import { createMenu, getMenuByName, updateMenu } from "../models/menu";
+import { createMenu, getMenuByName, getMenuByQuery, updateMenu } from "../models/menu";
 import { now } from "@/lib/date";
 import { sysApi, sysMenu, sysMenuApi } from "@prisma/client";
 import { createApi, getApiByMethodAndPath, updateApi } from "../models/api";
@@ -21,7 +21,9 @@ async function parseMenuItems(menuItems: MenuItem[], parentId: number = 0) {
     // 打印菜单的名称和路径
     let menuType = item.menuType || 0;
     menuType = Number(menuType);
-    const menu = await getMenuByName(item.menuName);
+    const menu = await getMenuByQuery({
+      perms: item.perms,
+    });
     let menuModel: sysMenu;
     if (menu?.menuId) {
       menuModel = await updateMenu(menu.menuId, {
@@ -36,7 +38,6 @@ async function parseMenuItems(menuItems: MenuItem[], parentId: number = 0) {
         updatedBy: "admin",
         visible: item?.visible == 0 ? 0 : 1,
         status: item?.status == 0 ? 0 : 1,
-        createdAt: now(),
         updatedAt: now()
       });
     } else {
@@ -54,6 +55,7 @@ async function parseMenuItems(menuItems: MenuItem[], parentId: number = 0) {
         createdBy: "admin",
         updatedId: 1,
         updatedBy: "admin",
+        createdAt: now(),
         updatedAt: now()
       });
     }

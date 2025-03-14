@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import redis from "@/lib/redis";
 import { serializeData } from "@/lib/util";
-import { Prisma } from "@prisma/client";
+import { Prisma, sysMenu } from "@prisma/client";
 
 const menuIdKey = "menu:id:";
 
@@ -14,7 +14,7 @@ export const getMenus = async (where: Prisma.sysMenuWhereInput = {}, tx = prisma
 };
 
 // 根据id获取单个菜单
-export const getMenuById = async (id: number, tx = prisma) => {
+export const getMenuById = async (id: number, tx = prisma): Promise<sysMenu> => {
   const key = `${menuIdKey}${id}`
   const cache = await redis.get(key);
   if (cache) {
@@ -39,6 +39,14 @@ export const getMenuByName = async (menuName: string, tx = prisma) => {
     where: {
       menuName
     }
+  });
+  return menu;
+};
+
+// 根据条件获取单个菜单
+export const getMenuByQuery = async (where: Prisma.sysMenuWhereInput, tx = prisma) => {
+  const menu = await tx.sysMenu.findFirst({
+    where
   });
   return menu;
 };

@@ -15,6 +15,7 @@ import {
   cleanLoginLog,
   exportLoginLog
 } from "../controller/admin/loginLog";
+
 import {
   getUsersController,
   getUserController,
@@ -23,7 +24,7 @@ import {
   deleteUserController
 } from "../controller/admin/user";
 import {
-  getMenusController,
+  getMenuListController,
   getMenuController,
   addMenuController,
   updateMenuController,
@@ -34,6 +35,7 @@ import { getApisController } from "../controller/admin/api";
 
 import { adminPrefix } from "../constants/router";
 import apiAccess from "../middlewares/apiAccess";
+import { operationLog } from "../middlewares/operationLog";
 
 import { getOptionController, setOptionController } from "../controller/admin/options";
 import {
@@ -82,8 +84,15 @@ import {
   deleteDictDataBatchController
 } from "../controller/admin/dictData";
 
+import {
+  batchDeleteOperationLogController,
+  deleteOperationLogController,
+  getOperationLogController,
+  getOperationLogListController
+} from "../controller/admin/operationLog";
+
 const adminRouter = new Router({ prefix: adminPrefix });
-adminRouter.use(auth, apiAccess);
+adminRouter.use(auth, apiAccess, operationLog);
 adminRouter.get("/", home);
 
 // 角色管理路由
@@ -101,7 +110,7 @@ adminRouter.put("/users/:userId", updateUserController);
 adminRouter.delete("/users/:userId", deleteUserController);
 
 // 菜单管理
-adminRouter.get("/menus", getMenusController);
+adminRouter.get("/menus", getMenuListController);
 adminRouter.get("/menus/:menuId", getMenuController);
 adminRouter.post("/menus", addMenuController);
 adminRouter.put("/menus/:menuId", updateMenuController);
@@ -150,6 +159,13 @@ adminRouter.get("/login-logs/:id", getLoginLogDetail);
 adminRouter.delete("/login-logs", removeLoginLog);
 adminRouter.delete("/login-logs/clean", cleanLoginLog);
 adminRouter.get("/login-logs/export", exportLoginLog);
+
+// 操作日志管理
+adminRouter.get("/operation-logs", getOperationLogListController);
+adminRouter.get("/operation-logs/:id", getOperationLogController);
+adminRouter.get("/operation-logs/export", getOperationLogController);
+adminRouter.delete("/operation-logs", deleteOperationLogController);
+adminRouter.delete("/operation-logs/clean", batchDeleteOperationLogController);
 
 // 字典类型管理
 adminRouter.get("/dict/types", getDictTypeListController);

@@ -2,7 +2,7 @@
 
 import { getEnforcer } from "@/casbin";
 import { getApiByMethodAndPath } from "../models/api";
-import { getMenuApiByQuery } from "../models/menuApi";
+import { getMenuApiListByQuery } from "../models/menuApi";
 
 export default async function apiAccess(ctx: any, next: any) {
   // 获取当前用户id
@@ -26,7 +26,7 @@ export default async function apiAccess(ctx: any, next: any) {
   const api = await getApiByMethodAndPath(method, pathname);
   if (api) {
     // 根据apiId获取权限信息
-    const menuApis = await getMenuApiByQuery({ apiId: api.id });
+    const menuApis = await getMenuApiListByQuery({ apiId: api.id });
     let menuIds: string[] = [];
     for (const api of menuApis) {
       menuIds.push(api.menuId.toString());

@@ -1,10 +1,11 @@
 import { getEnforcer } from "@/casbin";
 import response from "@/lib/response";
 import { getMenuById, getMenus, createMenu, updateMenu, deleteMenu } from "../../models/menu";
-import { sysMenu, sysMenuApi } from "@prisma/client";
+import { Prisma, sysMenu, sysMenuApi } from "@prisma/client";
 import { Context } from "koa";
 import prisma from "@/lib/prisma";
 import { createMenuApis, deleteMenuApiByQuery, getMenuApiList } from "../../models/menuApi";
+import { formatFields } from "@/lib/date";
 
 type Menu = sysMenu & {
   children?: Menu[]; // For tree structure
@@ -40,22 +41,41 @@ function arrayToTree(menuList: sysMenu[]): Menu[] {
 }
 
 // 获取菜单列表
-export const getMenusController = async (ctx: Context) => {
+export const getMenuListController = async (ctx: Context) => {
   // 获取当前用户id
   const { userId } = ctx.state.user;
   const admin = ctx.state.admin;
-  
+  const { menuName, status } = ctx.query;
+
+  // 构建查询条件
+  let where: Prisma.sysMenuWhereInput = {};
+
+  if (menuName) {
+    where.menuName = {
+      contains: menuName as string
+    };
+  }
+
+  if (status !== undefined) {
+    where.status = Number(status);
+  }
+
   const e = await getEnforcer();
   let menus: sysMenu[] = [];
-  if ( admin === true ) {
-    menus = await getMenus();
+  if (admin === true) {
+    menus = await getMenus(where);
   } else {
     const permissions = await e.getPermissionsForUser(`${userId}`);
     const ids = permissions.map((permission) => Number(permission[1]));
-    menus = await getMenus({
-      menuId: { in: ids }
-    });
+    where.menuId = { in: ids };
+    menus = await getMenus(where);
   }
+
+  formatFields(menus, [
+    { fromField: "createdAt", toField: "createdTime" },
+    { fromField: "updatedAt", toField: "updatedTime" }
+  ]);
+
   const treeMenus = arrayToTree(menus);
   ctx.body = response.success("获取成功！", treeMenus);
 };
@@ -80,9 +100,13 @@ export const getMenuController = async (ctx: Context) => {
   }
 
   const apis = await getMenuApiList({ menuId: numberMenuId });
-  menu.apis = apis.map((api) => api.apiId);
 
-  ctx.body = response.success("获取成功！", menu);
+  const newMeus = {
+    ...menu,
+    apis: apis.map((api) => api.apiId)
+  };
+
+  ctx.body = response.success("获取成功！", newMeus);
   return;
 };
 

@@ -1,14 +1,14 @@
 import prisma from "@/lib/prisma";
 import redis from "@/lib/redis";
 import { serializeData } from "@/lib/util";
-import { Prisma } from "@prisma/client";
+import { Prisma, sysMenuApi } from "@prisma/client";
 
 const menuIapiIdKey = "menuApi:menuId_apiId:";
 
 // 获取列表
-export async function getMenuApiList(query: Prisma.sysMenuApiWhereInput = {}, tx = prisma) {
+export async function getMenuApiList(where: Prisma.sysMenuApiWhereInput = {}, tx = prisma): Promise<sysMenuApi[]> {
   const menuApiList = await tx.sysMenuApi.findMany({
-    where: query
+    where
   });
   return menuApiList;
 }
@@ -37,9 +37,17 @@ export async function getMenuApiByMenuIdAndApiId(menuId: number, apiId: number, 
   return menuApi;
 }
 
-// 根据条件删除
-export async function getMenuApiByQuery(query: Prisma.sysMenuApiWhereInput, tx = prisma) {
+// 根据条件获取列表
+export async function getMenuApiListByQuery(query: Prisma.sysMenuApiWhereInput, tx = prisma) {
   const menuApi = await tx.sysMenuApi.findMany({
+    where: query
+  });
+  return menuApi;
+}
+
+// 根据条件获取一条
+export async function getMenuApiByQuery(query: Prisma.sysMenuApiWhereInput, tx = prisma) {
+  const menuApi = await tx.sysMenuApi.findFirst({
     where: query
   });
   return menuApi;
