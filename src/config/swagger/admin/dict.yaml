@@ -1,0 +1,522 @@
+paths:
+  /api/v1/admin/dict/types:
+    get:
+      summary: 获取字典类型列表
+      operationId: getDictTypeList
+      security:
+        - BearerAuth: []
+      tags:
+        - dicts
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: 1
+          description: 当前页码
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+          example: 10
+          description: 每页条数
+        - name: dictName
+          in: query
+          schema:
+            type: string
+          example: "性别"
+          description: 字典名称
+        - name: dictType
+          in: query
+          schema:
+            type: string
+          example: "sys_gender"
+          description: 字典类型
+      responses:
+        200:
+          description: 字典类型分页列表
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DictTypeListResp"
+
+    post:
+      summary: 创建字典类型
+      operationId: createDictType
+      security:
+        - BearerAuth: []
+      tags:
+        - dicts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DictTypeCreate"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DictDataResp"
+
+  /api/v1/admin/dict/types/{dictId}:
+    get:
+      summary: 获取字典类型详情
+      operationId: getDictType
+      security:
+        - BearerAuth: []
+      tags:
+        - dicts
+      parameters:
+        - name: dictId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DictDataResp"
+
+    put:
+      summary: 更新字典类型
+      operationId: updateDictType
+      security:
+        - BearerAuth: []
+      tags:
+        - dicts
+      parameters:
+        - name: dictId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DictTypeUpdate"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DictDataResp"
+
+    delete:
+      summary: 删除字典类型
+      operationId: deleteDictType
+      security:
+        - BearerAuth: []
+      tags:
+        - dicts
+      parameters:
+        - name: dictId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DictDataResp"
+
+  /api/v1/admin/dict/data:
+    get:
+      summary: 获取字典数据列表
+      operationId: getDictDataList
+      security:
+        - BearerAuth: []
+      tags:
+        - dicts-data
+      parameters:
+        - name: current
+          in: query
+          schema:
+            type: integer
+          example: 1
+          description: 当前页码
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+          example: 10
+          description: 每页条数
+        - name: dictType
+          in: query
+          schema:
+            type: string
+          example: "sys_gender"
+          description: 字典类型
+        - name: dictLabel
+          in: query
+          schema:
+            type: string
+          example: "男"
+          description: 字典标签
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DictDataListResp"
+
+    delete:
+      summary: 批量删除字典数据
+      operationId: deleteDictDataBatch
+      security:
+        - BearerAuth: []
+      tags:
+        - dicts-data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - dictCodes
+              properties:
+                dictCodes:
+                  type: array
+                  items:
+                    type: integer
+                  description: 字典数据编码列表
+                  example: [1, 2, 3]
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+
+    post:
+      summary: 创建字典数据
+      operationId: createDictData
+      security:
+        - BearerAuth: []
+      tags:
+        - dicts-data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DictDataCreate"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DictDataResp"
+
+  /api/v1/admin/dict/data/{dictCode}:
+    get:
+      summary: 获取字典数据详情
+      operationId: getDictData
+      security:
+        - BearerAuth: []
+      tags:
+        - dicts-data
+      parameters:
+        - name: dictCode
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: 字典数据编码
+    put:
+      summary: 更新字典数据
+      operationId: updateDictData
+      security:
+        - BearerAuth: []
+      tags:
+        - dicts-data
+      parameters:
+        - name: dictCode
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DictDataUpdate"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DictDataResp"
+
+    delete:
+      summary: 删除字典数据
+      operationId: deleteDictData
+      security:
+        - BearerAuth: []
+      tags:
+        - dicts-data
+      parameters:
+        - name: dictCode
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DictDataResp"
+
+  /api/v1/admin/dict/data/batchDelete:
+    post:
+      summary: 批量删除字典数据
+      operationId: batchDeleteDictData
+      security:
+        - BearerAuth: []
+      tags:
+        - dicts-data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - dictCodes
+              properties:
+                dictCodes:
+                  type: array
+                  items:
+                    type: integer
+                  description: 字典数据编码列表
+                  example: [1, 2, 3]
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+  
+components:
+  schemas:
+    DictType:
+      type: object
+      properties:
+        dictId:
+          type: integer
+        dictName:
+          type: string
+        dictType:
+          type: string
+        status:
+          type: string
+          example: "0"
+        remark:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    DictData:
+      type: object
+      properties:
+        dictCode:
+          type: integer
+        dictLabel:
+          type: string
+        dictValue:
+          type: string
+        dictType:
+          type: string
+        dictSort:
+          type: integer
+        cssClass:
+          type: string
+        listClass:
+          type: string
+        isDefault:
+          type: string
+          example: "0"
+        status:
+          type: string
+          example: "0"
+        remark:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    DictTypeCreate:
+      type: object
+      required:
+        - dictName
+        - dictType
+      properties:
+        dictName:
+          type: string
+        dictType:
+          type: string
+
+    DictTypeUpdate:
+      type: object
+      required:
+        - dictName
+        - dictType
+      properties:
+        dictName:
+          type: string
+        dictType:
+          type: string
+
+    DictDataCreate:
+      type: object
+      required:
+        - dictSort
+        - dictLabel
+        - dictValue
+        - dictType
+      properties:
+        dictSort:
+          type: integer
+        dictLabel:
+          type: string
+        dictValue:
+          type: string
+        dictType:
+          type: string
+        cssClass:
+          type: string
+        listClass:
+          type: string
+        isDefault:
+          type: string
+        status:
+          type: string
+        remark:
+          type: string
+
+    DictDataUpdate:
+      type: object
+      required:
+        - dictSort
+        - dictLabel
+        - dictValue
+        - dictType
+      properties:
+        dictSort:
+          type: integer
+        dictLabel:
+          type: string
+        dictValue:
+          type: string
+        dictType:
+          type: string
+        cssClass:
+          type: string
+        listClass:
+          type: string
+        isDefault:
+          type: string
+        status:
+          type: string
+        remark:
+          type: string
+
+    DictTypeListResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              allOf:
+                - $ref: "#/components/schemas/Pagination"
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: "#/components/schemas/DictType"
+              example:
+                page: 1
+                pageSize: 10
+                total: 2
+                data:
+                  - dictId: 1
+                    dictName: "性别"
+                    dictType: "sys_gender"
+                    status: "0"
+                    remark: "性别字典"
+
+    DictDataListResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              allOf:
+                - $ref: "#/components/schemas/Pagination"
+                - type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: "#/components/schemas/DictData"
+              example:
+                page: 1
+                pageSize: 10
+                total: 3
+                data:
+                  - dictCode: 1
+                    dictLabel: "男"
+                    dictValue: "1"
+                    dictType: "sys_gender"
+                    dictSort: 1
+                    status: "0"
+
+    DictTypeResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/DictType"
+          example:
+            code: 200
+            message: "success"
+            data:
+              dictId: 1
+              dictName: "性别"
+              dictType: "sys_gender"
+              status: "0"
+              remark: "性别字典"
+
+    DictDataResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/DictData"
+          example:
+            code: 200
+            message: "success"
+            data:
+              dictCode: 1
+              dictLabel: "男"
+              dictValue: "1"
+              dictType: "sys_gender"
+              dictSort: 1
+              status: "0"

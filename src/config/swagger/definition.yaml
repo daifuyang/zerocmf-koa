@@ -69,6 +69,10 @@ tags:
     description: 岗位管理
   - name: login-logs
     description: 登录日志管理
+  - name: dicts
+    description: 字典管理
+  - name: dicts-data
+    description: 字典数据
 servers:
   - url: /
     description: Local server
