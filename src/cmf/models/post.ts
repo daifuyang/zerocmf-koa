@@ -9,12 +9,22 @@ const postIdKey = "post:id:";
 // 获取岗位列表
 export const getPostList = async (
   where: Prisma.sysPostWhereInput = {},
+  page: number = 1,
+  pageSize: number = 10,
   tx = prisma
 ) => {
   const args: {
+    skip?: number;
+    take?: number;
     where?: Prisma.sysPostWhereInput;
     orderBy?: Prisma.sysPostOrderByWithRelationInput;
-  } = {};
+  } = 
+    pageSize === 0
+      ? {}
+      : {
+          skip: (page - 1) * pageSize,
+          take: pageSize
+        };
 
   args.where = {
     ...where,
@@ -89,7 +99,7 @@ export const getPostCount = async (where: Prisma.sysPostWhereInput = {}, tx = pr
 };
 
 // 创建岗位
-export const createPost = async (data: any, tx = prisma) => {
+export const createPost = async (data, tx = prisma) => {
   const post = await tx.sysPost.create({
     data
   });

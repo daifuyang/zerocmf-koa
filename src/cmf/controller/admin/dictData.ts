@@ -8,7 +8,7 @@ import {
   deleteDictData,
   getDictDataCount,
   deleteDictDataBatch
-} from "@/cmf/models/dict";
+} from "@/cmf/models/dictData";
 import { now } from "@/lib/date";
 
 // 获取字典数据列表
@@ -32,18 +32,31 @@ export const getDictDataListController = async (ctx: Context) => {
     }
 
     const total = await getDictDataCount(where);
-    const data = await getDictDataList(
-      where,
-      parseInt(current as string),
-      parseInt(pageSize as string)
-    );
+    
+    // 处理分页逻辑
+    const parsedPageSize = String(pageSize) === "0" ? 0 : parseInt(pageSize as string);
+    const data = parsedPageSize === 0 
+      ? await getDictDataList(where) 
+      : await getDictDataList(
+          where,
+          parseInt(current as string),
+          parsedPageSize
+        );
 
-    ctx.body = response.success("获取成功", {
-      total,
-      current: parseInt(current as string),
-      pageSize: parseInt(pageSize as string),
-      data
-    });
+    // 根据是否分页返回不同格式的数据
+    let result;
+    if (parsedPageSize === 0) {
+      result = data;
+    } else {
+      result = {
+        total,
+        current: parseInt(current as string),
+        pageSize: parsedPageSize,
+        data
+      };
+    }
+
+    ctx.body = response.success("获取成功", result);
   } catch (err) {
     ctx.body = response.error("获取失败");
   }

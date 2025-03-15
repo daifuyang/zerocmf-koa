@@ -9,6 +9,20 @@ paths:
       tags:
         - posts
       parameters:
+        - name: current
+          in: query
+          description: 当前页码
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          description: 每页条数
+          required: false
+          schema:
+            type: integer
+            default: 10
         - name: postCode
           in: query
           description: 岗位编码
@@ -59,21 +73,26 @@ paths:
                   "code": 1,
                   "msg": "获取成功！",
                   "data":
-                    [
-                      {
-                        "postId": 1,
-                        "postCode": "CEO",
-                        "postName": "董事长",
-                        "sortOrder": 1,
-                        "status": 1,
-                        "remark": "公司最高领导职务",
-                        "createdId": 1,
-                        "createdBy": "admin",
-                        "createdAt": "1723613053",
-                        "updatedAt": "1723613053",
-                        "deletedAt": "0"
-                      }
-                    ]
+                    {
+                      "page": 1,
+                      "pageSize": 10,
+                      "total": 1,
+                      "data": [
+                        {
+                          "postId": 1,
+                          "postCode": "CEO",
+                          "postName": "董事长",
+                          "sortOrder": 1,
+                          "status": 1,
+                          "remark": "公司最高领导职务",
+                          "createdId": 1,
+                          "createdBy": "admin",
+                          "createdAt": "1723613053",
+                          "updatedAt": "1723613053",
+                          "deletedAt": "0"
+                        }
+                      ]
+                    }
                 }
     post:
       summary: 添加岗位
@@ -262,7 +281,7 @@ components:
         - postCode
         - postName
     
-    PostInfo:
+    Post:
       type: object
       properties:
         postId:
@@ -310,7 +329,10 @@ components:
           type: string
           description: 删除时间，0表示未删除
           example: "0"
-    
+      required:
+        - postCode
+        - postName
+
     PostResp:
       type: object
       properties:
@@ -323,7 +345,9 @@ components:
           description: 响应消息
           example: "获取成功！"
         data:
-          $ref: "#/components/schemas/PostInfo"
+          $ref: "#/components/schemas/Post"
+      required:
+        - data
     
     PostListResp:
       type: object
@@ -337,6 +361,23 @@ components:
           description: 响应消息
           example: "获取成功！"
         data:
-          type: array
-          items:
-            $ref: "#/components/schemas/PostInfo"
+          type: object
+          properties:
+            page:
+              type: integer
+              description: 当前页码
+              example: 1
+            pageSize:
+              type: integer
+              description: 每页显示的数据条数
+              example: 10
+            total:
+              type: integer
+              description: 总数据条数
+              example: 1
+            data:
+              type: array
+              items:
+                $ref: "#/components/schemas/Post"
+      required:
+        - data

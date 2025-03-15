@@ -298,7 +298,8 @@ model sysDictData {
   updatedAt Int?    @map("updated_at") // 更新时间
   deletedAt Int     @default(0) @map("deleted_at") // 删除时间
 
-  @@index([dictCode, dictType])
+  @@index([dictType])
+  @@unique([dictValue, dictType])
   @@map("sys_dict_data")
 }
 

@@ -92,7 +92,7 @@ paths:
           required: true
           description: 配置项名称
           schema:
-            type: integer
+            type: string
       requestBody:
         required: true
         content:

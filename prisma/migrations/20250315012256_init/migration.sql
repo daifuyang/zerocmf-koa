@@ -286,6 +286,120 @@ CREATE TABLE `sys_user_dept` (
     UNIQUE INDEX `sys_user_dept_user_id_dept_id_key`(`user_id`, `dept_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
+CREATE TABLE `sys_post` (
+    `post_id` INTEGER NOT NULL AUTO_INCREMENT,
+    `post_code` VARCHAR(64) NOT NULL,
+    `post_name` VARCHAR(50) NOT NULL,
+    `sort_order` TINYINT NOT NULL DEFAULT 1,
+    `status` TINYINT NOT NULL DEFAULT 1,
+    `remark` VARCHAR(500) NOT NULL DEFAULT '',
+    `created_id` INTEGER NULL,
+    `created_by` VARCHAR(64) NOT NULL DEFAULT '',
+    `created_at` INTEGER NULL,
+    `updated_id` INTEGER NULL,
+    `updated_by` VARCHAR(64) NOT NULL DEFAULT '',
+    `updated_at` INTEGER NULL,
+    `deleted_at` INTEGER NOT NULL DEFAULT 0,
+
+    INDEX `sys_post_post_id_post_code_post_name_idx`(`post_id`, `post_code`, `post_name`),
+    PRIMARY KEY (`post_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `sys_user_post` (
+    `user_id` INTEGER NOT NULL,
+    `post_id` INTEGER NOT NULL,
+
+    UNIQUE INDEX `sys_user_post_user_id_post_id_key`(`user_id`, `post_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `sys_login_log` (
+    `info_id` INTEGER NOT NULL AUTO_INCREMENT,
+    `login_name` VARCHAR(50) NULL,
+    `ipaddr` VARCHAR(128) NULL,
+    `login_location` VARCHAR(255) NULL,
+    `browser` VARCHAR(50) NULL,
+    `os` VARCHAR(50) NULL,
+    `status` TINYINT NOT NULL DEFAULT 1,
+    `msg` VARCHAR(255) NULL,
+    `login_time` INTEGER NULL,
+    `user_id` INTEGER NULL,
+
+    INDEX `sys_login_log_info_id_login_name_ipaddr_status_login_time_idx`(`info_id`, `login_name`, `ipaddr`, `status`, `login_time`),
+    PRIMARY KEY (`info_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `sys_dict_type` (
+    `dict_id` INTEGER NOT NULL AUTO_INCREMENT,
+    `dict_name` VARCHAR(100) NOT NULL DEFAULT '',
+    `dict_type` VARCHAR(100) NOT NULL DEFAULT '',
+    `status` TINYINT NOT NULL DEFAULT 1,
+    `remark` VARCHAR(500) NULL,
+    `created_id` INTEGER NULL,
+    `created_by` VARCHAR(64) NOT NULL DEFAULT '',
+    `created_at` INTEGER NULL,
+    `updated_id` INTEGER NULL,
+    `updated_by` VARCHAR(64) NOT NULL DEFAULT '',
+    `updated_at` INTEGER NULL,
+    `deleted_at` INTEGER NOT NULL DEFAULT 0,
+
+    UNIQUE INDEX `sys_dict_type_dict_type_key`(`dict_type`),
+    INDEX `sys_dict_type_dict_id_dict_type_idx`(`dict_id`, `dict_type`),
+    PRIMARY KEY (`dict_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `sys_dict_data` (
+    `dict_code` INTEGER NOT NULL AUTO_INCREMENT,
+    `dict_sort` INTEGER NOT NULL DEFAULT 0,
+    `dict_label` VARCHAR(100) NOT NULL DEFAULT '',
+    `dict_value` VARCHAR(100) NOT NULL DEFAULT '',
+    `dict_type` VARCHAR(100) NOT NULL DEFAULT '',
+    `css_class` VARCHAR(100) NULL,
+    `list_class` VARCHAR(100) NULL,
+    `is_default` TINYINT NOT NULL DEFAULT 0,
+    `status` TINYINT NOT NULL DEFAULT 1,
+    `remark` VARCHAR(500) NULL,
+    `created_id` INTEGER NULL,
+    `created_by` VARCHAR(64) NOT NULL DEFAULT '',
+    `created_at` INTEGER NULL,
+    `updated_id` INTEGER NULL,
+    `updated_by` VARCHAR(64) NOT NULL DEFAULT '',
+    `updated_at` INTEGER NULL,
+    `deleted_at` INTEGER NOT NULL DEFAULT 0,
+
+    INDEX `sys_dict_data_dict_type_idx`(`dict_type`),
+    UNIQUE INDEX `sys_dict_data_dict_value_dict_type_key`(`dict_value`, `dict_type`),
+    PRIMARY KEY (`dict_code`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `sys_operation_log` (
+    `oper_id` INTEGER NOT NULL AUTO_INCREMENT,
+    `title` VARCHAR(50) NULL,
+    `business_type` INTEGER NOT NULL DEFAULT 0,
+    `method` VARCHAR(100) NULL,
+    `request_method` VARCHAR(10) NULL,
+    `operator_type` INTEGER NOT NULL DEFAULT 0,
+    `oper_name` VARCHAR(50) NULL,
+    `dept_name` VARCHAR(50) NULL,
+    `oper_url` VARCHAR(255) NULL,
+    `oper_ip` VARCHAR(128) NULL,
+    `oper_location` VARCHAR(255) NULL,
+    `oper_param` TEXT NULL,
+    `json_result` TEXT NULL,
+    `status` TINYINT NOT NULL DEFAULT 1,
+    `error_msg` TEXT NULL,
+    `oper_time` INTEGER NULL,
+    `user_id` INTEGER NULL,
+
+    INDEX `sys_operation_log_oper_id_idx`(`oper_id`),
+    PRIMARY KEY (`oper_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- AddForeignKey
 ALTER TABLE `cms_article_category_post` ADD CONSTRAINT `cms_article_category_post_article_id_fkey` FOREIGN KEY (`article_id`) REFERENCES `cms_article`(`article`) ON DELETE RESTRICT ON UPDATE CASCADE;
 

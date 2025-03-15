@@ -9,18 +9,28 @@ paths:
       tags:
         - roles
       parameters:
-        - name: "page"
+        - name: "current"
           in: "query"
           required: false
           description: "当前页"
           schema:
             type: "integer"
+            default: 1
         - name: "pageSize"
           in: "query"
           required: false
           description: "每页数量"
           schema:
             type: "integer"
+            default: 10
+        - name: "isAll"
+          in: "query"
+          required: false
+          description: "是否获取全部列表，设置为1时返回所有数据，不进行分页"
+          schema:
+            type: "integer"
+            enum: [0, 1]
+            default: 0
         - name: name
           in: query
           description: 角色名称
@@ -262,23 +272,18 @@ components:
         - type: object
           properties:
             data:
-              type: object
-              properties:
-                page:
-                  type: integer
-                  description: 当前页码
-                  example: 1
-                pageSize:
-                  type: integer
-                  description: 每页数量
-                  example: 10
-                total:
-                  type: integer
-                  description: 总记录数
-                  example: 2
-                data:
-                  type: array
-                  description: 角色列表
+              oneOf:
+                - allOf:
+                    - $ref: "#/components/schemas/Pagination"
+                    - type: object
+                      properties:
+                        data:
+                          type: array
+                          description: 角色列表
+                          items:
+                            $ref: "#/components/schemas/Role"
+                - type: array
+                  description: 角色列表，不包含分页信息
                   items:
                     $ref: "#/components/schemas/Role"
     RoleResp:
@@ -288,6 +293,8 @@ components:
           properties:
             data:
               $ref: "#/components/schemas/Role"
+          required:
+            - data
     Role:
       type: object
       properties:
@@ -326,3 +333,5 @@ components:
             type: integer
             description: 菜单ID
             example: 1
+      required:
+        - roleId  

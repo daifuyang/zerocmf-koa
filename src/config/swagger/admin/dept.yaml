@@ -202,34 +202,35 @@ paths:
                         "status": 1,
                         "createdAt": "1723613053",
                         "updatedAt": "1723613053",
-                        "children": [
-                          {
-                            "deptId": 2,
-                            "deptName": "研发部",
-                            "parentId": 1,
-                            "sortOrder": 1,
-                            "leader": "李四",
-                            "phone": "13900139000",
-                            "email": "lisi@example.com",
-                            "status": 1,
-                            "createdAt": "1723613053",
-                            "updatedAt": "1723613053",
-                            "children": []
-                          },
-                          {
-                            "deptId": 3,
-                            "deptName": "市场部",
-                            "parentId": 1,
-                            "sortOrder": 2,
-                            "leader": "王五",
-                            "phone": "13700137000",
-                            "email": "wangwu@example.com",
-                            "status": 1,
-                            "createdAt": "1723613053",
-                            "updatedAt": "1723613053",
-                            "children": []
-                          }
-                        ]
+                        "children":
+                          [
+                            {
+                              "deptId": 2,
+                              "deptName": "研发部",
+                              "parentId": 1,
+                              "sortOrder": 1,
+                              "leader": "李四",
+                              "phone": "13900139000",
+                              "email": "lisi@example.com",
+                              "status": 1,
+                              "createdAt": "1723613053",
+                              "updatedAt": "1723613053",
+                              "children": []
+                            },
+                            {
+                              "deptId": 3,
+                              "deptName": "市场部",
+                              "parentId": 1,
+                              "sortOrder": 2,
+                              "leader": "王五",
+                              "phone": "13700137000",
+                              "email": "wangwu@example.com",
+                              "status": 1,
+                              "createdAt": "1723613053",
+                              "updatedAt": "1723613053",
+                              "children": []
+                            }
+                          ]
                       }
                     ]
                 }
@@ -348,11 +349,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Response"
-              example:
-                {
-                  "code": 1,
-                  "msg": "删除成功"
-                }
+              example: { "code": 1, "msg": "删除成功" }
 
 components:
   schemas:
@@ -390,8 +387,8 @@ components:
           example: 1
       required:
         - deptName
-    
-    DeptInfo:
+
+    Dept:
       type: object
       properties:
         deptId:
@@ -424,6 +421,7 @@ components:
           example: "zhangsan@example.com"
         status:
           type: integer
+          enum: [0, 1]
           description: 部门状态，0表示禁用，1表示启用
           example: 1
         createdId:
@@ -446,8 +444,10 @@ components:
           type: string
           description: 删除时间，0表示未删除
           example: "0"
-    
-    DeptTreeInfo:
+      required:
+        - deptName
+
+    DeptTree:
       type: object
       properties:
         deptId:
@@ -494,16 +494,18 @@ components:
           type: array
           description: 子部门列表
           items:
-            $ref: "#/components/schemas/DeptTreeInfo"
-    
+            $ref: "#/components/schemas/DeptTree"
+
     DeptResp:
       allOf:
         - $ref: "#/components/schemas/Response"
         - type: object
           properties:
             data:
-              $ref: "#/components/schemas/DeptInfo"
-    
+              $ref: "#/components/schemas/Dept"
+          required:
+            - data
+
     DeptListResp:
       allOf:
         - $ref: "#/components/schemas/Response"
@@ -512,8 +514,9 @@ components:
             data:
               type: array
               items:
-                $ref: "#/components/schemas/DeptInfo"
-    
+                $ref: "#/components/schemas/Dept"
+          required:
+            - data
     DeptTreeResp:
       allOf:
         - $ref: "#/components/schemas/Response"
@@ -522,4 +525,6 @@ components:
             data:
               type: array
               items:
-                $ref: "#/components/schemas/DeptTreeInfo"
+                $ref: "#/components/schemas/DeptTree"
+          required:
+            - data

@@ -7,7 +7,7 @@ import dayjs from 'dayjs';
 // 获取岗位列表
 export const getPostListController = async (ctx: Context) => {
   try {
-    const { postCode, postName, startTime, endTime, status } = ctx.query;
+    const { current = "1", pageSize = "10", postCode, postName, startTime, endTime, status } = ctx.query;
     
     const where: any = {};
     
@@ -37,8 +37,22 @@ export const getPostListController = async (ctx: Context) => {
       where.status = Number(status);
     }
     
-    const posts = await postModel.getPostList(where);
-    return ctx.body = response.success('获取成功', posts);
+    const posts = await postModel.getPostList(where, Number(current), Number(pageSize));
+    
+    let pagination = {};
+    if (pageSize === "0") {
+      pagination = posts;
+    } else {
+      const total = await postModel.getPostCount(where);
+      pagination = {
+        page: Number(current),
+        pageSize: Number(pageSize),
+        total,
+        data: posts
+      };
+    }
+    
+    return ctx.body = response.success('获取成功', pagination);
   } catch (err: any) {
     return ctx.body = response.error(err.message);
   }

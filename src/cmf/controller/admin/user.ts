@@ -43,7 +43,7 @@ export const getUsersController = async (ctx: any) => {
     where.status = Number(status);
   }
 
-  const users = await getUserList(Number(current), Number(pageSize), where);
+  const users = await getUserList(where, Number(current), Number(pageSize));
 
   formatFields(users, [
     { fromField: "loginAt", toField: "loginTime" },

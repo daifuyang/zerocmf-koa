@@ -80,7 +80,7 @@ export const getDeptCount = async (where: Prisma.sysDeptWhereInput = {}, tx = pr
 };
 
 // 创建部门
-export const createDept = async (data: any, tx = prisma) => {
+export const createDept = async (data, tx = prisma) => {
   // 处理祖级列表
   if (data.parentId > 0) {
     const parentDept = await getDeptById(data.parentId, tx);

@@ -41,15 +41,16 @@ export const getUserCount = async (where: Prisma.sysUserWhereInput = {}, tx = pr
 
 // 获取用户列表
 export const getUserList = async (
-  page: number = 1,
-  pageSize: number,
   where: Prisma.sysUserWhereInput = {},
+  page: number = 1,
+  pageSize: number = 10,
   tx = prisma
 ) => {
   const args: {
     skip?: number;
     take?: number;
     where?: Prisma.sysUserWhereInput;
+    orderBy?: Prisma.sysUserOrderByWithRelationInput;
   } =
     pageSize === 0
       ? {}
@@ -60,12 +61,14 @@ export const getUserList = async (
 
   args.where = {
     ...where,
-    deletedAt: 0
+    deletedAt: 0,
   };
 
-  const users = await tx.sysUser.findMany({
-    ...args
-  });
+  args.orderBy = {
+    userId: "desc"
+  };
+
+  const users = await tx.sysUser.findMany(args);
 
   return users;
 };

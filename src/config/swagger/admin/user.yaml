@@ -2,25 +2,35 @@ paths:
   /api/v1/admin/users:
     get:
       summary: 获取管理员用户列表
-      description: 获取管理员用户的分页列表，支持通过登录名、手机号和状态进行筛选。
+      description: 获取管理员用户的列表，支持分页列表或全部列表，并支持通过登录名、手机号和状态进行筛选。
       operationId: getUsers
       security:
         - BearerAuth: []
       tags:
         - admins
       parameters:
-        - name: "page"
+        - name: "current"
           in: "query"
           required: false
           description: "当前页"
           schema:
             type: "integer"
+            default: 1
         - name: "pageSize"
           in: "query"
           required: false
           description: "每页数量"
           schema:
             type: "integer"
+            default: 10
+        - name: "isAll"
+          in: "query"
+          required: false
+          description: "是否获取全部列表，设置为1时返回所有数据，不进行分页"
+          schema:
+            type: "integer"
+            enum: [0, 1]
+            default: 0
         - name: loginName
           in: query
           description: 通过登录名筛选
@@ -46,33 +56,38 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserResp"
+                $ref: "#/components/schemas/UserListResp"
               example:
                 {
                   "code": 1,
                   "msg": "获取成功！",
                   "data":
-                    [
-                      {
-                        "userId": 1,
-                        "loginName": "admin",
-                        "email": null,
-                        "phone": null,
-                        "nickname": "admin",
-                        "realname": null,
-                        "gender": 0,
-                        "birthday": null,
-                        "userType": 1,
-                        "name": null,
-                        "avatar": null,
-                        "loginIp": null,
-                        "loginTime": null,
-                        "status": 1,
-                        "createdAt": "1723613053",
-                        "updatedAt": "1723613053",
-                        "deletedAt": "0"
-                      }
-                    ]
+                    {
+                      "page": 1,
+                      "pageSize": 10,
+                      "total": 1,
+                      "data": [
+                        {
+                          "userId": 1,
+                          "loginName": "admin",
+                          "email": null,
+                          "phone": null,
+                          "nickname": "admin",
+                          "realname": null,
+                          "gender": 0,
+                          "birthday": null,
+                          "userType": 1,
+                          "name": null,
+                          "avatar": null,
+                          "loginIp": null,
+                          "loginTime": null,
+                          "status": 1,
+                          "createdAt": "1723613053",
+                          "updatedAt": "1723613053",
+                          "deletedAt": "0"
+                        }
+                      ]
+                    }
                 }
     post:
       summary: 添加管理员用户
@@ -87,79 +102,20 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - loginName
-                - password
-                - phone
-                - status
-              properties:
-                loginName:
-                  type: string
-                  description: 登录名
-                  example: admin
-                email:
-                  type: string
-                  format: email
-                  description: 邮箱地址
-                  example: example@qq.com
-                phone:
-                  type: string
-                  description: 手机号码
-                  example: 12345678910
-                nickname:
-                  type: string
-                  description: 昵称
-                  example: admin
-                realname:
-                  type: string
-                  description: 真实姓名
-                  example: admin
-                password:
-                  type: string
-                  description: 登录密码
-                  example: 123456
-                gender:
-                  type: integer
-                  description: 性别，1表示男性，0表示女性
-                  enum: [0, 1]
-                  example: 1
-                birthday:
-                  type: integer
-                  format: int64
-                  description: 出生日期（Unix 时间戳）
-                  example: 12345678910
-                userType:
-                  type: integer
-                  description: 用户类型，1 表示管理员
-                  example: 1
-                avatar:
-                  type: string
-                  description: 用户头像URL
-                  nullable: true
-                  example: null
-                status:
-                  type: integer
-                  description: 状态，0表示禁用，1表示启用
-                  enum: [0, 1]
-                  example: 1
+              $ref: "#/components/schemas/UserSaveReq"
             example:
               {
-                "userId": "1",
                 "loginName": "admin",
                 "email": "example@qq.com",
-                "phone": 12345678910,
+                "phone": "12345678910",
                 "nickname": "admin",
                 "realname": "admin",
+                "password": "123456",
                 "gender": 1,
                 "birthday": 12345678910,
                 "userType": 1,
                 "avatar": null,
-                "status": 1,
-                "loginIp": "127.0.0.1",
-                "loginTime": "12345678910",
-                "createdAt": "1723613053",
-                "updatedAt": "1723613053"
+                "status": 1
               }
       responses:
         "200":
@@ -259,66 +215,11 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - loginName
-                - password
-                - phone
-                - status
-              properties:
-                loginName:
-                  type: string
-                  description: 登录名
-                  example: admin
-                email:
-                  type: string
-                  format: email
-                  description: 邮箱地址
-                  example: example@qq.com
-                phone:
-                  type: string
-                  description: 手机号码
-                  example: 12345678910
-                nickname:
-                  type: string
-                  description: 昵称
-                  example: admin
-                realname:
-                  type: string
-                  description: 真实姓名
-                  example: admin
-                password:
-                  type: string
-                  description: 登录密码
-                  example: 123456
-                gender:
-                  type: integer
-                  description: 性别，1表示男性，0表示女性
-                  enum: [0, 1]
-                  example: 1
-                birthday:
-                  type: integer
-                  format: int64
-                  description: 出生日期（Unix 时间戳）
-                  example: 12345678910
-                userType:
-                  type: integer
-                  description: 用户类型，1 表示管理员
-                  example: 1
-                avatar:
-                  type: string
-                  description: 用户头像URL
-                  nullable: true
-                  example: null
-                status:
-                  type: integer
-                  description: 状态，0表示禁用，1表示启用
-                  enum: [0, 1]
-                  example: 1
+              $ref: "#/components/schemas/UserSaveReq"
             example:
               {
                 "loginName": "admin",
-                "email": example@qq.com,
+                "email": "example@qq.com",
                 "phone": "12345678910",
                 "nickname": "admin",
                 "realname": "admin",
@@ -404,3 +305,178 @@ paths:
                       "updatedAt": "1723613053"
                     }
                 }
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        userId:
+          type: integer
+          description: 用户ID
+          example: 1
+        loginName:
+          type: string
+          description: 登录名
+          example: "admin"
+        email:
+          type: string
+          format: email
+          description: 邮箱地址
+          nullable: true
+          example: "example@qq.com"
+        phone:
+          type: string
+          description: 手机号码
+          nullable: true
+          example: "12345678910"
+        nickname:
+          type: string
+          description: 昵称
+          nullable: true
+          example: "admin"
+        realname:
+          type: string
+          description: 真实姓名
+          nullable: true
+          example: "admin"
+        gender:
+          type: integer
+          description: 性别，1表示男性，0表示女性
+          enum: [0, 1]
+          example: 1
+        birthday:
+          type: integer
+          description: 出生日期（Unix 时间戳）
+          nullable: true
+          example: 12345678910
+        userType:
+          type: integer
+          description: 用户类型，1 表示管理员
+          example: 1
+        avatar:
+          type: string
+          description: 用户头像URL
+          nullable: true
+          example: null
+        loginIp:
+          type: string
+          description: 最后登录IP
+          nullable: true
+          example: "127.0.0.1"
+        loginTime:
+          type: string
+          description: 最后登录时间（Unix 时间戳）
+          nullable: true
+          example: "12345678910"
+        status:
+          type: integer
+          description: 状态，0表示禁用，1表示启用
+          enum: [0, 1]
+          example: 1
+        createdAt:
+          type: string
+          description: 创建时间（Unix 时间戳）
+          example: "1723613053"
+        updatedAt:
+          type: string
+          description: 更新时间（Unix 时间戳）
+          example: "1723613053"
+        deletedAt:
+          type: string
+          description: 删除时间（Unix 时间戳），0表示未删除
+          example: "0"
+      required:
+        - userId
+        - loginName
+        - userType
+        - status
+        - createdAt
+        - updatedAt
+
+    UserListResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              oneOf:
+                - allOf:
+                    - $ref: "#/components/schemas/Pagination"
+                    - type: object
+                      properties:
+                        data:
+                          type: array
+                          description: 用户列表
+                          items:
+                            $ref: "#/components/schemas/User"
+                - type: array
+                  description: 用户列表，不包含分页信息
+                  items:
+                    $ref: "#/components/schemas/User"
+
+    UserResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/User"
+          required:
+            - data
+
+    UserSaveReq:
+      type: object
+      required:
+        - loginName
+        - status
+      properties:
+        loginName:
+          type: string
+          description: 登录名
+          example: "admin"
+        email:
+          type: string
+          format: email
+          description: 邮箱地址
+          example: "example@qq.com"
+        phone:
+          type: string
+          description: 手机号码
+          example: "12345678910"
+        nickname:
+          type: string
+          description: 昵称
+          example: "admin"
+        realname:
+          type: string
+          description: 真实姓名
+          example: "admin"
+        password:
+          type: string
+          description: 登录密码
+          example: "123456"
+        gender:
+          type: integer
+          description: 性别，1表示男性，0表示女性
+          enum: [0, 1]
+          example: 1
+        birthday:
+          type: integer
+          format: int64
+          description: 出生日期（Unix 时间戳）
+          example: 12345678910
+        userType:
+          type: integer
+          description: 用户类型，1 表示管理员
+          example: 1
+        avatar:
+          type: string
+          description: 用户头像URL
+          nullable: true
+          example: null
+        status:
+          type: integer
+          description: 状态，0表示禁用，1表示启用
+          enum: [0, 1]
+          example: 1

@@ -19,7 +19,7 @@ paths:
           schema:
             type: integer
           example: 10
-          description: 每页条数
+          description: 每页条数，当值为0时返回所有数据不分页
         - name: dictName
           in: query
           schema:
@@ -328,6 +328,9 @@ components:
           type: string
         updatedAt:
           type: string
+      required:
+        - dictName
+        - dictType
 
     DictData:
       type: object
@@ -441,14 +444,18 @@ components:
         - type: object
           properties:
             data:
-              allOf:
-                - $ref: "#/components/schemas/Pagination"
-                - type: object
-                  properties:
-                    data:
-                      type: array
-                      items:
-                        $ref: "#/components/schemas/DictType"
+              oneOf:
+                - allOf:
+                    - $ref: "#/components/schemas/Pagination"
+                    - type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/DictType"
+                - type: array
+                  items:
+                    $ref: "#/components/schemas/DictType"
               example:
                 page: 1
                 pageSize: 10
@@ -466,14 +473,18 @@ components:
         - type: object
           properties:
             data:
-              allOf:
-                - $ref: "#/components/schemas/Pagination"
-                - type: object
-                  properties:
-                    data:
-                      type: array
-                      items:
-                        $ref: "#/components/schemas/DictData"
+              oneOf:
+                - allOf:
+                    - $ref: "#/components/schemas/Pagination"
+                    - type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/DictData"
+                - type: array
+                  items:
+                    $ref: "#/components/schemas/DictData"
               example:
                 page: 1
                 pageSize: 10
