@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "cross-env NODE_ENV=development npx nodemon",
-    "build": "tsc && tsc-alias && node ./scripts/deploy.js",
+    "build": "npx tsc && node ./scripts/deploy.js",
     "deploy": "prisma generate && prisma migrate deploy"
   },
   "keywords": [],
@@ -54,7 +54,6 @@
     "terser-webpack-plugin": "^5.3.11",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
-    "tsc-alias": "^1.8.11",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.2",
     "webpack": "^5.97.1",

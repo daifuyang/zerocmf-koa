@@ -1,12 +1,9 @@
 import path from "path";
 
 const ROOT_PATH = process.cwd();
-/* 
+
 const APP_PATH =
-  process.env.NODE_ENV === "development" ? path.resolve(ROOT_PATH, "src") : ROOT_PATH; */
-
-const APP_PATH = path.resolve(ROOT_PATH, "src");
-
+  process.env.NODE_ENV === "development" ? path.resolve(ROOT_PATH, "src") : ROOT_PATH;
 // 上传路径
 const PUBLIC_PATH = path.resolve(ROOT_PATH, "public");
 const UPLOAD_DIR = path.resolve(PUBLIC_PATH, "uploads");
