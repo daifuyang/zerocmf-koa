@@ -64,7 +64,7 @@ const PACKAGING_CONFIG = [
     { source: path.join(ROOT_DIR, '.env'), target: path.join(ROOT_DIR, 'dist/.env') },
     { source: path.join(ROOT_DIR, 'prisma'), target: path.join(ROOT_DIR, 'dist/prisma') },
     { source: path.join(ROOT_DIR, 'src/config'), target: path.join(ROOT_DIR, 'dist/src/config') },
-    { source: path.join(ROOT_DIR, 'pm2.config.js'), target: path.join(ROOT_DIR, 'pm2.config.js') }
+    { source: path.join(ROOT_DIR, 'pm2.config.js'), target: path.join(ROOT_DIR, 'dist/pm2.config.js') }
 ].map(item => ({
     source: item.source,
     target: path.relative(ROOT_DIR, item.target) // 将目标路径转换为相对于项目根目录的路径

@@ -29,9 +29,6 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Run deploy script
-        run: node scripts/deploy.js
-
       - name: Compress dist folder
         run: tar -czf dist.tar.gz -C ./dist .
 
