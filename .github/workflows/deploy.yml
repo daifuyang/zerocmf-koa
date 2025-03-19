@@ -1,9 +1,10 @@
-name: Deploy to ECS
+name: Deploy to ZeroCMF-Koa
 
 on:
   push:
-    branches: [main, master]
-  workflow_dispatch:
+    branches:
+      - main
+      - master
 
 jobs:
   build-and-deploy:
@@ -13,10 +14,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "20.x"
+          node-version: 20
 
       # 添加根据APP_ENV生成.env文件的步骤
       - name: Generate .env file
@@ -31,70 +32,26 @@ jobs:
       - name: Run deploy script
         run: node scripts/deploy.js
 
-        # 添加清理目标目录的步骤（在复制前执行）
-      - name: Clean target directory
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.ECS_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            # 判断部署目录是否存在
-            if [ -d "${{ secrets.DEPLOY_PATH }}" ]; then
-              # 进入部署目录
-              cd ${{ secrets.DEPLOY_PATH }}
-              # 保留.env文件，删除其他所有文件和目录
-              find . -mindepth 1 -not -name '.env' -exec rm -rf {} \; 2>/dev/null || true
-              echo "目标目录已清理完成"
-            else
-              echo "部署目录不存在，将创建目录"
-              mkdir -p ${{ secrets.DEPLOY_PATH }}
-            fi
+      - name: Compress dist folder
+        run: tar -czf dist.tar.gz -C ./dist .
 
-      # 添加复制dist到ECS服务器的步骤
-      - name: Copy dist to ECS server
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.ECS_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "dist/*"
-          target: "${{ secrets.DEPLOY_PATH }}"
-          strip_components: 1
+      - name: Upload via API
+        env:
+          DEPLOY_NAME: ${{ secrets.DEPLOY_NAME }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          # Write private key to a temporary file
+          echo "$PRIVATE_KEY" > private_key.pem
 
-      # 添加在服务器上安装依赖和运行迁移的步骤
-      - name: Install dependencies and run migrations
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.ECS_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            # 进入部署目录
-            cd ${{ secrets.DEPLOY_PATH }}
+          # Upload the compressed file using curl
+          curl -X POST http://deploy.zerocmf.com/api/upload \
+            -F "name=$DEPLOY_NAME" \
+            -F "privateKey=@private_key.pem" \
+            -F "file=@dist.tar.gz" \
+            -F "path=$DEPLOY_PATH" \
+            -F "type=node"
             
-            # 安装npm依赖
-            npm i
-            
-            # 运行数据库迁移
-            npx prisma generate && npx prisma migrate deploy
 
-      - name: Start application with PM2
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.ECS_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            # 进入部署目录
-            cd ${{ secrets.DEPLOY_PATH }}
-
-            # 使用PM2检查并启动/重启应用
-            if pm2 list | grep -q 'zerocmf-koa'; then
-              pm2 restart zerocmf-koa
-            else
-              pm2 start npm --name 'zerocmf-koa' -- start
-            fi
-
-            # 显示PM2状态
-            pm2 status
+      - name: Clean up private key file
+        run: rm -f private_key.pem
