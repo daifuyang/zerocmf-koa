@@ -48,7 +48,23 @@ jobs:
             -F "file=@dist.tar.gz" \
             -F "path=$DEPLOY_PATH" \
             -F "type=node"
-            
+
+      - name: Start service via API
+        env:
+          DEPLOY_NAME: ${{ secrets.DEPLOY_NAME }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          # Write private key to a temporary file
+          echo "$PRIVATE_KEY" > private_key.pem
+
+          # Start the service using curl
+          curl --location 'http://deploy.zerocmf.com/api/pm2/manage' \
+            --form 'name="root"' \
+            --form 'privateKey=@private_key.pem' \
+            --form 'action="start"' \
+            --form 'projectName=""' \
+            --form 'scriptPath="${{ env.DEPLOY_PATH }}/pm2.config.js"'
 
       - name: Clean up private key file
         run: rm -f private_key.pem
