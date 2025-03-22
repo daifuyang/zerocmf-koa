@@ -18,7 +18,7 @@ export default async function migrateUser() {
       throw new Error("请在环境变量中配置DEFAULT_ADMIN_PASSWORD");
     } 
 
-    const password = await hashPassword(defaultPassword + salt)
+    const password = await hashPassword(`${defaultPassword}${salt}`);
     const user = await prisma.sysUser.create({
       data: {
         loginName: "admin",
