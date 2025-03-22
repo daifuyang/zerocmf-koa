@@ -11,7 +11,14 @@ export default async function migrateUser() {
   });
   if (!existUser) {
     const salt = generateSalt()
-    const password = await hashPassword("123456" + salt)
+    // 从环境变量获取
+    const defaultPassword = process.env.DEFAULT_ADMIN_PASSWORD
+    
+    if (!defaultPassword) {
+      throw new Error("请在环境变量中配置DEFAULT_ADMIN_PASSWORD");
+    } 
+
+    const password = await hashPassword(defaultPassword + salt)
     const user = await prisma.sysUser.create({
       data: {
         loginName: "admin",
@@ -24,6 +31,11 @@ export default async function migrateUser() {
         updatedAt: now()
       }
     });
+
+    if (!user) {
+      throw new Error("create admin user failed");
+    }
+
     // console.log("create admin user", user);
   }
 }
