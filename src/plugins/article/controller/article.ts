@@ -23,7 +23,7 @@ import { compressHTML } from "@/lib/html";
 import { createArticleTagPost } from "../models/articleTagPost";
 import { createTagService } from "../service/tag";
 import dayjs from "dayjs";
-import { auth } from '@/cmf/middlewares/auth';
+import prisma from "@/lib/prisma";
 
 // 获取文章列表
 export async function getArticleListController(ctx: Context) {

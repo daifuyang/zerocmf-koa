@@ -1,7 +1,7 @@
 import { getEnforcer } from "@/casbin";
 import { formatFields, now } from "@/lib/date";
 import response from "@/lib/response";
-import { generateSalt, hashPassword } from "@/lib/util";
+import { generateSalt, hashPassword } from "@/lib/utils";
 import {
   createUser,
   deleteUser,

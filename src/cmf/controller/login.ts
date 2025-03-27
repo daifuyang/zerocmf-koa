@@ -16,7 +16,7 @@ import {
   jwtSecret,
   jwtSecretExpire
 } from "@/cmf/constants/jwt";
-import { hashPassword } from "@/lib/util";
+import { hashPassword } from "@/lib/utils";
 
 /**
  * 处理用户登录请求，根据提供的登录类型进行身份验证。

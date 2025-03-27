@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import { now } from "@/lib/date";
-import { generateSalt, hashPassword } from "@/lib/util";
+import { generateSalt, hashPassword } from "@/lib/utils";
 
 export default async function migrateUser() {
       // 初始化

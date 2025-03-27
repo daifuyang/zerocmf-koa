@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import redis from "@/lib/redis";
-import { serializeData } from "@/lib/util";
+import { serializeData } from "@/lib/utils";
 import { Prisma, sysMenu } from "@prisma/client";
 
 const menuIdKey = "menu:id:";

@@ -1,6 +1,6 @@
 import redis from "@/lib/redis";
 import prisma from "@/lib/prisma";
-import { serializeData } from "@/lib/util";
+import { serializeData } from "@/lib/utils";
 
 // 根据name获取value
 const optionNameKey = "option:name:";

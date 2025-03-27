@@ -7,6 +7,14 @@ vars:
 resources:
   start_koa:
     component: fc3
+    actions:
+      pre-deploy:
+        - run: rm -rf ./dist
+          path: ./
+        - run: export PATH=/usr/local/versions/node/v20.8.1/bin:$PATH && npm install
+          path: ./
+        - run: export PATH=/usr/local/versions/node/v20.8.1/bin:$PATH && npm run build
+          path: ./
     props:
       region: ${vars.region}
       description: zerocmf-koa
