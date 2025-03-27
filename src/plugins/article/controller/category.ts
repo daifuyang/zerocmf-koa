@@ -9,11 +9,11 @@ import {
 } from "../models/category";
 import response from "@/lib/response";
 import { parseJson, parseQuery } from "@/lib/request";
-import { cmsArticleCategory } from "@prisma/client";
+import { CmsArticleCategory } from "@prisma/client";
 import { now } from "@/lib/date";
 
-type TreeNode = cmsArticleCategory & {
-  children?: cmsArticleCategory[];
+type TreeNode = CmsArticleCategory & {
+  children?: CmsArticleCategory[];
 };
 function dataToTree(data: TreeNode[]): TreeNode[] {
   const map: { [key: number]: TreeNode } = {};
@@ -103,7 +103,7 @@ export async function saveCategory(ctx: Context, articleCategoryId: number | nul
     icon,
     order,
     status
-  } = parseJson(ctx) as cmsArticleCategory;
+  } = parseJson(ctx) as CmsArticleCategory;
 
   if (!name) {
     ctx.body = response.error("分类名称不能为空！");

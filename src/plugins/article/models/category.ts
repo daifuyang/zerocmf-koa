@@ -1,17 +1,17 @@
 import redis from "@/lib/redis";
 import { serializeData } from "@/lib/utils";
 import prisma from "@/lib/prisma";
-import { cmsArticleCategory, Prisma } from "@prisma/client";
+import { CmsArticleCategory, Prisma } from "@prisma/client";
 
-type TreeNode = cmsArticleCategory & {
-  children?: cmsArticleCategory[];
+type TreeNode = CmsArticleCategory & {
+  children?: CmsArticleCategory[];
 };
 
 const categoryIdKey = "articleCategory:articleCategoryId:";
 
 // 获取分类总数
 export async function getArticleCategoryCount(
-  where: Prisma.cmsArticleCategoryWhereInput = {},
+  where: Prisma.CmsArticleCategoryWhereInput = {},
   tx = prisma
 ) {
   // 先获取所有的文章数量
@@ -28,13 +28,13 @@ export async function getArticleCategoryCount(
 export async function getArticleCategoryList(
   page: number,
   pageSize: number,
-  where: Prisma.cmsArticleCategoryWhereInput = {},
+  where: Prisma.CmsArticleCategoryWhereInput = {},
   tx = prisma
 ) {
   let args: {
     skip?: number;
     take?: number;
-    where?: Prisma.cmsArticleCategoryWhereInput;
+    where?: Prisma.CmsArticleCategoryWhereInput;
   } = {};
 
   if (pageSize !== 0) {
@@ -82,7 +82,7 @@ function dataToTree(data: TreeNode[]): TreeNode[] {
 
 // 获取分类树
 export async function getArticleCategoryTree(
-  where: Prisma.cmsArticleCategoryWhereInput = {},
+  where: Prisma.CmsArticleCategoryWhereInput = {},
   tx = prisma
 ) {
   const categories = await getArticleCategoryList(1, 0, where, tx);
@@ -97,7 +97,7 @@ export async function getArticleCategoryTree(
 export async function getArticleCategoryById(articleCategoryId: number, tx = prisma) {
   const key = `${categoryIdKey}${articleCategoryId}`;
   const cache = await redis.get(key);
-  let category: cmsArticleCategory | null = null;
+  let category: CmsArticleCategory | null = null;
   if (cache) {
     category = JSON.parse(cache);
   } else {
@@ -117,7 +117,7 @@ export async function getArticleCategoryById(articleCategoryId: number, tx = pri
 
 // 根据条件获取分类
 export async function getArticleCategory(
-  where: Prisma.cmsArticleCategoryWhereInput = {},
+  where: Prisma.CmsArticleCategoryWhereInput = {},
   tx = prisma
 ) {
   const category = await tx.cmsArticleCategory.findFirst({
@@ -131,7 +131,7 @@ export async function getArticleCategory(
 
 // 创建分类
 export async function createArticleCategory(
-  data: Prisma.cmsArticleCategoryCreateInput,
+  data: Prisma.CmsArticleCategoryCreateInput,
   tx = prisma
 ) {
   const category = await tx.cmsArticleCategory.create({
@@ -143,7 +143,7 @@ export async function createArticleCategory(
 // 更新分类
 export async function updateArticleCategory(
   articleCategoryId: number,
-  data: Prisma.cmsArticleCategoryUpdateInput,
+  data: Prisma.CmsArticleCategoryUpdateInput,
   tx = prisma
 ) {
   const category = await tx.cmsArticleCategory.update({
