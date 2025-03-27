@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import redis from "@/lib/redis";
-import { serializeData } from "@/lib/util";
+import { serializeData } from "@/lib/utils";
 import { Prisma, sysMenuApi } from "@prisma/client";
 
 const menuIapiIdKey = "menuApi:menuId_apiId:";

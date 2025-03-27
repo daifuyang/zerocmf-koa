@@ -1,6 +1,7 @@
 import { cmsArticleTag } from "@prisma/client";
-import { createArticleTagPost, getTagPostCount } from "../models/articleTagPost";
+import { getTagPostCount } from "../models/articleTagPost";
 import { createTag, getTagByQuery, updateTag } from "../models/tag";
+import prisma from "@/lib/prisma";
 
 // 创建tag，如果存在则跳过
 export async function createTagService(tagName, tx = prisma) {

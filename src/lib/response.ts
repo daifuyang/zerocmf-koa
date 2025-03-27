@@ -1,4 +1,4 @@
-import { convertToJson } from "./util";
+import { convertToJson } from "./utils";
 
 export interface JsonResult<T> {
   code: number;

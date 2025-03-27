@@ -7,18 +7,52 @@ const writeFile = promisify(fs.writeFile);
 const readDir = promisify(fs.readdir);
 const stat = promisify(fs.stat);
 
-// Hardcoded paths config based on the known tsconfig.json
+// Read path mappings from tsconfig.json
 const getTsConfigPaths = async () => {
-  // We know from reading the file earlier that the path mapping is "@/*": ["src/*"]
-  return {
-    "@/*": ["src/*"]
-  };
+  try {
+    const tsConfigPath = path.resolve(process.cwd(), 'tsconfig.json');
+    const tsConfigContent = await readFile(tsConfigPath, 'utf8');
+    const tsConfig = JSON.parse(tsConfigContent);
+    
+    // Extract paths from compilerOptions
+    if (tsConfig.compilerOptions && tsConfig.compilerOptions.paths) {
+      return tsConfig.compilerOptions.paths;
+    }
+    
+    // Fallback to default if paths not found
+    console.warn('No path mappings found in tsconfig.json, using default');
+    return {
+      "@/*": ["src/*"]
+    };
+  } catch (error) {
+    console.error('Error reading tsconfig.json:', error.message);
+    // Fallback to default if file can't be read
+    return {
+      "@/*": ["src/*"]
+    };
+  }
 };
 
-// Hardcoded output directory from the known tsconfig.json
+// Read output directory from tsconfig.json
 const getOutputDir = async () => {
-  // We know from reading the file earlier that the outDir is "./dist"
-  return './dist';
+  try {
+    const tsConfigPath = path.resolve(process.cwd(), 'tsconfig.json');
+    const tsConfigContent = await readFile(tsConfigPath, 'utf8');
+    const tsConfig = JSON.parse(tsConfigContent);
+    
+    // Extract outDir from compilerOptions
+    if (tsConfig.compilerOptions && tsConfig.compilerOptions.outDir) {
+      return tsConfig.compilerOptions.outDir;
+    }
+    
+    // Fallback to default if outDir not found
+    console.warn('No outDir found in tsconfig.json, using default');
+    return './dist';
+  } catch (error) {
+    console.error('Error reading tsconfig.json:', error.message);
+    // Fallback to default if file can't be read
+    return './dist';
+  }
 };
 
 // Recursively find all JS files in a directory

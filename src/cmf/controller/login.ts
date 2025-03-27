@@ -16,6 +16,7 @@ import {
   jwtSecret,
   jwtSecretExpire
 } from "@/cmf/constants/jwt";
+import { hashPassword } from "@/lib/utils";
 
 /**
  * 处理用户登录请求，根据提供的登录类型进行身份验证。
@@ -117,10 +118,9 @@ export const Login = async (ctx: Context) => {
   }
 
   if (user?.password) {
-    const pwd = password + user.salt;
-
+    const pwd = `${password}${user.salt}`
     // 验证密码
-    const isPasswordValid = await bcrypt.compare(pwd, user.password);
+    const isPasswordValid = bcrypt.compareSync(pwd, user.password);
     if (!isPasswordValid) {
       // 记录登录失败日志
       await createLoginLog({

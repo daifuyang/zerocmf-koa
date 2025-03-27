@@ -1,7 +1,7 @@
 import { now } from "@/lib/date";
 import prisma from "@/lib/prisma";
 import redis from "@/lib/redis";
-import { serializeData } from "@/lib/util";
+import { serializeData } from "@/lib/utils";
 import { sysUser, Prisma } from "@prisma/client";
 
 const userIdKey = "user:id:";

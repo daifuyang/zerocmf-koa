@@ -1,10 +1,10 @@
 import { now } from "@/lib/date";
-import { createDept, getDeptById } from "../models/dept";
+import { createDept, getDeptById, getDeptByName } from "../models/dept";
 
 export default async function migrateDept() {
   // 检查ID为1的部门是否已存在
-  const existingDept = await getDeptById(1);
-  
+  const existingDept = await getDeptByName("ZeroCMF");
+
   // 如果不存在，则创建ZeroCMF部门
   if (!existingDept) {
     await createDept({
@@ -19,6 +19,5 @@ export default async function migrateDept() {
       createdAt: now(),
       updatedAt: now()
     });
-    console.log("初始化部门数据成功");
   }
 }

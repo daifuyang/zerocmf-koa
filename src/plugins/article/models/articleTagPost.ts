@@ -1,4 +1,4 @@
-// 根据tagId获取文章数量
+import prisma from "@/lib/prisma";// 根据tagId获取文章数量
 export async function getTagPostCount(tagId: number, tx = prisma) {
   const count = tx.cmsArticleTagPost.count({
     where: {
