@@ -1,8 +1,8 @@
 import { koaSwagger } from "koa2-swagger-ui";
-import { SWAGGER_APIS } from "@/constants/path";
+import { SWAGGER_APIS } from "@/constants/path"; //todo 从配置获取
 import Router from "koa-router";
 import swaggerJSDoc from "swagger-jsdoc";
-import { prefix } from "@/cmf/constants/router";
+
 
 const router = new Router();
 const options = {
@@ -19,8 +19,9 @@ const options = {
 
 const swaggerSpec = swaggerJSDoc(options);
 
-const v1 = new Router({ prefix });
+const prefix = "/api";
 
+const v1 = new Router({ prefix });
 v1.get("/swagger.json", (ctx) => {
   ctx.body = swaggerSpec;
 });
@@ -34,7 +35,5 @@ v1.get(
     }
   })
 );
-
 router.use(v1.routes());
-
 export default router;

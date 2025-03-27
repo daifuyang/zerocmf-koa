@@ -2,25 +2,32 @@ import "dotenv/config";
 import Koa from "koa";
 import bodyParser from "koa-body";
 import koaStatic from "koa-static";
-import router, { registerRoutes } from "@/cmf/route";
-import swaggerRouter from "./router/swagger";
+import { registerCmfRoutes } from "@/cmf/router";
+import swaggerRouter from "@/cmf/router/swagger";
 import { install } from "./lib/install";
+import registerRoutes from "./router";
 import registerPlugins from "./plugins";
 import fs from "fs";
 import { PUBLIC_PATH } from "./constants/path";
 import path from "path";
+import { Cmf } from "./typings/index";
 
-const cmf = {
+// 注册核心路由
+const router = registerCmfRoutes();
+
+// 注册应用路由
+registerRoutes(router);
+
+const cmf: Cmf = {
   router,
   migrate: null
 }; // 核心容器
 
 install(cmf);
 registerPlugins(cmf);
-registerRoutes();
 
 if (cmf.migrate) {
-  cmf.migrate().commit();
+  cmf.migrate({ router });
 }
 
 // 检查并创建上传目录

@@ -1,7 +1,7 @@
 import { createApi, getApiByMethodAndPath, updateApi } from "../models/api";
-import { adminPrefix, prefix } from "../constants/router";
-import router from "../route";
-const migrateApi = async () => {
+import { adminPrefix, apiv1 } from "../constants/router";
+import Router from "koa-router";
+const migrateApi = async (router: Router) => {
   const routes = router.stack
     .filter((layer) => layer.methods.length > 0) // 只取有方法的路由
     .filter((layer) => layer.path && layer.path.trim() !== "") // 只取有路径的路由
@@ -15,7 +15,7 @@ const migrateApi = async () => {
       });
     })
     .filter((layer) => layer.method.includes("HEAD") === false)
-    .filter((layer) => layer.path.includes(prefix + adminPrefix + "/"));
+    .filter((layer) => layer.path.includes(apiv1 + adminPrefix + "/"));
 
   for (const route of routes) {
     const method = route.method.toLowerCase();

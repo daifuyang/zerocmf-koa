@@ -1,6 +1,6 @@
 import Router from "koa-router";
+import { apiv1 } from "../constants/router";
 import { auth } from "../middlewares/auth";
-import { home } from "../controller/admin";
 import {
   addRoleController,
   getRolesController,
@@ -91,10 +91,8 @@ import {
   getOperationLogListController
 } from "../controller/admin/operationLog";
 
-const adminRouter = new Router({ prefix: adminPrefix });
+const adminRouter = new Router({ prefix: apiv1 + adminPrefix });
 adminRouter.use(auth, apiAccess, operationLog);
-adminRouter.get("/", home);
-
 // 角色管理路由
 adminRouter.get("/roles", getRolesController);
 adminRouter.get("/roles/:roleId", getRoleController);

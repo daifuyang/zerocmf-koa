@@ -46,9 +46,14 @@ export async function getApiByMethodAndPath(method: string, path: string, tx = p
 
 // 创建单条api
 export async function createApi(data: any, tx = prisma) {
-  return await tx.sysApi.create({
-    data
-  });
+  try {
+    return await tx.sysApi.create({
+      data
+    });
+  } catch (error) {
+    console.log("createApi error", data);
+    console.log(error);
+  }
 }
 
 // 更新单条api

@@ -1,12 +1,13 @@
 import initRouter from "./router/router";
 import articleMenus from "./migrate/menus";
+import { Cmf } from "@/typings";
 
-export default function init(app) {
+export default function init(app: Cmf) {
   const { router, migrate } = app;
   initRouter(router);
   // 已经安装无需迁移
   if (migrate) {
-      migrate().migrateMenu(articleMenus); // 迁移数据
-      // app自己的迁移逻辑
+    migrate({ menus: articleMenus, router }); // 迁移数据
+    // app自己的迁移逻辑
   }
 }

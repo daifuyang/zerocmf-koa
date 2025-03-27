@@ -7,11 +7,11 @@ import migrateDict from "./dict";
 import migrateDept from "./dept";
 import migratePost from "./post";
 export default async function migrate(props: any) {
-  const { menus } = props;
+  const { menus, router } = props;
   migrateUser();
   migrateRole();
   migrateMenu(menus);
-  migrateApi();
+  migrateApi(router);
   migrateOption();
   migrateDict();
   migrateDept();
