@@ -1,12 +1,12 @@
 import prisma from "@/lib/prisma";
 import redis from "@/lib/redis";
 import { serializeData } from "@/lib/utils";
-import { Prisma, sysMenuApi } from "@prisma/client";
+import { Prisma, SysMenuApi } from "@prisma/client";
 
 const menuIapiIdKey = "menuApi:menuId_apiId:";
 
 // 获取列表
-export async function getMenuApiList(where: Prisma.sysMenuApiWhereInput = {}, tx = prisma): Promise<sysMenuApi[]> {
+export async function getMenuApiList(where: Prisma.SysMenuApiWhereInput = {}, tx = prisma): Promise<SysMenuApi[]> {
   const menuApiList = await tx.sysMenuApi.findMany({
     where
   });
@@ -38,7 +38,7 @@ export async function getMenuApiByMenuIdAndApiId(menuId: number, apiId: number, 
 }
 
 // 根据条件获取列表
-export async function getMenuApiListByQuery(query: Prisma.sysMenuApiWhereInput, tx = prisma) {
+export async function getMenuApiListByQuery(query: Prisma.SysMenuApiWhereInput, tx = prisma) {
   const menuApi = await tx.sysMenuApi.findMany({
     where: query
   });
@@ -46,7 +46,7 @@ export async function getMenuApiListByQuery(query: Prisma.sysMenuApiWhereInput, 
 }
 
 // 根据条件获取一条
-export async function getMenuApiByQuery(query: Prisma.sysMenuApiWhereInput, tx = prisma) {
+export async function getMenuApiByQuery(query: Prisma.SysMenuApiWhereInput, tx = prisma) {
   const menuApi = await tx.sysMenuApi.findFirst({
     where: query
   });
@@ -54,7 +54,7 @@ export async function getMenuApiByQuery(query: Prisma.sysMenuApiWhereInput, tx =
 }
 
 // 批量新增
-export async function createMenuApis(data: Prisma.sysMenuApiCreateManyInput[], tx = prisma) {
+export async function createMenuApis(data: Prisma.SysMenuApiCreateManyInput[], tx = prisma) {
   const menuApis = await tx.sysMenuApi.createMany({
     data
   });
@@ -65,7 +65,7 @@ export async function createMenuApis(data: Prisma.sysMenuApiCreateManyInput[], t
 export async function updateMenuApi(
   menuId: number,
   apiId: number,
-  data: Prisma.sysMenuApiUncheckedUpdateInput,
+  data: Prisma.SysMenuApiUncheckedUpdateInput,
   tx = prisma
 ) {
   const menuApi = await tx.sysMenuApi.update({
@@ -94,7 +94,7 @@ export async function deleteMenuApi(menuId: number, apiId: number, tx = prisma) 
 }
 
 // 根据条件删除
-export async function deleteMenuApiByQuery(query: Prisma.sysMenuApiWhereInput, tx = prisma) {
+export async function deleteMenuApiByQuery(query: Prisma.SysMenuApiWhereInput, tx = prisma) {
   const menuApi = await tx.sysMenuApi.deleteMany({
     where: query
   });

@@ -1,12 +1,12 @@
 import prisma from "@/lib/prisma";
 import redis from "@/lib/redis";
 import { serializeData } from "@/lib/utils";
-import { Prisma, sysMenu } from "@prisma/client";
+import { Prisma, SysMenu } from "@prisma/client";
 
 const menuIdKey = "menu:id:";
 
 // 获取全部菜单列表
-export const getMenus = async (where: Prisma.sysMenuWhereInput = {}, tx = prisma) => {
+export const getMenus = async (where: Prisma.SysMenuWhereInput = {}, tx = prisma) => {
   const menuList = await tx.sysMenu.findMany({
     where
   });
@@ -14,7 +14,7 @@ export const getMenus = async (where: Prisma.sysMenuWhereInput = {}, tx = prisma
 };
 
 // 根据id获取单个菜单
-export const getMenuById = async (id: number, tx = prisma): Promise<sysMenu> => {
+export const getMenuById = async (id: number, tx = prisma): Promise<SysMenu> => {
   const key = `${menuIdKey}${id}`
   const cache = await redis.get(key);
   if (cache) {
@@ -44,7 +44,7 @@ export const getMenuByName = async (menuName: string, tx = prisma) => {
 };
 
 // 根据条件获取单个菜单
-export const getMenuByQuery = async (where: Prisma.sysMenuWhereInput, tx = prisma) => {
+export const getMenuByQuery = async (where: Prisma.SysMenuWhereInput, tx = prisma) => {
   const menu = await tx.sysMenu.findFirst({
     where
   });
@@ -52,14 +52,14 @@ export const getMenuByQuery = async (where: Prisma.sysMenuWhereInput, tx = prism
 };
 
 // 创建单个菜单
-export const createMenu = async (menu: Prisma.sysMenuCreateInput, tx = prisma) => {
+export const createMenu = async (menu: Prisma.SysMenuCreateInput, tx = prisma) => {
   return await tx.sysMenu.create({
     data: menu
   });
 };
 
 //更新单个菜单
-export const updateMenu = async (id: number, data: Prisma.sysMenuUpdateInput, tx = prisma) => {
+export const updateMenu = async (id: number, data: Prisma.SysMenuUpdateInput, tx = prisma) => {
   const menu = await tx.sysMenu.update({
     where: {
       menuId: id

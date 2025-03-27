@@ -5,7 +5,6 @@ import koaStatic from "koa-static";
 import { registerCmfRoutes } from "@/cmf/router";
 import swaggerRouter from "@/cmf/router/swagger";
 import { install } from "./lib/install";
-import registerRoutes from "./router";
 import registerPlugins from "./plugins";
 import fs from "fs";
 import { PUBLIC_PATH } from "./constants/path";
@@ -14,10 +13,6 @@ import { Cmf } from "./typings/index";
 
 // 注册核心路由
 const router = registerCmfRoutes();
-
-// 注册应用路由
-registerRoutes(router);
-
 const cmf: Cmf = {
   router,
   migrate: null

@@ -36,7 +36,8 @@
     "sanitize-html": "^2.14.0",
     "swagger-jsdoc": "^6.2.8",
     "ua-parser-js": "^2.0.2",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

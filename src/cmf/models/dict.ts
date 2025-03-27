@@ -7,7 +7,7 @@ const dictTypeKey = "dict:type:";
 
 // 根据条件获取字典列表总数
 export const getDictTypeCount = async (
-  where: Prisma.sysDictTypeWhereInput = {},
+  where: Prisma.SysDictTypeWhereInput = {},
   tx = prisma
 ) => {
   return await tx.sysDictType.count({
@@ -17,7 +17,7 @@ export const getDictTypeCount = async (
 
 // 获取字典类型列表
 export const getDictTypeList = async (
-  where: Prisma.sysDictTypeWhereInput = {},
+  where: Prisma.SysDictTypeWhereInput = {},
   page: number = 1,
   pageSize: number = 10,
   tx = prisma
@@ -66,14 +66,14 @@ export const getDictTypeByType = async (dictType: string, tx = prisma) => {
 };
 
 // 创建字典类型
-export const createDictType = async (data: Prisma.sysDictTypeCreateInput, tx = prisma) => {
+export const createDictType = async (data: Prisma.SysDictTypeCreateInput, tx = prisma) => {
   return await tx.sysDictType.create({
     data
   });
 };
 
 // 更新字典类型
-export const updateDictType = async (dictId: number, data: Prisma.sysDictTypeUpdateInput, tx = prisma) => {
+export const updateDictType = async (dictId: number, data: Prisma.SysDictTypeUpdateInput, tx = prisma) => {
   const dictType = await tx.sysDictType.update({
     where: {
       dictId

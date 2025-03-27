@@ -6,7 +6,7 @@ import { Prisma } from "@prisma/client";
 const apiIdKey = "api:id:";
 
 // 获取所有api
-export async function getApis(where: Prisma.sysApiWhereInput = {}, tx = prisma) {
+export async function getApis(where: Prisma.SysApiWhereInput = {}, tx = prisma) {
   const apis = await tx.sysApi.findMany({
     where
   });

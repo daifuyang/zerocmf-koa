@@ -1,17 +1,17 @@
 import { getEnforcer } from "@/casbin";
 import response from "@/lib/response";
 import { getMenuById, getMenus, createMenu, updateMenu, deleteMenu } from "../../models/menu";
-import { Prisma, sysMenu, sysMenuApi } from "@prisma/client";
+import { Prisma, SysMenu, SysMenuApi } from "@prisma/client";
 import { Context } from "koa";
 import prisma from "@/lib/prisma";
 import { createMenuApis, deleteMenuApiByQuery, getMenuApiList } from "../../models/menuApi";
 import { formatFields } from "@/lib/date";
 
-type Menu = sysMenu & {
+type Menu = SysMenu & {
   children?: Menu[]; // For tree structure
 };
 
-function arrayToTree(menuList: sysMenu[]): Menu[] {
+function arrayToTree(menuList: SysMenu[]): Menu[] {
   const menuMap: { [key: number]: Menu } = {};
   const tree: Menu[] = [];
 
@@ -48,7 +48,7 @@ export const getMenuListController = async (ctx: Context) => {
   const { menuName, status } = ctx.query;
 
   // 构建查询条件
-  let where: Prisma.sysMenuWhereInput = {};
+  let where: Prisma.SysMenuWhereInput = {};
 
   if (menuName) {
     where.menuName = {
@@ -61,7 +61,7 @@ export const getMenuListController = async (ctx: Context) => {
   }
 
   const e = await getEnforcer();
-  let menus: sysMenu[] = [];
+  let menus: SysMenu[] = [];
   if (admin === true) {
     menus = await getMenus(where);
   } else {
@@ -193,7 +193,7 @@ const saveMenu = async (ctx: Context, menuId: number | undefined = undefined) =>
 
         // 如果数据库为空，则全部添加
         if (existApis.length === 0) {
-          const addData: sysMenuApi[] = [];
+          const addData: SysMenuApi[] = [];
           for (const apiId of apis) {
             addData.push({ menuId: menu.menuId, apiId: Number(apiId) });
           }

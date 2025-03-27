@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import response from "@/lib/response";
 import { LoginReq } from "../typings/login";
-import { sysUser } from "@prisma/client";
+import { SysUser } from "@prisma/client";
 import { Context } from "koa";
 import { getUser } from "../models/user";
 import { parseJson } from "@/lib/request";
@@ -70,7 +70,7 @@ export const Login = async (ctx: Context) => {
   }
 
   // 根据登录类型进行身份验证
-  let user: sysUser | null = null;
+  let user: SysUser | null = null;
   switch (loginType) {
     case "email":
       // 邮箱登录逻辑

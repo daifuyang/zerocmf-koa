@@ -6,7 +6,7 @@ import prisma from "@/lib/prisma";
 const dictDataKey = "dict:data:";
 
 // 获取字典数据列表总数
-export const getDictDataCount = async (where: Prisma.sysDictDataWhereInput = {}, tx = prisma) => {
+export const getDictDataCount = async (where: Prisma.SysDictDataWhereInput = {}, tx = prisma) => {
   return await tx.sysDictData.count({
     where
   });
@@ -14,7 +14,7 @@ export const getDictDataCount = async (where: Prisma.sysDictDataWhereInput = {},
 
 // 获取字典数据列表
 export const getDictDataList = async (
-  where: Prisma.sysDictDataWhereInput = {},
+  where: Prisma.SysDictDataWhereInput = {},
   page: number = 1,
   pageSize: number = 10,
   tx = prisma
@@ -74,7 +74,7 @@ export const getDictDataBydictTypeAndValue = async (dictType: string, dictValue:
 };
 
 // 创建字典数据
-export const createDictData = async (data: Prisma.sysDictDataCreateInput, tx = prisma) => {
+export const createDictData = async (data: Prisma.SysDictDataCreateInput, tx = prisma) => {
   return await tx.sysDictData.create({
     data
   });
@@ -83,7 +83,7 @@ export const createDictData = async (data: Prisma.sysDictDataCreateInput, tx = p
 // 更新字典数据
 export const updateDictData = async (
   dictCode: number,
-  data: Prisma.sysDictDataUpdateInput,
+  data: Prisma.SysDictDataUpdateInput,
   tx = prisma
 ) => {
   const dictData = await tx.sysDictData.update({

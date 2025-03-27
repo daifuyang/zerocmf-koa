@@ -8,12 +8,12 @@ const deptIdKey = "dept:id:";
 
 // 获取部门列表
 export const getDeptList = async (
-  where: Prisma.sysDeptWhereInput = {},
+  where: Prisma.SysDeptWhereInput = {},
   tx = prisma
 ) => {
   const args: {
-    where?: Prisma.sysDeptWhereInput;
-    orderBy?: Prisma.sysDeptOrderByWithRelationInput;
+    where?: Prisma.SysDeptWhereInput;
+    orderBy?: Prisma.SysDeptOrderByWithRelationInput;
   } = {};
 
   args.where = {
@@ -70,7 +70,7 @@ export const getDeptByName = async (deptName: string, parentId: number = 0, tx =
 };
 
 // 获取部门总数
-export const getDeptCount = async (where: Prisma.sysDeptWhereInput = {}, tx = prisma) => {
+export const getDeptCount = async (where: Prisma.SysDeptWhereInput = {}, tx = prisma) => {
   return await tx.sysDept.count({
     where: {
       ...where,
@@ -101,7 +101,7 @@ export const createDept = async (data, tx = prisma) => {
 };
 
 // 更新部门
-export const updateDept = async (deptId: number, data: Prisma.sysDeptUpdateInput, tx = prisma) => {
+export const updateDept = async (deptId: number, data: Prisma.SysDeptUpdateInput, tx = prisma) => {
   // 如果更新了父部门，需要更新祖级列表
   if (data.parentId !== undefined) {
     const parentId = data.parentId as number;

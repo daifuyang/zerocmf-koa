@@ -10,11 +10,11 @@ import {
 } from "@/cmf/models/mediaCategory";
 import { parseQuery } from "@/lib/request";
 import { now } from "@/lib/date";
-import { sysMediaCategory } from "@prisma/client";
+import { SysMediaCategory } from "@prisma/client";
 
 // 定义树节点类型
-type TreeNode = sysMediaCategory & {
-  children?: sysMediaCategory[];
+type TreeNode = SysMediaCategory & {
+  children?: SysMediaCategory[];
 };
 
 // 将扁平数据转换为树形结构

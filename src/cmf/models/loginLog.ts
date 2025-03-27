@@ -1,4 +1,4 @@
-import { sysLoginLog } from "@prisma/client";
+import { SysLoginLog } from "@prisma/client";
 import prisma from "@/lib/prisma";
 
 /**
@@ -6,9 +6,9 @@ import prisma from "@/lib/prisma";
  * @param data 登录日志数据
  * @returns 创建的登录日志记录
  */
-export const createLoginLog = async (data: Partial<sysLoginLog>): Promise<sysLoginLog | null> => {
+export const createLoginLog = async (data: Partial<SysLoginLog>, tx = prisma): Promise<SysLoginLog | null> => {
   try {
-    return await prisma.sysLoginLog.create({
+    return await tx.sysLoginLog.create({
       data: {
         ...data,
         loginTime: data.loginTime || Math.floor(Date.now() / 1000)
@@ -36,7 +36,8 @@ export const getLoginLogs = async (
     endTime?: number;
   },
   current: number = 1,
-  pageSize: number = 10
+  pageSize: number = 10,
+  tx = prisma
 ) => {
   const { ipaddr, loginName, status, startTime, endTime } = params;
 
@@ -77,10 +78,10 @@ export const getLoginLogs = async (
 
   try {
     // 查询总记录数
-    const total = await prisma.sysLoginLog.count({ where });
+    const total = await tx.sysLoginLog.count({ where });
 
     // 查询分页数据
-    const list = await prisma.sysLoginLog.findMany({
+    const list = await tx.sysLoginLog.findMany({
       where,
       skip: (current - 1) * pageSize,
       take: pageSize,
@@ -111,9 +112,9 @@ export const getLoginLogs = async (
  * @param infoId 日志ID
  * @returns 登录日志详情
  */
-export const getLoginLogById = async (infoId: number): Promise<sysLoginLog | null> => {
+export const getLoginLogById = async (infoId: number, tx = prisma): Promise<SysLoginLog | null> => {
   try {
-    return await prisma.sysLoginLog.findUnique({
+    return await tx.sysLoginLog.findUnique({
       where: { infoId }
     });
   } catch (error) {
@@ -127,9 +128,9 @@ export const getLoginLogById = async (infoId: number): Promise<sysLoginLog | nul
  * @param infoIds 日志ID数组
  * @returns 删除结果
  */
-export const deleteLoginLogs = async (infoIds: number[]): Promise<boolean> => {
+export const deleteLoginLogs = async (infoIds: number[], tx = prisma): Promise<boolean> => {
   try {
-    await prisma.sysLoginLog.deleteMany({
+    await tx.sysLoginLog.deleteMany({
       where: {
         infoId: {
           in: infoIds
@@ -147,9 +148,9 @@ export const deleteLoginLogs = async (infoIds: number[]): Promise<boolean> => {
  * 清空登录日志
  * @returns 清空结果
  */
-export const clearLoginLogs = async (): Promise<boolean> => {
+export const clearLoginLogs = async (tx = prisma): Promise<boolean> => {
   try {
-    await prisma.sysLoginLog.deleteMany({});
+    await tx.sysLoginLog.deleteMany({});
     return true;
   } catch (error) {
     console.error("清空登录日志失败:", error);

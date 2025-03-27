@@ -8,7 +8,7 @@ const mediaCategoryIdKey = "mediaCategory:categoryId:";
 
 // 获取媒体分类数量
 export const getMediaCategoryCount = async (
-  where: Prisma.sysMediaCategoryWhereInput = {},
+  where: Prisma.SysMediaCategoryWhereInput = {},
   tx = prisma
 ) => {
   const total = tx.sysMediaCategory.count({
@@ -24,7 +24,7 @@ export const getMediaCategoryCount = async (
 export const getMediaCategoryList = async (
   current: number,
   pageSize: number,
-  where: Prisma.sysMediaCategoryWhereInput = {},
+  where: Prisma.SysMediaCategoryWhereInput = {},
   tx = prisma
 ) => {
   const skip = pageSize > 0 ? (current - 1) * pageSize : undefined;
@@ -46,7 +46,7 @@ export const getMediaCategoryList = async (
 
 // 保存媒体分类
 export const createMediaCategory = async (
-  mediaCategory: Prisma.sysMediaCategoryCreateInput,
+  mediaCategory: Prisma.SysMediaCategoryCreateInput,
   tx = prisma
 ) => {
   const result = await tx.sysMediaCategory.create({
@@ -58,7 +58,7 @@ export const createMediaCategory = async (
 // 更新媒体分类
 export const updateMediaCategory = async (
   categoryId: number,
-  mediaCategory: Prisma.sysMediaCategoryUpdateInput,
+  mediaCategory: Prisma.SysMediaCategoryUpdateInput,
   tx = prisma
 ) => {
   const result = await tx.sysMediaCategory.update({

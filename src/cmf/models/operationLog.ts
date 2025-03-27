@@ -1,4 +1,4 @@
-import { Prisma, sysOperationLog } from "@prisma/client";
+import { Prisma, SysOperationLog } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { now } from "@/lib/date";
 
@@ -30,14 +30,14 @@ export enum OperatorType {
  * 获取操作日志的总数。
  *
  * @param where - Prisma 的查询条件对象，用于过滤操作日志记录。
- *               类型为 `Prisma.sysOperationLogWhereInput`。
+ *               类型为 `Prisma.SysOperationLogWhereInput`。
  * @param tx - 可选参数，Prisma 客户端实例，默认值为 `prisma`。
  *            用于执行数据库操作，支持事务传递。
  * @returns 返回一个 Promise，解析为操作日志的总数（number 类型）。
  *          如果发生错误，则返回 0。
  */
 export const getOperationLogTotal = async (
-  where: Prisma.sysOperationLogWhereInput,
+  where: Prisma.SysOperationLogWhereInput,
   tx = prisma
 ) => {
   try {
@@ -52,17 +52,21 @@ export const getOperationLogTotal = async (
  * 获取操作日志列表的异步函数。
  *
  * @param where - Prisma 的查询条件对象，用于筛选操作日志记录。
- *                类型为 `Prisma.sysOperationLogWhereInput`。
+ *                类型为 `Prisma.SysOperationLogWhereInput`。
  * @param tx - 可选参数，指定 Prisma 客户端实例，默认值为 `prisma`。
  *             用于执行数据库查询操作。
  * @returns 返回一个包含操作日志记录的数组。如果查询失败，则返回空数组。
  */
-export const getOperationLogList = async (where: Prisma.sysOperationLogWhereInput, current: number, pageSize: number , tx = prisma) => {
+export const getOperationLogList = async (
+  where: Prisma.SysOperationLogWhereInput,
+  current: number,
+  pageSize: number,
+  tx = prisma
+) => {
   try {
-
     let take = undefined;
     let skip = undefined;
-    
+
     // 计算分页
     if (pageSize !== 0) {
       take = pageSize;
@@ -82,10 +86,11 @@ export const getOperationLogList = async (where: Prisma.sysOperationLogWhereInpu
  * @returns 创建的操作日志记录
  */
 export const createOperationLog = async (
-  data: Partial<sysOperationLog>
-): Promise<sysOperationLog | null> => {
+  data: Partial<SysOperationLog>,
+  tx = prisma
+): Promise<SysOperationLog | null> => {
   try {
-    return await prisma.sysOperationLog.create({
+    return await tx.sysOperationLog.create({
       data
     });
   } catch (error) {
@@ -99,9 +104,12 @@ export const createOperationLog = async (
  * @param operId 日志ID
  * @returns 操作日志详情
  */
-export const getOperationLogById = async (operId: number): Promise<sysOperationLog | null> => {
+export const getOperationLogById = async (
+  operId: number,
+  tx = prisma
+): Promise<SysOperationLog | null> => {
   try {
-    return await prisma.sysOperationLog.findUnique({
+    return await tx.sysOperationLog.findUnique({
       where: { operId }
     });
   } catch (error) {
@@ -115,9 +123,9 @@ export const getOperationLogById = async (operId: number): Promise<sysOperationL
  * @param operIds 日志ID数组
  * @returns 删除结果
  */
-export const deleteOperationLogs = async (operIds: number[]): Promise<boolean> => {
+export const deleteOperationLogs = async (operIds: number[], tx = prisma): Promise<boolean> => {
   try {
-    await prisma.sysOperationLog.deleteMany({
+    await tx.sysOperationLog.deleteMany({
       where: {
         operId: {
           in: operIds
@@ -135,9 +143,9 @@ export const deleteOperationLogs = async (operIds: number[]): Promise<boolean> =
  * 清空操作日志
  * @returns 清空结果
  */
-export const clearOperationLogs = async (): Promise<boolean> => {
+export const clearOperationLogs = async (tx = prisma): Promise<boolean> => {
   try {
-    await prisma.sysOperationLog.deleteMany({});
+    await tx.sysOperationLog.deleteMany({});
     return true;
   } catch (error) {
     console.error("清空操作日志失败:", error);

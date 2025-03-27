@@ -35,7 +35,5 @@ export default async function migrateUser() {
     if (!user) {
       throw new Error("create admin user failed");
     }
-
-    // console.log("create admin user", user);
   }
 }

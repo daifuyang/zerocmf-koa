@@ -1,6 +1,6 @@
 import { createMenu, getMenuByName, getMenuByQuery, updateMenu } from "../models/menu";
 import { now } from "@/lib/date";
-import { sysApi, sysMenu, sysMenuApi } from "@prisma/client";
+import { SysApi, SysMenu, SysMenuApi } from "@prisma/client";
 import { createApi, getApiByMethodAndPath, updateApi } from "../models/api";
 import { createMenuApis, getMenuApiByMenuIdAndApiId } from "../models/menuApi";
 
@@ -11,7 +11,7 @@ interface MenuItem {
   status?: number;
   visible?: number;
   menuType?: number;
-  apis?: sysApi[];
+  apis?: SysApi[];
   children?: MenuItem[]; // 子菜单，递归定义
 }
 
@@ -24,7 +24,7 @@ async function parseMenuItems(menuItems: MenuItem[], parentId: number = 0) {
     const menu = await getMenuByQuery({
       perms: item.perms,
     });
-    let menuModel: sysMenu;
+    let menuModel: SysMenu;
     if (menu?.menuId) {
       menuModel = await updateMenu(menu.menuId, {
         menuName: item.menuName,
@@ -62,7 +62,7 @@ async function parseMenuItems(menuItems: MenuItem[], parentId: number = 0) {
 
     const apis = item.apis || [];
     // 如果有api权限，则创建api权限
-    let menuApiData: sysMenuApi[] = [];
+    let menuApiData: SysMenuApi[] = [];
     for (const api of apis) {
       let apiRes = null;
       const existApi = await getApiByMethodAndPath(api.method, api.path);

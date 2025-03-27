@@ -4,7 +4,7 @@ import { Prisma } from "@prisma/client";
 
 // 获取媒体数量
 export const getMediaCount = async (
-  where: Prisma.sysMediaWhereInput = {},
+  where: Prisma.SysMediaWhereInput = {},
   tx = prisma
 ) => {
   // 先获取所有的文章数量
@@ -21,7 +21,7 @@ export const getMediaCount = async (
 export const getMediaList = async (
   current: number,
   pageSize: number,
-  where: Prisma.sysMediaWhereInput = {},
+  where: Prisma.SysMediaWhereInput = {},
   tx = prisma
 ) => {
   const media = await tx.sysMedia.findMany({
@@ -40,7 +40,7 @@ export const getMediaList = async (
 
 // 保存上传成功的路径信息
 export const saveMedia = async (
-  media: Prisma.sysMediaCreateInput,
+  media: Prisma.SysMediaCreateInput,
   tx = prisma
 ) => {
   const result = await tx.sysMedia.create({
@@ -51,7 +51,7 @@ export const saveMedia = async (
 
 // 批量保存
 export const saveMediaList = async (
-  mediaList: Prisma.sysMediaCreateInput[],
+  mediaList: Prisma.SysMediaCreateInput[],
   tx = prisma
 ) => {
   const result = await tx.sysMedia.createMany({

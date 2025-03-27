@@ -8,7 +8,7 @@ import {
   updateDictType,
   deleteDictType
 } from "@/cmf/models/dict";
-import { sysUser } from "@prisma/client";
+import { SysUser } from "@prisma/client";
 import { formatFields, now } from "@/lib/date";
 
 // 获取字典类型列表
@@ -73,7 +73,7 @@ export const getDictTypeInfoController = async (ctx: Context) => {
 const saveDictType = async (ctx: Context, dictId?: number) => {
   try {
     const { dictName, dictType, status, remark } = ctx.request.body;
-    const { userId, loginName } = ctx.state.user as sysUser;
+    const { userId, loginName } = ctx.state.user as SysUser;
 
     if (!dictName || !dictType) {
       ctx.body = response.error("字典名称和字典类型不能为空");

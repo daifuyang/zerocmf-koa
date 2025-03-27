@@ -10,13 +10,13 @@ const roleIdKey = "role:id:";
 export const getRoleList = async (
   page: number = 1,
   pageSize: number,
-  where: Prisma.sysRoleWhereInput = {},
+  where: Prisma.SysRoleWhereInput = {},
   tx = prisma
 ) => {
   const args: {
     skip?: number;
     take?: number;
-    where?: Prisma.sysRoleWhereInput;
+    where?: Prisma.SysRoleWhereInput;
   } =
     pageSize === 0
       ? {}
@@ -91,7 +91,7 @@ export const createRole = async (data: any, tx = prisma) => {
 };
 
 // 更新角色
-export const updateRole = async (roleId: number, data: Prisma.sysRoleUpdateInput, tx = prisma) => {
+export const updateRole = async (roleId: number, data: Prisma.SysRoleUpdateInput, tx = prisma) => {
   const role = await tx.sysRole.update({
     where: {
       roleId

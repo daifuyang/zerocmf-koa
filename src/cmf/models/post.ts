@@ -8,7 +8,7 @@ const postIdKey = "post:id:";
 
 // 获取岗位列表
 export const getPostList = async (
-  where: Prisma.sysPostWhereInput = {},
+  where: Prisma.SysPostWhereInput = {},
   page: number = 1,
   pageSize: number = 10,
   tx = prisma
@@ -16,8 +16,8 @@ export const getPostList = async (
   const args: {
     skip?: number;
     take?: number;
-    where?: Prisma.sysPostWhereInput;
-    orderBy?: Prisma.sysPostOrderByWithRelationInput;
+    where?: Prisma.SysPostWhereInput;
+    orderBy?: Prisma.SysPostOrderByWithRelationInput;
   } = 
     pageSize === 0
       ? {}
@@ -89,7 +89,7 @@ export const getPostByName = async (postName: string, tx = prisma) => {
 };
 
 // 获取岗位总数
-export const getPostCount = async (where: Prisma.sysPostWhereInput = {}, tx = prisma) => {
+export const getPostCount = async (where: Prisma.SysPostWhereInput = {}, tx = prisma) => {
   return await tx.sysPost.count({
     where: {
       ...where,
@@ -108,7 +108,7 @@ export const createPost = async (data, tx = prisma) => {
 };
 
 // 更新岗位
-export const updatePost = async (postId: number, data: Prisma.sysPostUpdateInput, tx = prisma) => {
+export const updatePost = async (postId: number, data: Prisma.SysPostUpdateInput, tx = prisma) => {
   const post = await tx.sysPost.update({
     where: {
       postId

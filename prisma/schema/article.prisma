@@ -1,5 +1,5 @@
 // 文章表
-model cmsArticle {
+model CmsArticle {
   articleId      Int                      @id @default(autoincrement()) @map("article")
   postFormat     Int?                     @default(1) @map("post_format") @db.TinyInt() // 文章格式
   seoTitle       String?                  @map("seo_title") @db.VarChar(100) // 三要素标题，用于seo优化
@@ -29,14 +29,14 @@ model cmsArticle {
   createdAt      Int                      @map("created_at")
   updatedAt      Int                      @map("updated_at")
   deletedAt      Int                      @default(0) @map("deleted_at")
-  categories     cmsArticleCategoryPost[]
-  articleTags    cmsArticleTagPost[]
+  categories     CmsArticleCategoryPost[]
+  articleTags    CmsArticleTagPost[]
 
   @@map("cms_article")
 }
 
 // 文章分类表
-model cmsArticleCategory {
+model CmsArticleCategory {
   articleCategoryId Int                      @id @default(autoincrement()) @map("articleCategoryId")
   parentId          Int                      @map("parent_id") // 分类id
   seoTitle          String?                  @map("seo_title") @db.VarChar(100) // 三要素标题，用于seo优化
@@ -56,40 +56,40 @@ model cmsArticleCategory {
   createdAt         Int                      @map("created_at")
   updatedAt         Int                      @map("updated_at")
   deletedAt         Int                      @default(0) @map("deleted_at")
-  articles          cmsArticleCategoryPost[]
+  articles          CmsArticleCategoryPost[]
 
   @@map("cms_article_category")
 }
 
 // 文章和分类关联表
-model cmsArticleCategoryPost {
+model CmsArticleCategoryPost {
   articleId         Int                @map("article_id") // 文章id
   articleCategoryId Int                @map("article_category_id") //分类id
   order             Int?               @map("order") // 排序
-  article           cmsArticle         @relation(fields: [articleId], references: [articleId])
-  articleCategory   cmsArticleCategory @relation(fields: [articleCategoryId], references: [articleCategoryId])
+  article           CmsArticle         @relation(fields: [articleId], references: [articleId])
+  articleCategory   CmsArticleCategory @relation(fields: [articleCategoryId], references: [articleCategoryId])
 
   @@unique([articleId, articleCategoryId])
   @@map("cms_article_category_post")
 }
 
 // 文章标签表
-model cmsArticleTag {
+model CmsArticleTag {
   tagId        Int                 @id @default(autoincrement()) // 标签id
   name         String              @unique // 标签名称
   status       Int                 @default(1) // 状态
   articleCount Int                 @map("article_count") // 文章数
-  articles     cmsArticleTagPost[]
+  articles     CmsArticleTagPost[]
 
   @@map("cms_article_tag")
 }
 
 // 文章和标签关联表
-model cmsArticleTagPost {
+model CmsArticleTagPost {
   articleId  Int           @map("article_id") // 文章id
   tagId      Int           @map("tag_id") // 标签id
-  article    cmsArticle    @relation(fields: [articleId], references: [articleId])
-  articleTag cmsArticleTag @relation(fields: [tagId], references: [tagId])
+  article    CmsArticle    @relation(fields: [articleId], references: [articleId])
+  articleTag CmsArticleTag @relation(fields: [tagId], references: [tagId])
 
   @@unique([articleId, tagId])
   @@map("cms_article_tag_post")

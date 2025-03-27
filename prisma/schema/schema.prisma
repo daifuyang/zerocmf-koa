@@ -15,7 +15,7 @@ datasource db {
 }
 
 // 用户表
-model sysUser {
+model SysUser {
   userId    Int     @id @default(autoincrement()) @map("user_id")
   loginName String? @unique @map("login_name") // 用户名可选，因为可能使用手机号或邮箱作为主要登录方式
   email     String? @unique // 邮箱可选，因为可能使用手机号作为主要登录方式
@@ -32,16 +32,18 @@ model sysUser {
   loginAt   Int?    @map("login_at") // 最后登录时间
   status    Int     @default(1) @db.TinyInt // 用户状态，0 表示正常，1 表示禁用
   remark    String  @default("") @map("remark") @db.VarChar(500) // 备注
-  createdAt Int     @map("created_at") // 使用 UNIX 时间戳（毫秒）
+  createdAt Int     @default(0) @map("created_at") // 使用 UNIX 时间戳（毫秒）
   updatedAt Int     @map("updated_at") // 更新时间，使用 int 类型
   deletedAt Int     @default(0) @map("deleted_at") // 删除时间，使用 int 类型
+
+  mbcrmHospital MbcrmHospital?
 
   @@index([userId, loginName, phone, email])
   @@map("sys_user")
 }
 
 // token表
-model sysUserToken {
+model SysUserToken {
   id           Int    @id @default(autoincrement())
   userId       Int    @map("user_id") // 用户ID
   accessToken  String @unique @map("access_token") // token
@@ -53,7 +55,7 @@ model sysUserToken {
 }
 
 // 角色表
-model sysRole {
+model SysRole {
   roleId      Int     @id @default(autoincrement())
   name        String // 角色名称
   description String? // 角色描述
@@ -68,7 +70,7 @@ model sysRole {
 }
 
 // 系统配置表
-model sysOption {
+model SysOption {
   optionName  String @map("option_name") @db.VarChar(64)
   optionValue String @map("option_value") @db.Text
 
@@ -77,7 +79,7 @@ model sysOption {
 }
 
 // 菜单表
-model sysMenu {
+model SysMenu {
   menuId    Int     @id @default(autoincrement()) @map("menu_id") // 菜单ID
   menuName  String  @map("menu_name") @db.VarChar(50) // 菜单名称
   parentId  Int     @default(0) @map("parent_id") // 父菜单ID
@@ -119,7 +121,7 @@ model casbinRule {
 }
 
 // 系统接口表
-model sysApi {
+model SysApi {
   id          Int     @id @default(autoincrement())
   path        String // 路径
   method      String // 方法
@@ -131,7 +133,7 @@ model sysApi {
 }
 
 // 接口菜单关系表
-model sysMenuApi {
+model SysMenuApi {
   menuId Int @map("menu_id")
   apiId  Int @map("api_id")
 
@@ -140,7 +142,7 @@ model sysMenuApi {
 }
 
 // 媒体资源表
-model sysMedia {
+model SysMedia {
   mediaId    Int     @id @default(autoincrement()) @map("media_id") ///   主键ID
   fileSize   BigInt  @map("file_size") @db.BigInt /// 文件大小
   fileKey    String  @map("file_key") @db.VarChar(64) /// 文件唯一标识符或密钥
@@ -164,7 +166,7 @@ model sysMedia {
 }
 
 // 媒体资源分类表
-model sysMediaCategory {
+model SysMediaCategory {
   categoryId Int    @id @default(autoincrement()) @map("category_id")
   parentId   Int    @default(0) @map("parent_id")
   name       String @map("name") @db.VarChar(50)
@@ -182,7 +184,7 @@ model sysMediaCategory {
 }
 
 // 部门表
-model sysDept {
+model SysDept {
   deptId    Int     @id @default(autoincrement()) @map("dept_id") // 部门ID
   parentId  Int     @default(0) @map("parent_id") // 父部门ID
   ancestors String? @map("ancestors") @db.VarChar(255) // 祖级列表
@@ -205,7 +207,7 @@ model sysDept {
 }
 
 // 用户与部门关联表
-model sysUserDept {
+model SysUserDept {
   userId Int @map("user_id") // 用户ID
   deptId Int @map("dept_id") // 部门ID
 
@@ -214,7 +216,7 @@ model sysUserDept {
 }
 
 // 岗位表
-model sysPost {
+model SysPost {
   postId    Int    @id @default(autoincrement()) @map("post_id") // 岗位ID
   postCode  String @map("post_code") @db.VarChar(64) // 岗位编码
   postName  String @map("post_name") @db.VarChar(50) // 岗位名称
@@ -234,7 +236,7 @@ model sysPost {
 }
 
 // 用户与岗位关联表
-model sysUserPost {
+model SysUserPost {
   userId Int @map("user_id") // 用户ID
   postId Int @map("post_id") // 岗位ID
 
@@ -243,7 +245,7 @@ model sysUserPost {
 }
 
 // 系统访问日志表
-model sysLoginLog {
+model SysLoginLog {
   infoId        Int     @id @default(autoincrement()) @map("info_id") // 访问ID
   loginName     String? @map("login_name") @db.VarChar(50) // 登录账号
   ipaddr        String? @map("ipaddr") @db.VarChar(128) // 登录IP地址
@@ -260,7 +262,7 @@ model sysLoginLog {
 }
 
 // 字典类型表
-model sysDictType {
+model SysDictType {
   dictId    Int     @id @default(autoincrement()) @map("dict_id") // 字典主键
   dictName  String  @default("") @map("dict_name") @db.VarChar(100) // 字典名称
   dictType  String  @unique @default("") @map("dict_type") @db.VarChar(100) // 字典类型
@@ -279,7 +281,7 @@ model sysDictType {
 }
 
 // 字典数据表
-model sysDictData {
+model SysDictData {
   dictCode  Int     @id @default(autoincrement()) @map("dict_code") // 字典编码
   dictSort  Int     @default(0) @map("dict_sort") // 字典排序
   dictLabel String  @default("") @map("dict_label") @db.VarChar(100) // 字典标签
@@ -298,13 +300,13 @@ model sysDictData {
   updatedAt Int?    @map("updated_at") // 更新时间
   deletedAt Int     @default(0) @map("deleted_at") // 删除时间
 
-  @@index([dictType])
   @@unique([dictValue, dictType])
+  @@index([dictType])
   @@map("sys_dict_data")
 }
 
 // 操作日志表
-model sysOperationLog {
+model SysOperationLog {
   operId        Int     @id @default(autoincrement()) @map("oper_id") // 日志主键
   title         String? @map("title") @db.VarChar(50) // 模块标题
   businessType  Int     @default(0) @map("business_type") // 业务类型（0其它 1新增 2修改 3删除）

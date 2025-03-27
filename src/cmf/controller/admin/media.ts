@@ -16,7 +16,7 @@ export async function getMediaListController(ctx: Context) {
   const query = ctx.query || {};
   const { current, pageSize, type, categoryId } = parseQuery(query);
 
-  const where: Prisma.sysMediaWhereInput = {};
+  const where: Prisma.SysMediaWhereInput = {};
   const mediaType = Number(type);
   if (!isNaN(mediaType)) {
     where.mediaType = mediaType;
