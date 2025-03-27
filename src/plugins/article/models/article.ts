@@ -1,11 +1,11 @@
 import prisma from "@/lib/prisma";
 import redis from "@/lib/redis";
-import { cmsArticle, Prisma } from "@prisma/client";
+import { CmsArticle, Prisma } from "@prisma/client";
 
 const articleIdKey = `article:articleId:`;
 
 // 根据条件获取文章总数
-export async function getArticleCount(where: Prisma.cmsArticleWhereInput = {}, tx = prisma) {
+export async function getArticleCount(where: Prisma.CmsArticleWhereInput = {}, tx = prisma) {
   return await tx.cmsArticle.count({
     where: {
       deletedAt: 0,
@@ -18,14 +18,14 @@ export async function getArticleCount(where: Prisma.cmsArticleWhereInput = {}, t
 export async function getArticleList(
   current: number,
   pageSize: number,
-  where: Prisma.cmsArticleWhereInput = {},
+  where: Prisma.CmsArticleWhereInput = {},
   tx = prisma
 ) {
   let args: {
-    orderBy?: Prisma.cmsArticleOrderByWithRelationInput;
+    orderBy?: Prisma.CmsArticleOrderByWithRelationInput;
     skip?: number;
     take?: number;
-    where?: Prisma.cmsArticleWhereInput;
+    where?: Prisma.CmsArticleWhereInput;
   } = {};
 
   if (pageSize !== 0) {
@@ -57,7 +57,7 @@ export async function getArticleById(articleId: number, tx = prisma) {
   const cacheKey = articleIdKey + articleId;
   const cache = await redis.get(cacheKey);
 
-  let article: cmsArticle | null = null;
+  let article: CmsArticle | null = null;
   if (cache) {
     article = JSON.parse(cache);
   } else {
@@ -76,7 +76,7 @@ export async function getArticleById(articleId: number, tx = prisma) {
 }
 
 // 创建文章
-export async function createArticle(article: Prisma.cmsArticleCreateInput, tx = prisma) {
+export async function createArticle(article: Prisma.CmsArticleCreateInput, tx = prisma) {
   const result = await tx.cmsArticle.create({
     data: article
   });
@@ -86,7 +86,7 @@ export async function createArticle(article: Prisma.cmsArticleCreateInput, tx = 
 // 更新文章
 export async function updateArticle(
   articleId: number,
-  article: Prisma.cmsArticleUpdateInput,
+  article: Prisma.CmsArticleUpdateInput,
   tx = prisma
 ) {
   const result = await tx.cmsArticle.update({

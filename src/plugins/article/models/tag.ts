@@ -17,16 +17,16 @@ export async function getTagCount(where: any = {}, tx = prisma) {
 export async function getTagList(
   current: number, // 当前页码
   pageSize: number, // 每页条数
-  where: Prisma.cmsArticleTagWhereInput = {}, // 查询条件
-  orderBy: Prisma.cmsArticleTagOrderByWithRelationInput = { tagId: "desc" }, // 排序条件
+  where: Prisma.CmsArticleTagWhereInput = {}, // 查询条件
+  orderBy: Prisma.CmsArticleTagOrderByWithRelationInput = { tagId: "desc" }, // 排序条件
   tx = prisma // 事务实例
 ) {
   // 初始化查询参数
   let args: {
     skip?: number;
     take?: number;
-    where?: Prisma.cmsArticleTagWhereInput;
-    orderBy?: Prisma.cmsArticleTagOrderByWithRelationInput;
+    where?: Prisma.CmsArticleTagWhereInput;
+    orderBy?: Prisma.CmsArticleTagOrderByWithRelationInput;
   } = {};
 
   // 分页逻辑
@@ -54,11 +54,11 @@ export async function getTagList(
 export async function getTagById(
   tagId: number, // 标签 ID
   tx = prisma // 事务实例
-): Promise<Prisma.cmsArticleTagGetPayload<{}> | null> {
+): Promise<Prisma.CmsArticleTagGetPayload<{}> | null> {
   const cacheKey = tagIdKey + tagId; // 缓存键
   const cache = await redis.get(cacheKey); // 从 Redis 获取缓存
 
-  let tag: Prisma.cmsArticleTagGetPayload<{}> | null = null;
+  let tag: Prisma.CmsArticleTagGetPayload<{}> | null = null;
 
   // 如果缓存存在，直接返回缓存数据
   if (cache) {
@@ -82,7 +82,7 @@ export async function getTagById(
 
 // 根据条件获取tag详情
 export async function getTagByQuery(
-  where: Prisma.cmsArticleTagWhereInput = {},
+  where: Prisma.CmsArticleTagWhereInput = {},
   tx = prisma // 事务实例
 ) {
   return tx.cmsArticleTag.findFirst({
@@ -97,7 +97,7 @@ export async function getTagByQuery(
  * @returns 创建的标签
  */
 export async function createTag(
-  tag: Prisma.cmsArticleTagCreateInput,
+  tag: Prisma.CmsArticleTagCreateInput,
   tx = prisma
 ) {
   const result = await tx.cmsArticleTag.create({
@@ -115,9 +115,9 @@ export async function createTag(
  */
 export async function updateTag(
   tagId: number,
-  tag: Prisma.cmsArticleTagUpdateInput,
+  tag: Prisma.CmsArticleTagUpdateInput,
   tx = prisma
-): Promise<Prisma.cmsArticleTagGetPayload<{}> | null> {
+): Promise<Prisma.CmsArticleTagGetPayload<{}> | null> {
   const result = await tx.cmsArticleTag.update({
     where: {
       tagId
