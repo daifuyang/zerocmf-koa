@@ -18,7 +18,7 @@ DATABASE_URL="mysql://root:123456@localhost:3306/nextcms"
 pnpm install
 
 # 2.数据库迁移
-pnpm run migrate
+npx prisma migrate dev --name init
 ```
 
 ## 系统启动
