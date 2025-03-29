@@ -31,7 +31,7 @@ v1.get(
   koaSwagger({
     routePrefix: false,
     swaggerOptions: {
-      url: prefix + "/swagger.json"
+      url: prefix + "/swagger.json",
     }
   })
 );

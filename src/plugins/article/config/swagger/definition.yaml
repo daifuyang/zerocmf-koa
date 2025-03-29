@@ -1,7 +1,0 @@
-tags:
-  - name: article-categories
-    description: 文章分类
-  - name: articles
-    description: 文章管理
-  - name: tags
-    description: 标签管理

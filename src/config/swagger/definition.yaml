@@ -73,8 +73,24 @@ tags:
     description: 字典管理
   - name: dicts-data
     description: 字典数据
-  - name: operation-log
+  - name: operation-logs
     description: 操作日志
+
+  - name: article-categories
+    description: 文章分类
+  - name: articles
+    description: 文章管理
+  - name: tags
+    description: 标签管理
+
+  - name: hospital
+    description: 医院管理
+  - name: customer
+    description: 客户管理
+  - name: dispatch
+    description: 派单管理
+
+
 servers:
   - url: /
     description: Local server

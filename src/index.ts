@@ -22,7 +22,7 @@ install(cmf);
 registerPlugins(cmf);
 
 if (cmf.migrate) {
-  cmf.migrate({ router });
+  cmf.migrate().commit(router);
 }
 
 // 检查并创建上传目录
