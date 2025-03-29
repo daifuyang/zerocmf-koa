@@ -10,7 +10,7 @@ import {
 import response from "@/lib/response";
 import { getArticleCategoryById, updateArticleCategory } from "../models/category";
 import { formatField, formatFields, now } from "@/lib/date";
-import { cmsArticle, PrismaClient } from "@prisma/client";
+import { CmsArticle, PrismaClient } from "@prisma/client";
 import {
   createArticleCategoryPost,
   deleteArticleCategoryPost,
@@ -164,7 +164,7 @@ export async function saveArticle(ctx: Context, articleId: number | null) {
 
   let msg = null;
   const result = await prisma.$transaction(async (tx: PrismaClient) => {
-    let article: cmsArticle = null;
+    let article: CmsArticle = null;
     if (edit) {
       article = await updateArticle(
         articleId,

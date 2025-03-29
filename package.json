@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "cross-env NODE_ENV=development npx nodemon",
-    "build": "npx tsc && node ./scripts/deploy.js",
+    "build": "rm -rf dist && npx tsc && node ./scripts/deploy.js",
     "deploy": "prisma generate && prisma migrate deploy"
   },
   "keywords": [],

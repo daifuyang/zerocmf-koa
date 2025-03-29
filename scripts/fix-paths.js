@@ -173,16 +173,25 @@ const fixIndexFile = async (filePath, baseDir) => {
     let content = await readFile(filePath, 'utf8');
     let modified = false;
     
-    // Special pattern for the route import in index.js
-    const routeImportRegex = /const route_1 = __importStar\(require\("@\/cmf\/route"\)\);/g;
+    // Handle all @/ imports in index.js
+    const importRegexes = [
+      // __importDefault pattern
+      /(const \w+ = __importDefault\(require\("@\/([^"]+)"\)\);)/g,
+      // Direct require pattern
+      /(const \w+ = require\("@\/([^"]+)"\);)/g,
+      // __importStar pattern
+      /(const \w+ = __importStar\(require\("@\/([^"]+)"\)\);)/g
+    ];
     
-    if (routeImportRegex.test(content)) {
-      modified = true;
-      content = content.replace(
-        routeImportRegex,
-        'const route_1 = __importStar(require("./cmf/route"));'
-      );
-      console.log(`  - Fixed route import in index.js`);
+    for (const regex of importRegexes) {
+      if (regex.test(content)) {
+        modified = true;
+        content = content.replace(regex, (match, fullImport, importPath) => {
+          const newPath = `./${importPath}`;
+          console.log(`  - Replacing @/${importPath} with ${newPath}`);
+          return fullImport.replace(`@/${importPath}`, newPath);
+        });
+      }
     }
     
     if (modified) {

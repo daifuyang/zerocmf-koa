@@ -1,4 +1,4 @@
-import { cmsArticleTag } from "@prisma/client";
+import { CmsArticleTag } from "@prisma/client";
 import { getTagPostCount } from "../models/articleTagPost";
 import { createTag, getTagByQuery, updateTag } from "../models/tag";
 import prisma from "@/lib/prisma";
@@ -11,7 +11,7 @@ export async function createTagService(tagName, tx = prisma) {
     },
     tx
   );
-  let tag: cmsArticleTag = null;
+  let tag: CmsArticleTag = null;
   if (!existTag) {
     tag = await createTag(
       {

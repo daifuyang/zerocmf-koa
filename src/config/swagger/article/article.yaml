@@ -586,3 +586,7 @@ components:
                 type: string
                 description: 分类名称
                 example: "测试分类"
+
+      required:
+        - articleId
+        - publishedAt

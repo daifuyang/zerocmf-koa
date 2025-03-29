@@ -17,8 +17,9 @@ import { getTagListController, deleteTagController } from "../controller/tag";
 import { adminPrefix } from "@/cmf/constants/router";
 import { auth } from "@/cmf/middlewares/auth";
 import apiAccess from "@/cmf/middlewares/apiAccess";
+import { apiv1 } from "@/constants/router";
 export default function initRouter() {
-  const adminRouter = new Router({ prefix: adminPrefix });
+  const adminRouter = new Router({ prefix: apiv1 + adminPrefix });
   adminRouter.use(auth, apiAccess);
   adminRouter.get("/article-categories", getCategoryListController);
   adminRouter.get("/article-categories/:articleCategoryId", getCategoryController);
