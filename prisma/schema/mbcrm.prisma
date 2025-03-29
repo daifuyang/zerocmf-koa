@@ -4,10 +4,10 @@ model MbcrmHospital {
   userId       Int      @unique @map("user_id") // 关联的用户ID
   hospitalName String   @map("hospital_name") @db.VarChar(100) // 医院名称
   email        String   @db.VarChar(100) // 推送邮箱
-  province     String   @db.VarChar(50) // 省份
-  city         String   @db.VarChar(50) // 城市
-  district     String   @db.VarChar(50) // 区县
-  address      String   @db.VarChar(200) // 详细地址
+  province     String?  @db.VarChar(50) // 省份
+  city         String?  @db.VarChar(50) // 城市
+  district     String?  @db.VarChar(50) // 区县
+  address      String?  @db.VarChar(200) // 详细地址
   phone        String?  @db.VarChar(20) // 咨询电话
   avgPrice     Decimal? @map("avg_price") @db.Decimal(10, 2) // 医院均价
   website      String?  @db.VarChar(100) // 医院网址

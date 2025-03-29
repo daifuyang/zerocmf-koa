@@ -1,0 +1,126 @@
+paths:
+  /api/v1/admin/hospitals:
+    get:
+      tags:
+        - hospital
+      summary: 获取医院列表
+      responses:
+        '200':
+          description: 医院列表
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Hospital'
+    post:
+      tags:
+        - hospital
+      summary: 创建医院
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HospitalInput'
+      responses:
+        '200':
+          description: 创建成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hospital'
+
+  /api/v1/admin/hospitals/{hospitalId}:
+    get:
+      tags:
+        - hospital
+      summary: 获取单个医院
+      parameters:
+        - name: hospitalId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 医院详情
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hospital'
+    put:
+      tags:
+        - hospital
+      summary: 更新医院
+      parameters:
+        - name: hospitalId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HospitalInput'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hospital'
+    delete:
+      tags:
+        - hospital
+      summary: 删除医院
+      parameters:
+        - name: hospitalId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 删除成功
+
+components:
+  schemas:
+    Hospital:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        address:
+          type: string
+        phone:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - address
+        - phone
+
+    HospitalInput:
+      type: object
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+        phone:
+          type: string
+      required:
+        - name
+        - address
+        - phone

@@ -1,5 +1,5 @@
 import Router from "koa-router";
-import { migrate } from "./migrate";
+import { Migrate } from "../migrate";
 
 export interface Cmf {
   router: Router;

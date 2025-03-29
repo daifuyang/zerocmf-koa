@@ -7,7 +7,14 @@ import { MbcrmHospital, Prisma } from "@prisma/client";
 const hospitalIdKey = "hospital:id:";
 
 // 根据id获取医院
-export const getHospitalById = async (hospitalId: number, tx = prisma) => {
+export const getHospitalById = async (
+  hospitalId: number,
+  options: {
+    include?: Prisma.MbcrmHospitalInclude;
+  } = {},
+  tx = prisma
+) => {
+  const { include } = options;
   const cache = await redis.get(`${hospitalIdKey}${hospitalId}`);
   let hospital: MbcrmHospital | null = null;
   if (cache) {
@@ -19,7 +26,8 @@ export const getHospitalById = async (hospitalId: number, tx = prisma) => {
       where: {
         hospitalId,
         deletedAt: 0
-      }
+      },
+      include
     });
 
     if (hospital) {

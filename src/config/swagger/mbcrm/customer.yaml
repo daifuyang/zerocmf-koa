@@ -1,0 +1,225 @@
+paths:
+  /api/v1/admin/customers:
+    get:
+      tags:
+        - customer
+      summary: 获取客户列表
+      parameters:
+        - name: current
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: name
+          in: query
+          schema:
+            type: string
+        - name: mobile
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 客户列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Customer'
+                  current:
+                    type: integer
+                  pageSize:
+                    type: integer
+                  statusOptions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        value:
+                          type: integer
+                        label:
+                          type: string
+    post:
+      tags:
+        - customer
+      summary: 创建客户
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerInput'
+      responses:
+        '200':
+          description: 创建成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+
+  /api/v1/admin/customers/{customerId}:
+    get:
+      tags:
+        - customer
+      summary: 获取单个客户
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 客户详情
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+    put:
+      tags:
+        - customer
+      summary: 更新客户
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerInput'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+    delete:
+      tags:
+        - customer
+      summary: 删除客户
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 删除成功
+
+components:
+  schemas:
+    Customer:
+      type: object
+      properties:
+        id:
+          type: integer
+        memberNo:
+          type: string
+        name:
+          type: string
+        birthDate:
+          type: string
+          format: date
+        gender:
+          type: string
+        province:
+          type: string
+        city:
+          type: string
+        district:
+          type: string
+        address:
+          type: string
+        phone:
+          type: string
+        mobile:
+          type: string
+        wechat:
+          type: string
+        qq:
+          type: string
+        project:
+          type: string
+        status:
+          type: integer
+        remark:
+          type: string
+        createdTime:
+          type: string
+          format: date-time
+        updatedTime:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - birthDate
+        - gender
+        - province
+        - city
+        - district
+        - address
+
+    CustomerInput:
+      type: object
+      properties:
+        name:
+          type: string
+        birthDate:
+          type: string
+          format: date
+        gender:
+          type: string
+        province:
+          type: string
+        city:
+          type: string
+        district:
+          type: string
+        address:
+          type: string
+        phone:
+          type: string
+        mobile:
+          type: string
+        wechat:
+          type: string
+        qq:
+          type: string
+        project:
+          type: string
+        status:
+          type: integer
+        remark:
+          type: string
+        operator:
+          type: integer
+      required:
+        - name
+        - birthDate
+        - gender
+        - province
+        - city
+        - district
+        - address
