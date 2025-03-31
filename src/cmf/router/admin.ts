@@ -35,7 +35,6 @@ import { getApisController } from "../controller/admin/api";
 
 import { adminPrefix } from "../constants/router";
 import apiAccess from "../middlewares/apiAccess";
-import { operationLog } from "../middlewares/operationLog";
 
 import { getOptionController, setOptionController } from "../controller/admin/options";
 import {
@@ -92,7 +91,7 @@ import {
 } from "../controller/admin/operationLog";
 
 const adminRouter = new Router({ prefix: apiv1 + adminPrefix });
-adminRouter.use(auth, apiAccess, operationLog);
+adminRouter.use(auth, apiAccess);
 // 角色管理路由
 adminRouter.get("/roles", getRolesController);
 adminRouter.get("/roles/:roleId", getRoleController);

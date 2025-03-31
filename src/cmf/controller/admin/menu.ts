@@ -255,26 +255,32 @@ export const updateMenuController = async (ctx: Context) => {
 
 // 删除菜单
 export const deleteMenuController = async (ctx: Context) => {
-  const { id } = ctx.params;
+  const { menuId } = ctx.params;
 
-  if (!id) {
+  if (!menuId) {
     ctx.body = response.error("参数错误！");
     return;
   }
 
-  const numberId = Number(id);
-  if (isNaN(numberId)) {
+  const numberMenuIdId = Number(menuId);
+  if (isNaN(numberMenuIdId)) {
     ctx.body = response.error("参数错误！");
     return;
   }
 
   try {
-    const menu = await deleteMenu(numberId);
+    // 检查是否有子菜单
+    const children = await getMenus({ parentId: numberMenuIdId });
+    if (children && children.length > 0) {
+      ctx.body = response.error("请先删除子菜单！");
+      return;
+    }
+
+    const menu = await deleteMenu(numberMenuIdId);
     if (!menu) {
       ctx.body = response.error("菜单不存在！");
       return;
     }
-
     ctx.body = response.success("删除成功！");
   } catch (error) {
     ctx.body = response.error("删除失败！");

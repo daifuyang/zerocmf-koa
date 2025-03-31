@@ -1,27 +1,26 @@
-// 文章表
 model CmsArticle {
   articleId      Int                      @id @default(autoincrement()) @map("article")
-  postFormat     Int?                     @default(1) @map("post_format") @db.TinyInt() // 文章格式
-  seoTitle       String?                  @map("seo_title") @db.VarChar(100) // 三要素标题，用于seo优化
-  seoKeywords    String?                  @map("seo_keywords") @db.VarChar(255) // 三要素关键词，用于seo优化
-  seoDescription String?                  @map("seo_description") @db.VarChar(255) // 三要素描述，用于seo优化
-  thumbnail      String?                  @map("thumbnail") @db.VarChar(255) // 封面
-  title          String                   @map("title") @db.VarChar(100) // 标题
-  content        String?                  @map("content") @db.LongText // 内容
-  keywords       String?                  @map("keywords") @db.VarChar(255) // 关键词
-  excerpt        String?                  @map("excerpt") @db.VarChar(255) // 摘要
-  author         String?                  @map("author") @db.VarChar(50) // 作者
-  source         String?                  @map("source") @db.VarChar(255) // 文章来源
-  isTop          Int?                     @map("is_top") @db.TinyInt() // 置顶
-  hits           Int?                     @map("hits") // 点击数
-  favorites      Int?                     @map("favorites") // 收藏数
-  likes          Int?                     @map("likes") // 点赞数
-  comments       Int?                     @map("comments") // 点赞数
-  more           Json?                    @map("more") @db.Json // 扩展属性
-  articleStatus  Int?                     @default(1) @map("article_status") @db.TinyInt // 文章状态
-  commentStatus  Int?                     @default(1) @map("comment_status") @db.TinyInt // 评论状态
-  order          Int?                     @map("order") // 排序
-  publishedAt    Int?                     @map("published_at") // 发布时间
+  postFormat     Int?                     @default(1) @map("post_format") @db.TinyInt
+  seoTitle       String?                  @map("seo_title") @db.VarChar(100)
+  seoKeywords    String?                  @map("seo_keywords") @db.VarChar(255)
+  seoDescription String?                  @map("seo_description") @db.VarChar(255)
+  thumbnail      String?                  @map("thumbnail") @db.VarChar(255)
+  title          String                   @map("title") @db.VarChar(100)
+  content        String?                  @map("content") @db.LongText
+  keywords       String?                  @map("keywords") @db.VarChar(255)
+  excerpt        String?                  @map("excerpt") @db.VarChar(255)
+  author         String?                  @map("author") @db.VarChar(50)
+  source         String?                  @map("source") @db.VarChar(255)
+  isTop          Int?                     @map("is_top") @db.TinyInt
+  hits           Int?                     @map("hits")
+  favorites      Int?                     @map("favorites")
+  likes          Int?                     @map("likes")
+  comments       Int?                     @map("comments")
+  more           Json?                    @map("more")
+  articleStatus  Int?                     @default(1) @map("article_status") @db.TinyInt
+  commentStatus  Int?                     @default(1) @map("comment_status") @db.TinyInt
+  order          Int?                     @map("order")
+  publishedAt    Int?                     @map("published_at")
   createId       Int                      @map("create_id")
   creator        String                   @map("creator") @db.VarChar(50)
   updateId       Int                      @map("update_id")
@@ -35,20 +34,19 @@ model CmsArticle {
   @@map("cms_article")
 }
 
-// 文章分类表
 model CmsArticleCategory {
   articleCategoryId Int                      @id @default(autoincrement()) @map("articleCategoryId")
-  parentId          Int                      @map("parent_id") // 分类id
-  seoTitle          String?                  @map("seo_title") @db.VarChar(100) // 三要素标题，用于seo优化
-  seoKeywords       String?                  @map("seo_keywords") @db.VarChar(255) // 三要素关键词，用于seo优化
-  seoDescription    String?                  @map("seo_description") @db.VarChar(255) // 三要素描述，用于seo优化
+  parentId          Int                      @map("parent_id")
+  seoTitle          String?                  @map("seo_title") @db.VarChar(100)
+  seoKeywords       String?                  @map("seo_keywords") @db.VarChar(255)
+  seoDescription    String?                  @map("seo_description") @db.VarChar(255)
   name              String                   @map("name") @db.VarChar(100)
-  icon              String?                  @map("icon") @db.VarChar(255) // 分类图标 
+  icon              String?                  @map("icon") @db.VarChar(255)
   description       String?                  @map("description") @db.VarChar(255)
-  status            Int?                     @default(1) @map("status") @db.TinyInt()
-  articleCount      Int                      @map("article_count") // 文章数
+  status            Int?                     @default(1) @map("status") @db.TinyInt
+  articleCount      Int                      @map("article_count")
   path              String                   @map("path") @db.VarChar(255)
-  order             Int?                     @map("order") // 排序
+  order             Int?                     @map("order")
   createId          Int                      @map("create_id")
   creator           String                   @map("creator") @db.VarChar(50)
   updateId          Int                      @map("update_id")
@@ -61,36 +59,35 @@ model CmsArticleCategory {
   @@map("cms_article_category")
 }
 
-// 文章和分类关联表
 model CmsArticleCategoryPost {
-  articleId         Int                @map("article_id") // 文章id
-  articleCategoryId Int                @map("article_category_id") //分类id
-  order             Int?               @map("order") // 排序
-  article           CmsArticle         @relation(fields: [articleId], references: [articleId])
+  articleId         Int                @map("article_id")
+  articleCategoryId Int                @map("article_category_id")
+  order             Int?               @map("order")
   articleCategory   CmsArticleCategory @relation(fields: [articleCategoryId], references: [articleCategoryId])
+  article           CmsArticle         @relation(fields: [articleId], references: [articleId])
 
   @@unique([articleId, articleCategoryId])
+  @@index([articleCategoryId], map: "cms_article_category_post_article_category_id_fkey")
   @@map("cms_article_category_post")
 }
 
-// 文章标签表
 model CmsArticleTag {
-  tagId        Int                 @id @default(autoincrement()) // 标签id
-  name         String              @unique // 标签名称
-  status       Int                 @default(1) // 状态
-  articleCount Int                 @map("article_count") // 文章数
+  tagId        Int                 @id @default(autoincrement())
+  name         String              @unique
+  status       Int                 @default(1)
+  articleCount Int                 @map("article_count")
   articles     CmsArticleTagPost[]
 
   @@map("cms_article_tag")
 }
 
-// 文章和标签关联表
 model CmsArticleTagPost {
-  articleId  Int           @map("article_id") // 文章id
-  tagId      Int           @map("tag_id") // 标签id
+  articleId  Int           @map("article_id")
+  tagId      Int           @map("tag_id")
   article    CmsArticle    @relation(fields: [articleId], references: [articleId])
   articleTag CmsArticleTag @relation(fields: [tagId], references: [tagId])
 
   @@unique([articleId, tagId])
+  @@index([tagId], map: "cms_article_tag_post_tag_id_fkey")
   @@map("cms_article_tag_post")
 }

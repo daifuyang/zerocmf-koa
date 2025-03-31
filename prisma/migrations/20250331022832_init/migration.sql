@@ -64,6 +64,7 @@ CREATE TABLE `cms_article_category_post` (
     `article_category_id` INTEGER NOT NULL,
     `order` INTEGER NULL,
 
+    INDEX `cms_article_category_post_article_category_id_fkey`(`article_category_id`),
     UNIQUE INDEX `cms_article_category_post_article_id_article_category_id_key`(`article_id`, `article_category_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -83,6 +84,7 @@ CREATE TABLE `cms_article_tag_post` (
     `article_id` INTEGER NOT NULL,
     `tag_id` INTEGER NOT NULL,
 
+    INDEX `cms_article_tag_post_tag_id_fkey`(`tag_id`),
     UNIQUE INDEX `cms_article_tag_post_article_id_tag_id_key`(`article_id`, `tag_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -104,7 +106,7 @@ CREATE TABLE `sys_user` (
     `login_at` INTEGER NULL,
     `status` TINYINT NOT NULL DEFAULT 1,
     `remark` VARCHAR(500) NOT NULL DEFAULT '',
-    `created_at` INTEGER NOT NULL,
+    `created_at` INTEGER NOT NULL DEFAULT 0,
     `updated_at` INTEGER NOT NULL,
     `deleted_at` INTEGER NOT NULL DEFAULT 0,
 
@@ -401,10 +403,10 @@ CREATE TABLE `sys_operation_log` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `cms_article_category_post` ADD CONSTRAINT `cms_article_category_post_article_id_fkey` FOREIGN KEY (`article_id`) REFERENCES `cms_article`(`article`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `cms_article_category_post` ADD CONSTRAINT `cms_article_category_post_article_category_id_fkey` FOREIGN KEY (`article_category_id`) REFERENCES `cms_article_category`(`articleCategoryId`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `cms_article_category_post` ADD CONSTRAINT `cms_article_category_post_article_category_id_fkey` FOREIGN KEY (`article_category_id`) REFERENCES `cms_article_category`(`articleCategoryId`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `cms_article_category_post` ADD CONSTRAINT `cms_article_category_post_article_id_fkey` FOREIGN KEY (`article_id`) REFERENCES `cms_article`(`article`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `cms_article_tag_post` ADD CONSTRAINT `cms_article_tag_post_article_id_fkey` FOREIGN KEY (`article_id`) REFERENCES `cms_article`(`article`) ON DELETE RESTRICT ON UPDATE CASCADE;
