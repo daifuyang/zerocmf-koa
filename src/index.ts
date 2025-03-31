@@ -13,6 +13,7 @@ import { Cmf } from "./typings/index";
 
 // 注册核心路由
 const router = registerCmfRoutes();
+
 const cmf: Cmf = {
   router,
   migrate: null
@@ -22,7 +23,7 @@ install(cmf);
 registerPlugins(cmf);
 
 if (cmf.migrate) {
-  cmf.migrate().commit(router);
+  cmf.migrate().commit();
 }
 
 // 检查并创建上传目录

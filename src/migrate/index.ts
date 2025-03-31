@@ -8,21 +8,21 @@ interface MigrateProps {
 }
 
 export type Migrate = (props?: MigrateProps) => {
-  commit: (router: Router) => void;
+  commit: () => void;
 };
+
 
 function migrate(props: MigrateProps = {}) {
   const { menus } = props;
   if (menus) {
     migrateMenu(menus);
   }
-  const commit = (router: Router) => {
-    cmfMigrate({ menus: systemMenus, router });
+  const commit = () => {
+    cmfMigrate({ menus: systemMenus, router: this.router });
   }
 
   return {
     commit
   }
-
 }
 export default migrate;
