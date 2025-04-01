@@ -3,22 +3,30 @@
 import { getEnforcer } from "@/casbin";
 import { getApiByMethodAndPath } from "../models/api";
 import { getMenuApiListByQuery } from "../models/menuApi";
+import { getCurrentUser } from "@/lib/userinfo";
 
 export default async function apiAccess(ctx: any, next: any) {
   // 获取当前用户id
-  const { userId } = ctx.state.user;
+  const { userId } = getCurrentUser(ctx);
   const e = await getEnforcer();
   // 根据id获取用户角色
-  const roleIds = await e.getUsersForRole(`${userId}`);
+  const roleIds = await e.getRolesForUser(`${userId}`);
+
+  // 获取当前请求信息
+  const { url, method } = ctx.request;
+  if (userId === 2 && method !== "GET") {
+    ctx.body = {
+      code: 0,
+      msg: "演示模式，禁止操作！"
+    };
+    return;
+  }
 
   if (userId === 1 || roleIds.includes("1")) {
     ctx.state.admin = true;
     await next();
     return;
   }
-
-  // 获取当前请求信息
-  const { url, method } = ctx.request;
 
   const pathname = url.split("?")[0];
 
@@ -31,7 +39,7 @@ export default async function apiAccess(ctx: any, next: any) {
     for (const api of menuApis) {
       menuIds.push(api.menuId.toString());
     }
-    const access = await e.hasPermissionForUser(userId, ...menuIds);
+    const access = await e.hasPermissionForUser(userId.toString(), ...menuIds);
     if (!access) {
       ctx.status = 403;
       ctx.body = {

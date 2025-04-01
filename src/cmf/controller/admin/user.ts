@@ -172,22 +172,23 @@ const saveUser = async (ctx: any, userId: string | null) => {
     }
   }
 
-  const salt = generateSalt();
-  const hashPwd = await hashPassword(password + salt);
-
-  // 编辑逻辑
+  let salt;
+  let hashPwd;
   if (userId !== null) {
     const exist = await getUserById(Number(userId));
     if (!exist) {
       ctx.body = response.error("用户不存在！");
       return;
     }
-    let salt = exist.salt;
-    let hashPwd = exist.password;
-    if (!password) {
+    salt = exist.salt;
+    hashPwd = exist.password;
+    if (password) {
       salt = generateSalt();
       hashPwd = await hashPassword(password + salt);
     }
+  } else {
+    salt = generateSalt();
+    hashPwd = await hashPassword(password + salt);
   }
 
   const data = {
