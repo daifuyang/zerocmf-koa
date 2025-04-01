@@ -113,12 +113,14 @@ s deploy
 
 ## 🔗 在线演示
 
-演示地址: [https://demo.zerocmf.com](https://demo.zerocmf.com)
+演示地址: [CMS示例后台](https://demo.zerocmf.com/admin)
+
 - 演示账号: demo / demo
 
 ---
 
 🎯 **环境要求**
+
 - Node.js 18.15+
 - MySQL 8.0+
 - 推荐使用 PNPM 7.18+
