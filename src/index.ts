@@ -7,7 +7,7 @@ import swaggerRouter from "@/cmf/router/swagger";
 import { install } from "./lib/install";
 import registerPlugins from "./plugins";
 import fs from "fs";
-import { PUBLIC_PATH } from "./constants/path";
+import { ADMIN_PATH, PUBLIC_PATH, TEMPLATE_PATH } from "./constants/path";
 import path from "path";
 import { Cmf } from "./typings/index";
 
@@ -35,12 +35,6 @@ if (!fs.existsSync(uploadPath)) {
 const app = new Koa();
 
 app.use(
-  koaStatic(PUBLIC_PATH, {
-    gzip: true
-  })
-);
-
-app.use(
   bodyParser({
     multipart: true,
     formidable: {
@@ -55,6 +49,19 @@ app.use(router.routes());
 
 // 加载swagger.json
 app.use(swaggerRouter.routes());
+
+app.use(koaStatic(TEMPLATE_PATH));
+
+app.use(async (ctx) => {
+  if (ctx.path.startsWith("/admin")) {
+    try {
+      ctx.set("Content-Type", "text/html");
+      ctx.body = fs.readFileSync(path.join(ADMIN_PATH, "index.html"));
+    } catch (error) {
+      ctx.body = "<h1>404 Not Found</h1>";
+    }
+  }
+});
 
 app.listen(port, () => {
   console.log(`🚀 Server is running on port http://localhost:${port}/`);

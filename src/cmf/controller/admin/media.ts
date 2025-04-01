@@ -1,4 +1,11 @@
-import { deleteMedia, getMediaCount, getMediaList, saveMediaList } from "@/cmf/models/media";
+import {
+  deleteMedia,
+  getMediaCount,
+  getMediaList,
+  saveMediaList,
+  updateMedia,
+  getMediaById
+} from "@/cmf/models/media";
 import { parseQuery } from "@/lib/request";
 import response from "@/lib/response";
 import { Context } from "koa";
@@ -82,7 +89,7 @@ export async function addMediaController(ctx: Context) {
 
   if (
     !Array.isArray(files) &&
-    !fileTypes[mediaType]?.extensions?.includes(files.filepath.split(".").pop())
+    !fileTypes[mediaType]?.extensions?.includes(files.filepath.split(".").pop()?.toLowerCase())
   ) {
     ctx.body = response.error("上传失败！", {
       extensions: fileTypes[mediaType]?.extensions,
@@ -161,5 +168,45 @@ export async function deleteMediaController(ctx: Context) {
     ctx.body = response.success("删除成功！", media);
   } catch (error) {
     ctx.body = response.error("删除失败！");
+  }
+}
+
+// 更新媒体文件名
+export async function updateMediaController(ctx: Context) {
+  const { mediaId } = ctx.params;
+  const { remarkName } = ctx.request.body;
+
+  if (!mediaId || !remarkName) {
+    ctx.body = response.error("参数错误！");
+    return;
+  }
+
+  const numberMediaId = Number(mediaId);
+  if (isNaN(numberMediaId)) {
+    ctx.body = response.error("参数错误！");
+    return;
+  }
+
+  try {
+    // 获取原媒体信息
+    const media = await getMediaById(numberMediaId);
+
+    if (!media) {
+      ctx.body = response.error("媒体资源不存在！");
+      return;
+    }
+
+    // 更新数据库记录中的remarkName
+    const updatedMedia = await updateMedia(numberMediaId, {
+      remarkName
+    });
+
+    ctx.body = response.success("更新成功！", {
+      ...updatedMedia,
+      prevPath: `${ctx.request.origin}${media.filePath}`
+    });
+  } catch (error) {
+    console.error("updateMediaController error", error);
+    ctx.body = response.error("更新失败！");
   }
 }

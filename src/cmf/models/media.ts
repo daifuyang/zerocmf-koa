@@ -75,3 +75,28 @@ export const deleteMedia = async (
   });
   return result;
 };
+
+// 获取单个媒体信息
+export const getMediaById = async (
+  mediaId: number,
+  tx = prisma
+) => {
+  return await tx.sysMedia.findUnique({
+    where: { mediaId }
+  });
+};
+
+// 更新媒体信息
+export const updateMedia = async (
+  mediaId: number,
+  data: Prisma.SysMediaUpdateInput,
+  tx = prisma
+) => {
+  const result = await tx.sysMedia.update({
+    where: {
+      mediaId
+    },
+    data
+  });
+  return result;
+};

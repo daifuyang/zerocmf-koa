@@ -40,7 +40,8 @@ import { getOptionController, setOptionController } from "../controller/admin/op
 import {
   addMediaController,
   deleteMediaController,
-  getMediaListController
+  getMediaListController,
+  updateMediaController
 } from "../controller/admin/media";
 import {
   addMediaCategoryController,
@@ -124,7 +125,7 @@ adminRouter.post("/options/:name", setOptionController);
 adminRouter.get("/medias", getMediaListController);
 // adminRouter.get("/medias/:mediaId", )
 adminRouter.post("/medias", addMediaController);
-// adminRouter.put("/medias/:mediaId")
+adminRouter.put("/medias/:mediaId", updateMediaController);
 adminRouter.delete("/medias/:mediaId", deleteMediaController);
 
 // 媒体分类管理
