@@ -35,6 +35,14 @@ if (!fs.existsSync(uploadPath)) {
 const app = new Koa();
 
 app.use(
+  koaStatic(PUBLIC_PATH, {
+    gzip: true
+  })
+);
+app.use(koaStatic(TEMPLATE_PATH));
+
+
+app.use(
   bodyParser({
     multipart: true,
     formidable: {
@@ -49,8 +57,6 @@ app.use(router.routes());
 
 // 加载swagger.json
 app.use(swaggerRouter.routes());
-
-app.use(koaStatic(TEMPLATE_PATH));
 
 app.use(async (ctx) => {
   if (ctx.path.startsWith("/admin")) {
