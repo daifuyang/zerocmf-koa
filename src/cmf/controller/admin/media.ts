@@ -15,11 +15,10 @@ import { PUBLIC_PATH } from "@/constants/path";
 import path from "path";
 import { Prisma } from "@prisma/client";
 import { getOptionValue } from "@/lib/option";
+import { MediaRequest, MediaFiles } from "@/cmf/typings/controller";
 
-// 获取媒体资源列表
 export async function getMediaListController(ctx: Context) {
   const prevPath = getPrevPath(ctx);
-
   const query = ctx.query || {};
   const { current, pageSize, type, categoryId } = parseQuery(query);
 
@@ -48,38 +47,32 @@ export async function getMediaListController(ctx: Context) {
   ctx.body = response.success("获取成功！", pagination);
 }
 
-// 添加媒体资源
-
 const mediaEnums = [0, 1, 2, 3];
 export async function addMediaController(ctx: Context) {
-  const { type, categoryId } = ctx.request.body;
-
+  const body = ctx.request.body as MediaRequest;
+  const { type, categoryId } = body;
   const { origin = "" } = ctx.request;
-
   const mediaType = Number(type);
+
   if (isNaN(mediaType) || !mediaEnums.includes(mediaType)) {
     ctx.body = response.error("上传失败！");
     return;
   }
 
   const categoryIdNumber = categoryId ? Number(categoryId) : undefined;
+  const files = (ctx.request.files as MediaFiles)?.file;
 
-  const files = ctx.request.files?.file;
   if (!files) {
     ctx.body = response.error("上传失败！");
     return;
   }
 
-  // 获取当前日期的文件夹路径
   const uploadFolder = path.resolve(PUBLIC_PATH, getUploadFolder());
-  // 如果文件夹不存在，则创建
   if (!fs.existsSync(uploadFolder)) {
     fs.mkdirSync(uploadFolder, { recursive: true });
   }
 
-  // 获取上传配置
   const options = await getOptionValue("upload");
-
   const fileTypes = {
     0: options.fileTypes.image,
     1: options.fileTypes.audio,
@@ -99,12 +92,8 @@ export async function addMediaController(ctx: Context) {
     return;
   }
 
-  // 处理单个文件或多个文件
-  const results = Array.isArray(files)
-    ? files.map((file) => saveFile(file)) // 处理多个文件
-    : [saveFile(files)]; // 处理单个文件
+  const results = Array.isArray(files) ? files.map((file) => saveFile(file)) : [saveFile(files)];
 
-  // 获取文件的md5和sha1值
   const mediaResults = await Promise.all(
     results.map(async (result) => {
       const { filePath, ...rest } = result;
@@ -120,12 +109,11 @@ export async function addMediaController(ctx: Context) {
         };
       } catch (error) {
         console.error("calculateHashes error", error);
-        // todo
         return null;
       }
     })
   );
-  // 入库
+
   const saveMedia = await saveMediaList(mediaResults);
   if (!saveMedia) {
     ctx.body = response.error("上传失败！");
@@ -134,20 +122,15 @@ export async function addMediaController(ctx: Context) {
 
   ctx.body = response.success(
     "上传成功！",
-    mediaResults.map((item) => {
-      return {
-        ...item,
-        prevPath: `${origin}${item.filePath}`
-      };
-    })
+    mediaResults.map((item) => ({
+      ...item,
+      prevPath: `${origin}${item.filePath}`
+    }))
   );
-  return;
 }
 
-// 删除媒体资源
 export async function deleteMediaController(ctx: Context) {
   const { mediaId } = ctx.params;
-
   if (!mediaId) {
     ctx.body = response.error("参数错误！");
     return;
@@ -171,10 +154,12 @@ export async function deleteMediaController(ctx: Context) {
   }
 }
 
-// 更新媒体文件名
 export async function updateMediaController(ctx: Context) {
-  const { mediaId } = ctx.params;
-  const { remarkName } = ctx.request.body;
+  const body = ctx.request.body as MediaRequest;
+  const { mediaId, remarkName } = {
+    ...ctx.params,
+    ...body
+  };
 
   if (!mediaId || !remarkName) {
     ctx.body = response.error("参数错误！");
@@ -188,19 +173,13 @@ export async function updateMediaController(ctx: Context) {
   }
 
   try {
-    // 获取原媒体信息
     const media = await getMediaById(numberMediaId);
-
     if (!media) {
       ctx.body = response.error("媒体资源不存在！");
       return;
     }
 
-    // 更新数据库记录中的remarkName
-    const updatedMedia = await updateMedia(numberMediaId, {
-      remarkName
-    });
-
+    const updatedMedia = await updateMedia(numberMediaId, { remarkName });
     ctx.body = response.success("更新成功！", {
       ...updatedMedia,
       prevPath: `${ctx.request.origin}${media.filePath}`

@@ -63,7 +63,14 @@ function filterFileTypes(fileTypes: any): any {
 
 export async function setOptionController(ctx: Context) {
   const { name } = ctx.params || {};
-  const value = ctx.request.body || {};
+  const value = ctx.request.body as {
+    maxFiles?: number;
+    chunkSize?: number;
+    fileTypes?: Record<string, {
+      uploadMaxFileSize?: number;
+      extensions?: string[];
+    }>;
+  } || {};
   if (!name || !value) {
     ctx.body = response.error("参数错误！");
     return;

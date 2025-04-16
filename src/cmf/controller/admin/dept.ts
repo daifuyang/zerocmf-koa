@@ -3,13 +3,14 @@ import * as deptModel from '@/cmf/models/dept';
 import { now } from '@/lib/date';
 import response from '@/lib/response';
 import dayjs from 'dayjs';
+import { DeptRequest, DeptWhere } from '@/cmf/typings/controller';
 
 // 获取部门列表
 export const getDeptListController = async (ctx: Context) => {
   try {
     const { deptName, leader, startTime, endTime, status } = ctx.query;
     
-    const where: any = {};
+    const where: DeptWhere = {};
     
     if (deptName) {
       where.deptName = {
@@ -49,7 +50,7 @@ export const getDeptTreeController = async (ctx: Context) => {
   try {
     const { deptName, leader, startTime, endTime, status } = ctx.query;
     
-    const where: any = {};
+    const where: DeptWhere = {};
     
     if (deptName) {
       where.deptName = {
@@ -106,7 +107,8 @@ export const getDeptController = async (ctx: Context) => {
 // 添加部门
 export const createDeptController = async (ctx: Context) => {
   try {
-    const { deptName, parentId = 0, sortOrder = 1, leader, phone, email, status = 1 } = ctx.request.body;
+    const body = ctx.request.body as DeptRequest;
+    const { deptName, parentId = 0, sortOrder = 1, leader, phone, email, status = 1 } = body;
     
     if (!deptName) {
       return ctx.body = response.error('部门名称不能为空');
@@ -150,7 +152,8 @@ export const updateDeptController = async (ctx: Context) => {
       return ctx.body = response.error('部门ID不能为空');
     }
     
-    const { deptName, parentId, sortOrder, leader, phone, email, status } = ctx.request.body;
+    const body = ctx.request.body as DeptRequest;
+    const { deptName, parentId, sortOrder, leader, phone, email, status } = body;
     
     if (deptName) {
       // 检查部门名称是否唯一

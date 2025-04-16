@@ -1,5 +1,6 @@
 import { Context } from "koa";
 import response from "@/lib/response";
+import { DictDataRequest, DictDataWhere, DictDataBatchDeleteRequest } from "@/cmf/typings/controller";
 import {
   getDictDataList,
   getDictDataById,
@@ -21,7 +22,7 @@ export const getDictDataListController = async (ctx: Context) => {
       return;
     }
 
-    const where: any = {
+    const where: DictDataWhere = {
       dictType: dictType as string
     };
 
@@ -100,6 +101,7 @@ export const createDictDataController = async (ctx: Context) => {
   const { userId, loginName } = ctx.state.user;
 
   try {
+    const body = ctx.request.body as DictDataRequest;
     const {
       dictSort,
       dictLabel,
@@ -110,7 +112,7 @@ export const createDictDataController = async (ctx: Context) => {
       isDefault,
       status,
       remark
-    } = ctx.request.body;
+    } = body;
 
     // 必填字段校验
     if (!dictLabel?.trim() || !dictValue?.trim() || !dictType?.trim()) {
@@ -119,7 +121,7 @@ export const createDictDataController = async (ctx: Context) => {
     }
 
     // 设置带默认值的参数
-    const params = {
+    const params: DictDataRequest = {
       dictLabel: dictLabel.trim(),
       dictValue: dictValue.trim(),
       dictType: dictType.trim(),
@@ -127,7 +129,7 @@ export const createDictDataController = async (ctx: Context) => {
       cssClass: cssClass?.trim() || "",
       listClass: listClass?.trim() || "",
       isDefault: Number(isDefault) || 0,
-      status: status || "0",
+      status: Number(status) || 0,
       remark: remark?.trim() || "",
       createdBy: loginName,
       updatedBy: loginName,
@@ -148,6 +150,7 @@ export const createDictDataController = async (ctx: Context) => {
 export const updateDictDataController = async (ctx: Context) => {
   try {
     const { dictCode } = ctx.params;
+    const body = ctx.request.body as DictDataRequest;
     const {
       dictSort,
       dictLabel,
@@ -158,7 +161,7 @@ export const updateDictDataController = async (ctx: Context) => {
       isDefault,
       status,
       remark
-    } = ctx.request.body;
+    } = body;
 
     if (!dictSort || !dictLabel || !dictValue || !dictType) {
       ctx.body = response.error("必填参数不能为空");
@@ -172,8 +175,8 @@ export const updateDictDataController = async (ctx: Context) => {
       dictType,
       cssClass: cssClass || "",
       listClass: listClass || "",
-      isDefault: isDefault || "0",
-      status: status || "0",
+      isDefault: Number(isDefault) || 0,
+      status: Number(status) || 0,
       remark: remark || ""
     });
 
@@ -199,7 +202,7 @@ export const deleteDictDataController = async (ctx: Context) => {
 // 批量删除字典数据
 export const deleteDictDataBatchController = async (ctx: Context) => {
   try {
-    const { dictCodes } = ctx.request.body;
+    const { dictCodes } = ctx.request.body as DictDataBatchDeleteRequest;
 
     if (!Array.isArray(dictCodes) || dictCodes.length === 0) {
       ctx.body = response.error("请选择要删除的数据");

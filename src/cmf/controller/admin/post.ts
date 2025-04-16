@@ -1,5 +1,6 @@
 import { Context } from 'koa';
 import * as postModel from '@/cmf/models/post';
+import { PostRequest } from '@/cmf/typings/controller';
 import { now } from '@/lib/date';
 import response from '@/lib/response';
 import dayjs from 'dayjs';
@@ -80,7 +81,7 @@ export const getPostController = async (ctx: Context) => {
 // 添加岗位
 export const createPostController = async (ctx: Context) => {
   try {
-    const { postCode, postName, sortOrder = 1, status = 1, remark = '' } = ctx.request.body;
+    const { postCode, postName, sortOrder = 1, status = 1, remark = '' } = ctx.request.body as PostRequest;
     
     if (!postCode) {
       return ctx.body = response.error('岗位编码不能为空');
@@ -132,7 +133,7 @@ export const updatePostController = async (ctx: Context) => {
       return ctx.body = response.error('岗位ID不能为空');
     }
     
-    const { postCode, postName, sortOrder, status, remark } = ctx.request.body;
+    const { postCode, postName, sortOrder, status, remark } = ctx.request.body as PostRequest;
     
     if (postCode) {
       // 检查岗位编码是否唯一

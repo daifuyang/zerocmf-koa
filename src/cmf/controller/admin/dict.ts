@@ -1,5 +1,6 @@
 import { Context } from "koa";
 import response from "@/lib/response";
+import { DictRequest, DictWhere } from "@/cmf/typings/controller";
 import {
   getDictTypeCount,
   getDictTypeList,
@@ -15,7 +16,7 @@ import { formatFields, now } from "@/lib/date";
 export const getDictTypeListController = async (ctx: Context) => {
   try {
     const { dictName, dictType, status, current = 1, pageSize = 10 } = ctx.query;
-    const where: any = {};
+    const where: DictWhere = {};
 
     if (dictName) {
       where.dictName = {
@@ -72,7 +73,8 @@ export const getDictTypeInfoController = async (ctx: Context) => {
 // 保存字典类型（创建/更新）
 const saveDictType = async (ctx: Context, dictId?: number) => {
   try {
-    const { dictName, dictType, status, remark } = ctx.request.body;
+    const body = ctx.request.body as DictRequest;
+    const { dictName, dictType, status, remark } = body;
     const { userId, loginName } = ctx.state.user as SysUser;
 
     if (!dictName || !dictType) {
@@ -80,7 +82,7 @@ const saveDictType = async (ctx: Context, dictId?: number) => {
       return;
     }
 
-    const params: any = {
+    const params: DictRequest = {
       dictName,
       dictType,
       remark,

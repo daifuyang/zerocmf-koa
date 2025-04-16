@@ -112,30 +112,49 @@ export const getMenuController = async (ctx: Context) => {
 
 // 公共的保存菜单方法
 const saveMenu = async (ctx: Context, menuId: number | undefined = undefined) => {
+  const body = ctx.request.body as {
+    menuName: string;
+    path?: string;
+    icon?: string;
+    parentId?: number;
+    sortOrder?: number;
+    component?: string;
+    query?: string;
+    isFrame?: number;
+    isCache?: number;
+    menuType?: number;
+    visible?: number;
+    status?: number;
+    perms?: string;
+    createdId?: number;
+    createdBy?: string;
+    updatedId?: number;
+    updatedBy?: string;
+    remark?: string;
+    apis?: (number | string)[];
+  };
+
   const {
     menuName,
-    path,
-    icon,
+    path = '',
+    icon = '',
     parentId = 0,
     sortOrder = 1,
-    component,
-    query,
+    component = '',
+    query = '',
     isFrame = 0,
     isCache = 0,
     menuType = 0,
     visible = 1,
     status = 1,
-    perms,
+    perms = '',
     createdId,
     createdBy = "",
     updatedId,
     updatedBy = "",
     remark = "",
     apis = []
-  }: {
-    [key: string]: any;
-    apis: (number | string)[];
-  } = ctx.request.body;
+  } = body;
 
   // 校验必填字段
   if (!menuName) {

@@ -9,11 +9,11 @@ import {
   deleteRoleController
 } from "../controller/admin/role";
 import {
-  getLoginLogList,
-  getLoginLogDetail,
-  removeLoginLog,
-  cleanLoginLog,
-  exportLoginLog
+  getLoginLogListController,
+  getLoginLogDetailController,
+  removeLoginLogController,
+  cleanLoginLogController,
+  exportLoginLogController
 } from "../controller/admin/loginLog";
 
 import {
@@ -152,11 +152,11 @@ adminRouter.put("/posts/:postId", updatePostController);
 adminRouter.delete("/posts/:postId", deletePostController);
 
 // 登录日志管理
-adminRouter.get("/login-logs", getLoginLogList);
-adminRouter.get("/login-logs/:id", getLoginLogDetail);
-adminRouter.delete("/login-logs", removeLoginLog);
-adminRouter.delete("/login-logs/clean", cleanLoginLog);
-adminRouter.get("/login-logs/export", exportLoginLog);
+adminRouter.get("/login-logs", getLoginLogListController);
+adminRouter.get("/login-logs/:id", getLoginLogDetailController);
+adminRouter.delete("/login-logs", removeLoginLogController);
+adminRouter.delete("/login-logs/clean", cleanLoginLogController);
+adminRouter.get("/login-logs/export", exportLoginLogController);
 
 // 操作日志管理
 adminRouter.get("/operation-logs", getOperationLogListController);

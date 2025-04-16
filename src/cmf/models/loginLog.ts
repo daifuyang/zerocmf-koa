@@ -6,7 +6,7 @@ import prisma from "@/lib/prisma";
  * @param data 登录日志数据
  * @returns 创建的登录日志记录
  */
-export const createLoginLog = async (data: Partial<SysLoginLog>, tx = prisma): Promise<SysLoginLog | null> => {
+export const createLoginLogModel = async (data: Partial<SysLoginLog>, tx = prisma): Promise<SysLoginLog | null> => {
   try {
     return await tx.sysLoginLog.create({
       data: {
@@ -27,7 +27,7 @@ export const createLoginLog = async (data: Partial<SysLoginLog>, tx = prisma): P
  * @param pageSize 每页记录数
  * @returns 登录日志列表和总记录数
  */
-export const getLoginLogs = async (
+export const getLoginLogsModel = async (
   params: {
     ipaddr?: string;
     loginName?: string;
@@ -109,13 +109,13 @@ export const getLoginLogs = async (
 
 /**
  * 根据ID获取登录日志详情
- * @param infoId 日志ID
+ * @param id 日志ID
  * @returns 登录日志详情
  */
-export const getLoginLogById = async (infoId: number, tx = prisma): Promise<SysLoginLog | null> => {
+export const getLoginLogByIdModel = async (infoId: number, tx = prisma) => {
   try {
     return await tx.sysLoginLog.findUnique({
-      where: { infoId }
+      where: { infoId: Number(infoId) }
     });
   } catch (error) {
     console.error("获取登录日志详情失败:", error);
@@ -125,15 +125,15 @@ export const getLoginLogById = async (infoId: number, tx = prisma): Promise<SysL
 
 /**
  * 删除登录日志
- * @param infoIds 日志ID数组
+ * @param ids 日志ID数组
  * @returns 删除结果
  */
-export const deleteLoginLogs = async (infoIds: number[], tx = prisma): Promise<boolean> => {
+export const deleteLoginLogsModel = async (ids: number[], tx = prisma): Promise<boolean> => {
   try {
     await tx.sysLoginLog.deleteMany({
       where: {
         infoId: {
-          in: infoIds
+          in: ids
         }
       }
     });
@@ -148,7 +148,7 @@ export const deleteLoginLogs = async (infoIds: number[], tx = prisma): Promise<b
  * 清空登录日志
  * @returns 清空结果
  */
-export const clearLoginLogs = async (tx = prisma): Promise<boolean> => {
+export const clearLoginLogsModel = async (tx = prisma): Promise<boolean> => {
   try {
     await tx.sysLoginLog.deleteMany({});
     return true;

@@ -1,5 +1,10 @@
 import { Context } from "koa";
 import response from "@/lib/response";
+
+interface MediaCategoryRequest {
+  name: string;
+  parentId?: number;
+}
 import {
   getMediaCategoryCount,
   getMediaCategoryList,
@@ -120,7 +125,7 @@ export async function updateMediaCategoryController(ctx: Context) {
 // 保存媒体分类
 async function saveMediaCategory(ctx: Context, categoryId: number | undefined = undefined) {
   const { userId, loginName } = ctx.state.user;
-  const { name, parentId } = ctx.request.body;
+  const { name, parentId } = ctx.request.body as MediaCategoryRequest;
 
   // 判断是新增还是更新
   if (!categoryId) {
