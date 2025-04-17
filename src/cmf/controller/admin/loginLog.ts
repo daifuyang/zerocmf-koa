@@ -2,11 +2,11 @@ import { Context } from "koa";
 import { parseJson, parseQuery } from "@/lib/request";
 import { LoginLogRequest } from "@/cmf/typings/request";
 import {
-  getLoginLogsList,
-  getLoginLogDetail,
-  removeLoginLogs,
-  cleanAllLoginLogs,
-  exportLoginLogs
+  getLoginLogsListService,
+  getLoginLogDetailService,
+  removeLoginLogsService,
+  cleanAllLoginLogsService,
+  exportLoginLogsService
 } from "../../services/loginLog";
 
 /**
@@ -16,7 +16,7 @@ import {
 export const getLoginLogListController = async (ctx: Context) => {
   const { current, pageSize, ipaddr, loginName, status, startTime, endTime } = parseQuery(ctx.query);
 
-  const result = await getLoginLogsList(
+  const result = await getLoginLogsListService(
     { ipaddr, loginName, status: status !== undefined ? Number(status) : undefined, startTime, endTime },
     current,
     pageSize
@@ -31,7 +31,7 @@ export const getLoginLogListController = async (ctx: Context) => {
  */
 export const getLoginLogDetailController = async (ctx: Context) => {
   const { id } = ctx.params;
-  await getLoginLogDetail(ctx, id);
+  await getLoginLogDetailService(ctx, id);
 };
 
 /**
@@ -40,7 +40,7 @@ export const getLoginLogDetailController = async (ctx: Context) => {
  */
 export const removeLoginLogController = async (ctx: Context) => {
   const { ids } = parseJson<LoginLogRequest>(ctx);
-  await removeLoginLogs(ctx, ids);
+  await removeLoginLogsService(ctx, ids);
 };
 
 /**
@@ -48,7 +48,7 @@ export const removeLoginLogController = async (ctx: Context) => {
  * @param ctx Koa上下文
  */
 export const cleanLoginLogController = async (ctx: Context) => {
-  await cleanAllLoginLogs(ctx);
+  await cleanAllLoginLogsService(ctx);
 };
 
 /**
@@ -56,5 +56,5 @@ export const cleanLoginLogController = async (ctx: Context) => {
  * @param ctx Koa上下文
  */
 export const exportLoginLogController = async (ctx: Context) => {
-  await exportLoginLogs(ctx);
+  await exportLoginLogsService(ctx);
 };

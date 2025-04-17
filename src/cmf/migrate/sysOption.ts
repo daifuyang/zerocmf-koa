@@ -1,8 +1,8 @@
-import { getOptionValue, setOptionValue } from "../models/option";
+import { getOptionValueModel, setOptionValueModel } from "../models/option";
 
 export default async function migrateOption() { 
     const key = "upload";
-     const option = await getOptionValue(key);
+     const option = await getOptionValueModel(key);
      if (!option) {
         const inValue = {
             maxFiles: 20,
@@ -26,6 +26,6 @@ export default async function migrateOption() {
               }
             }
           };
-        await setOptionValue(key, JSON.stringify(inValue));
+        await setOptionValueModel(key, JSON.stringify(inValue));
      }
 }

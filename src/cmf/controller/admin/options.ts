@@ -1,4 +1,4 @@
-import { getOptionValue, setOptionValue } from "@/cmf/models/option";
+import { getOptionValueModel, setOptionValueModel } from "@/cmf/models/option";
 import response from "@/lib/response";
 import { Context } from "koa";
 
@@ -29,7 +29,7 @@ export async function getOptionController(ctx: Context) {
     return;
   }
 
-  const option = await getOptionValue(name as string);
+  const option = await getOptionValueModel(name as string);
   if (option.optionValue) {
     option.optionValue = JSON.parse(option.optionValue);
   }
@@ -114,7 +114,7 @@ export async function setOptionController(ctx: Context) {
     }
     setValue = JSON.stringify(inValue);
   }
-  await setOptionValue(name, setValue);
+  await setOptionValueModel(name, setValue);
   ctx.body = response.success("设置成功！", setValue);
   return;
 }

@@ -1,8 +1,8 @@
 // 接口权限
 
 import { getEnforcer } from "@/casbin";
-import { getApiByMethodAndPath } from "../models/api";
-import { getMenuApiListByQuery } from "../models/menuApi";
+import { getApiByMethodAndPathModel } from "../models/api";
+import { getMenuApiListByQueryModel } from "../models/menuApi";
 import { getCurrentUser } from "@/lib/userinfo";
 
 export default async function apiAccess(ctx: any, next: any) {
@@ -31,10 +31,10 @@ export default async function apiAccess(ctx: any, next: any) {
   const pathname = url.split("?")[0];
 
   // 如果接口不在权限表中
-  const api = await getApiByMethodAndPath(method, pathname);
+  const api = await getApiByMethodAndPathModel(method, pathname);
   if (api) {
     // 根据apiId获取权限信息
-    const menuApis = await getMenuApiListByQuery({ apiId: api.id });
+    const menuApis = await getMenuApiListByQueryModel({ apiId: api.id });
     let menuIds: string[] = [];
     for (const api of menuApis) {
       menuIds.push(api.menuId.toString());

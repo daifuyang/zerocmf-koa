@@ -1,11 +1,11 @@
 import { Context } from "koa";
 import { SysUser } from "@prisma/client";
-import { getUser } from "../models/user";
+import { getUserModel } from "../models/user";
 import { getClientInfo } from "@/lib/clientInfo";
 import { createLoginLogModel } from "../models/loginLog";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { createUserToken } from "../models/userToken";
+import { createUserTokenModel } from "../models/userToken";
 import { calculateExpiresAt } from "@/lib/date";
 import {
   jwtRefreshSecret,
@@ -29,7 +29,7 @@ export const accountEnum = {
  * @param account 用户账号
  * @returns 登录日志基本信息
  */
-export const prepareLoginLogBase = (ctx: Context, account: string) => {
+export const prepareLoginLogBaseService = (ctx: Context, account: string) => {
   const clientInfo = getClientInfo(ctx);
 
   return {
@@ -49,8 +49,8 @@ export const prepareLoginLogBase = (ctx: Context, account: string) => {
  * @param msg 消息
  * @param userId 用户ID
  */
-export const recordLoginLog = async (
-  logBase: ReturnType<typeof prepareLoginLogBase>,
+export const recordLoginLogService = async (
+  logBase: ReturnType<typeof prepareLoginLogBaseService>,
   status: number,
   msg: string,
   userId?: number
@@ -69,18 +69,18 @@ export const recordLoginLog = async (
  * @param account 账号
  * @returns 用户信息
  */
-export const getUserByLoginType = async (
+export const getUserByLoginTypeService = async (
   loginType: string,
   account: string
 ): Promise<SysUser | null> => {
   switch (loginType) {
     case "email":
-      return await getUser({ email: account });
+      return await getUserModel({ email: account });
     case "phone":
-      return await getUser({ phone: account });
+      return await getUserModel({ phone: account });
     case "account":
     default:
-      return await getUser({ loginName: account });
+      return await getUserModel({ loginName: account });
   }
 };
 
@@ -90,7 +90,7 @@ export const getUserByLoginType = async (
  * @param user 用户信息
  * @returns 密码是否有效
  */
-export const validatePassword = (password: string, user: SysUser): boolean => {
+export const validatePasswordService = (password: string, user: SysUser): boolean => {
   if (!user?.password || !user?.salt) return false;
 
   const pwd = `${password}${user.salt}`;
@@ -102,7 +102,7 @@ export const validatePassword = (password: string, user: SysUser): boolean => {
  * @param userId 用户ID
  * @returns 令牌信息
  */
-export const generateUserTokens = async (userId: number) => {
+export const generateUserTokensService = async (userId: number) => {
   // 生成JWT token
   const expiresIn = jwtSecretExpire;
   const accessToken = jwt.sign({ userId }, jwtSecret, { expiresIn });
@@ -116,7 +116,7 @@ export const generateUserTokens = async (userId: number) => {
   const expiresAt = calculateExpiresAt(expiresIn);
   const reExpiresAt = calculateExpiresAt(reExpiresIn);
 
-  const userToken = await createUserToken({
+  const userToken = await createUserTokenModel({
     userId,
     accessToken,
     refreshToken,
@@ -139,7 +139,7 @@ export const generateUserTokens = async (userId: number) => {
  * @param token 令牌
  * @returns 解码后的用户ID
  */
-export const verifyToken = (token: string): number | null => {
+export const verifyTokenService = (token: string): number | null => {
   try {
     const decoded = jwt.verify(token, jwtSecret);
     return (decoded as any).userId;

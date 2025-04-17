@@ -52,7 +52,7 @@ export const errorStatusCodes = {
  * @param errorType 错误类型
  * @param details 错误详情
  */
-export const handleApiError = (ctx: Context, errorType: ErrorType, details?: any) => {
+export const handleApiErrorService = (ctx: Context, errorType: ErrorType, details?: any) => {
   const message = errorMessages[errorType] || "未知错误";
   const statusCode = errorStatusCodes[errorType] || 500;
   
@@ -66,7 +66,7 @@ export const handleApiError = (ctx: Context, errorType: ErrorType, details?: any
  * @param ctx Koa上下文
  * @param error 错误对象
  */
-export const handleServerError = (ctx: Context, error: Error) => {
+export const handleServerErrorService = (ctx: Context, error: Error) => {
   console.error("服务器错误:", error);
-  return handleApiError(ctx, ErrorType.SERVER_ERROR, { message: error.message });
+  return handleApiErrorService(ctx, ErrorType.SERVER_ERROR, { message: error.message });
 };

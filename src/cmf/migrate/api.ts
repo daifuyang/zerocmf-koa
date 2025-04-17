@@ -1,4 +1,4 @@
-import { createApi, getApiByMethodAndPath, updateApi } from "../models/api";
+import { createApiModel, getApiByMethodAndPathModel, updateApiModel } from "../models/api";
 import { adminPrefix, apiv1 } from "../constants/router";
 import Router from "koa-router";
 const migrateApi = async (router: Router) => {
@@ -20,15 +20,15 @@ const migrateApi = async (router: Router) => {
   for (const route of routes) {
     const method = route.method.toLowerCase();
     const path = route.path;
-    const existApi = await getApiByMethodAndPath(method, path);
+      const existApi = await getApiByMethodAndPathModel(method, path);
     if (existApi) {
-      updateApi(existApi.id, {
+        updateApiModel(existApi.id, {
         method,
         path
       });
     } else {
       // 创建api
-      createApi({
+      createApiModel({
         method,
         path
       });

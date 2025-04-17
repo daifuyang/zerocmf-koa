@@ -3,13 +3,13 @@ import { formatFields, now } from "@/lib/date";
 import response from "@/lib/response";
 import { generateSalt, hashPassword } from "@/lib/utils";
 import {
-  createUser,
-  deleteUser,
-  getUserById,
-  getUserCount,
-  getUser,
-  getUserList,
-  updateUser
+  createUserModel,
+  deleteUserModel,
+  getUserByIdModel,
+  getUserCountModel,
+  getUserModel,
+  getUserListModel,
+  updateUserModel
 } from "../../models/user";
 
 // 获取管理员列表
@@ -43,7 +43,7 @@ export const getUsersController = async (ctx: any) => {
     where.status = Number(status);
   }
 
-  const users = await getUserList(where, Number(current), Number(pageSize));
+  const users = await getUserListModel(where, Number(current), Number(pageSize));
 
   formatFields(users, [
     { fromField: "loginAt", toField: "loginTime" },
@@ -61,7 +61,7 @@ export const getUsersController = async (ctx: any) => {
   if (pageSize === "0") {
     pagination = data;
   } else {
-    const total = await getUserCount(where);
+    const total = await getUserCountModel(where);
     pagination = {
       page: Number(current),
       pageSize: Number(pageSize),
@@ -80,7 +80,7 @@ export const getUserController = async (ctx: any) => {
     ctx.body = response.error("参数错误！");
     return;
   }
-  const user = await getUserById(Number(userId));
+  const user = await getUserByIdModel(Number(userId));
   if (!user) {
     ctx.body = response.error("用户不存在！");
     return;
@@ -128,7 +128,7 @@ const saveUser = async (ctx: any, userId: string | null) => {
     return;
   }
 
-  const userModel = await getUser({ loginName });
+  const userModel = await getUserModel({ loginName });
   if (userModel) {
     if (userId === null) {
       ctx.body = response.error("登录用户名已存在！");
@@ -147,7 +147,7 @@ const saveUser = async (ctx: any, userId: string | null) => {
   }
 
   if (phone) {
-    const userModel = await getUser({ phone });
+    const userModel = await getUserModel({ phone });
     if (userModel) {
       if (userId === null) {
         ctx.body = response.error("手机号已存在！");
@@ -160,7 +160,7 @@ const saveUser = async (ctx: any, userId: string | null) => {
   }
 
   if (email) {
-    const userModel = await getUser({ email });
+    const userModel = await getUserModel({ email });
     if (userModel) {
       if (userId === null) {
         ctx.body = response.error("邮箱已存在！");
@@ -175,7 +175,7 @@ const saveUser = async (ctx: any, userId: string | null) => {
   let salt;
   let hashPwd;
   if (userId !== null) {
-    const exist = await getUserById(Number(userId));
+    const exist = await getUserByIdModel(Number(userId));
     if (!exist) {
       ctx.body = response.error("用户不存在！");
       return;
@@ -214,10 +214,10 @@ const saveUser = async (ctx: any, userId: string | null) => {
   let user = null;
   let msg = "";
   if (userId !== null) {
-    user = await updateUser(Number(userId), data);
+    user = await updateUserModel(Number(userId), data);
     msg = "修改成功！";
   } else {
-    user = await createUser(data);
+    user = await createUserModel(data);
     msg = "添加成功！";
   }
 
@@ -247,13 +247,13 @@ export const deleteUserController = async (ctx: any) => {
     return;
   }
 
-  const exist = await getUserById(numberUserId);
+  const exist = await getUserByIdModel(numberUserId);
   if (!exist) {
     ctx.body = response.error("用户不存在！");
     return;
   }
 
-  const user = await deleteUser(numberUserId);
+  const user = await deleteUserModel(numberUserId);
   ctx.body = response.success("删除成功！", user);
   return;
 };

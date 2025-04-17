@@ -1,10 +1,10 @@
-import { createMenu, getMenuByName, getMenuByQuery, updateMenu } from "../models/menu";
+import { createMenuModel, getMenuByNameModel, getMenuByQueryModel, updateMenuModel } from "../models/menu";
 import { now } from "@/lib/date";
 import { SysApi, SysMenu, SysMenuApi } from "@prisma/client";
-import { createApi, getApiByMethodAndPath, updateApi } from "../models/api";
-import { createMenuApis, getMenuApiByMenuIdAndApiId } from "../models/menuApi";
+import { createApiModel, getApiByMethodAndPathModel, updateApiModel } from "../models/api";
+import { createMenuApisModel, getMenuApiByMenuIdAndApiIdModel } from "../models/menuApi";
 
-interface MenuItem {
+export interface MenuItem {
   perms: string;
   menuName: string;
   path: string;
@@ -21,12 +21,12 @@ async function parseMenuItems(menuItems: MenuItem[], parentId: number = 0) {
     // 打印菜单的名称和路径
     let menuType = item.menuType || 0;
     menuType = Number(menuType);
-    const menu = await getMenuByQuery({
+    const menu = await getMenuByQueryModel({
       perms: item.perms,
     });
     let menuModel: SysMenu;
     if (menu?.menuId) {
-      menuModel = await updateMenu(menu.menuId, {
+      menuModel = await updateMenuModel(menu.menuId, {
         menuName: item.menuName,
         parentId,
         menuType,
@@ -41,7 +41,7 @@ async function parseMenuItems(menuItems: MenuItem[], parentId: number = 0) {
         updatedAt: now()
       });
     } else {
-      menuModel = await createMenu({
+      menuModel = await createMenuModel({
         menuName: item.menuName,
         parentId,
         menuType,
@@ -65,10 +65,10 @@ async function parseMenuItems(menuItems: MenuItem[], parentId: number = 0) {
     let menuApiData: SysMenuApi[] = [];
     for (const api of apis) {
       let apiRes = null;
-      const existApi = await getApiByMethodAndPath(api.method, api.path);
+      const existApi = await getApiByMethodAndPathModel(api.method, api.path);
       if (existApi) {
         // 更新接口
-        apiRes = await updateApi(existApi.id, {
+        apiRes = await updateApiModel(existApi.id, {
           path: api.path,
           method: api.method,
           description: api.description,
@@ -76,7 +76,7 @@ async function parseMenuItems(menuItems: MenuItem[], parentId: number = 0) {
         });
       } else {
         // 创建接口
-        apiRes = await createApi({
+        apiRes = await createApiModel({
           path: api.path,
           method: api.method,
           description: api.description,
@@ -86,7 +86,7 @@ async function parseMenuItems(menuItems: MenuItem[], parentId: number = 0) {
 
       // 更新menu_api关系
       if (apiRes) {
-        const existMenuApi = await getMenuApiByMenuIdAndApiId(menuModel.menuId, apiRes.id);
+        const existMenuApi = await getMenuApiByMenuIdAndApiIdModel(menuModel.menuId, apiRes.id);
         if (!existMenuApi) {
           menuApiData.push({
             menuId: menuModel.menuId,
@@ -98,7 +98,7 @@ async function parseMenuItems(menuItems: MenuItem[], parentId: number = 0) {
 
     // 批量提交
     if (menuApiData.length > 0) {
-      await createMenuApis(menuApiData);
+      await createMenuApisModel(menuApiData);
     }
 
     // 如果有子菜单，递归调用

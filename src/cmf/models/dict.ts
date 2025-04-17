@@ -6,7 +6,7 @@ import { Prisma } from "@prisma/client";
 const dictTypeKey = "dict:type:";
 
 // 根据条件获取字典列表总数
-export const getDictTypeCount = async (
+export const getDictTypeCountModel = async (
   where: Prisma.SysDictTypeWhereInput = {},
   tx = prisma
 ) => {
@@ -16,7 +16,7 @@ export const getDictTypeCount = async (
 };
 
 // 获取字典类型列表
-export const getDictTypeList = async (
+export const getDictTypeListModel = async (
   where: Prisma.SysDictTypeWhereInput = {},
   page: number = 1,
   pageSize: number = 10,
@@ -37,7 +37,7 @@ export const getDictTypeList = async (
 };
 
 // 获取字典类型详情
-export const getDictTypeById = async (dictId: number, tx = prisma) => {
+export const getDictTypeByIdModel = async (dictId: number, tx = prisma) => {
   const cache = await redis.get(`${dictTypeKey}${dictId}`);
   if (cache) {
     return JSON.parse(cache);
@@ -57,7 +57,7 @@ export const getDictTypeById = async (dictId: number, tx = prisma) => {
 };
 
 // 根据字典类型获取字典类型详情
-export const getDictTypeByType = async (dictType: string, tx = prisma) => {
+export const getDictTypeByTypeModel = async (dictType: string, tx = prisma) => {
   return await tx.sysDictType.findUnique({
     where: {
       dictType
@@ -66,14 +66,14 @@ export const getDictTypeByType = async (dictType: string, tx = prisma) => {
 };
 
 // 创建字典类型
-export const createDictType = async (data: Prisma.SysDictTypeCreateInput, tx = prisma) => {
+export const createDictTypeModel = async (data: Prisma.SysDictTypeCreateInput, tx = prisma) => {
   return await tx.sysDictType.create({
     data
   });
 };
 
 // 更新字典类型
-export const updateDictType = async (dictId: number, data: Prisma.SysDictTypeUpdateInput, tx = prisma) => {
+export const updateDictTypeModel = async (dictId: number, data: Prisma.SysDictTypeUpdateInput, tx = prisma) => {
   const dictType = await tx.sysDictType.update({
     where: {
       dictId
@@ -89,11 +89,11 @@ export const updateDictType = async (dictId: number, data: Prisma.SysDictTypeUpd
 };
 
 // 删除字典类型
-export const deleteDictType = async (dictId: number, tx = prisma) => {
+export const deleteDictTypeModel = async (dictId: number, tx = prisma) => {
   return await tx.$transaction([
     tx.sysDictData.deleteMany({
       where: {
-        dictType: (await getDictTypeById(dictId, tx))?.dictType
+        dictType: (await getDictTypeByIdModel(dictId, tx))?.dictType
       }
     }),
     tx.sysDictType.delete({

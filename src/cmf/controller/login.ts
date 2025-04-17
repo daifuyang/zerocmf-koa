@@ -4,13 +4,13 @@ import { Context } from "koa";
 import { parseJson } from "@/lib/request";
 import {
   accountEnum,
-  prepareLoginLogBase,
-  recordLoginLog,
-  getUserByLoginType,
-  validatePassword,
-  generateUserTokens
+  prepareLoginLogBaseService,
+  recordLoginLogService,
+  getUserByLoginTypeService,
+  validatePasswordService,
+  generateUserTokensService
 } from "../services/auth";
-import { ErrorType, handleLoginError } from "../services/errorHandler";
+import { ErrorType, handleLoginErrorService } from "../services/errorHandler";
 
 /**
  * 处理用户登录请求，根据提供的登录类型进行身份验证。
@@ -28,24 +28,24 @@ import { ErrorType, handleLoginError } from "../services/errorHandler";
  * @date 2024-08-14
  */
 
-export const Login = async (ctx: Context) => {
+export const LoginController = async (ctx: Context) => {
   const { account, password, loginType = "account", phoneType } = parseJson<LoginRequest>(ctx);
   
   // 准备登录日志基本信息
-  const loginLogBase = prepareLoginLogBase(ctx, account);
+  const loginLogBase = prepareLoginLogBaseService(ctx, account);
 
   // 验证账号
   if (!account) {
-    await handleLoginError(ctx, ErrorType.ACCOUNT_EMPTY, loginLogBase);
+    await handleLoginErrorService(ctx, ErrorType.ACCOUNT_EMPTY, loginLogBase);
     return;
   }
 
   // 根据登录类型获取用户
-  const user = await getUserByLoginType(loginType, account);
+  const user = await getUserByLoginTypeService(loginType, account);
   
   // 检查用户是否存在
   if (!user) {
-    await handleLoginError(ctx, ErrorType.USER_NOT_EXIST, loginLogBase);
+    await handleLoginErrorService(ctx, ErrorType.USER_NOT_EXIST, loginLogBase);
     return;
   }
 
@@ -57,26 +57,26 @@ export const Login = async (ctx: Context) => {
 
   // 验证密码
   if (!password) {
-    await handleLoginError(ctx, ErrorType.PASSWORD_EMPTY, loginLogBase, user.userId);
+    await handleLoginErrorService(ctx, ErrorType.PASSWORD_EMPTY, loginLogBase, user.userId);
     return;
   }
 
   // 验证密码是否正确
-  const isPasswordValid = validatePassword(password, user);
+  const isPasswordValid = validatePasswordService(password, user);
   if (!isPasswordValid) {
-    await handleLoginError(ctx, ErrorType.PASSWORD_INVALID, loginLogBase, user.userId);
+    await handleLoginErrorService(ctx, ErrorType.PASSWORD_INVALID, loginLogBase, user.userId);
     return;
   }
 
   // 生成用户令牌
-  const tokens = await generateUserTokens(user.userId);
+  const tokens = await generateUserTokensService(user.userId);
   if (!tokens) {
-    await handleLoginError(ctx, ErrorType.LOGIN_FAILED, loginLogBase, user.userId);
+    await handleLoginErrorService(ctx, ErrorType.LOGIN_FAILED, loginLogBase, user.userId);
     return;
   }
 
   // 记录登录成功日志
-  await recordLoginLog(loginLogBase, 1, "登录成功", user.userId);
+  await recordLoginLogService(loginLogBase, 1, "登录成功", user.userId);
 
   ctx.body = response.success("登录成功！", tokens);
 

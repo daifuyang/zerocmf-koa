@@ -85,16 +85,6 @@ export interface DictRequest {
   createdBy?: string;
 }
 
-export interface DictWhere {
-  dictName?: {
-    contains: string;
-  };
-  dictType?: {
-    contains: string;
-  };
-  status?: number;
-}
-
 export interface DictDataRequest {
   dictSort?: number;
   dictLabel?: string;

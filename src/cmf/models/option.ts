@@ -6,7 +6,7 @@ import { serializeData } from "@/lib/utils";
 const optionNameKey = "option:name:";
 
 // 获取option值
-export async function getOptionValue(name: string, tx = prisma) {
+export async function getOptionValueModel(name: string, tx = prisma) {
   const key = `${optionNameKey}${name}`;
   const cache = await redis.get(key);
   if (cache) {
@@ -26,7 +26,7 @@ export async function getOptionValue(name: string, tx = prisma) {
 }
 
 // 设置option值
-export async function setOptionValue(name: string, value: string, tx = prisma) {
+export async function setOptionValueModel(name: string, value: string, tx = prisma) {
   const key = `${optionNameKey}${name}`;
   const option = await tx.sysOption.upsert({
     where: {

@@ -7,7 +7,7 @@ import { Prisma } from "@prisma/client";
 const deptIdKey = "dept:id:";
 
 // 获取部门列表
-export const getDeptList = async (
+export const getDeptListModel = async (
   where: Prisma.SysDeptWhereInput = {},
   tx = prisma
 ) => {
@@ -38,7 +38,7 @@ export const getDeptList = async (
 };
 
 // 根据id获取部门详情
-export const getDeptById = async (deptId: number, tx = prisma) => {
+export const getDeptByIdModel = async (deptId: number, tx = prisma) => {
   const cache = await redis.get(`${deptIdKey}${deptId}`);
   if (cache) {
     return JSON.parse(cache);
@@ -59,7 +59,7 @@ export const getDeptById = async (deptId: number, tx = prisma) => {
 };
 
 // 根据部门名称获取部门
-export const getDeptByName = async (deptName: string, parentId: number = 0, tx = prisma) => {
+export const getDeptByNameModel = async (deptName: string, parentId: number = 0, tx = prisma) => {
   return await tx.sysDept.findFirst({
     where: {
       deptName,
@@ -70,7 +70,7 @@ export const getDeptByName = async (deptName: string, parentId: number = 0, tx =
 };
 
 // 获取部门总数
-export const getDeptCount = async (where: Prisma.SysDeptWhereInput = {}, tx = prisma) => {
+export const getDeptCountModel = async (where: Prisma.SysDeptWhereInput = {}, tx = prisma) => {
   return await tx.sysDept.count({
     where: {
       ...where,
@@ -80,10 +80,10 @@ export const getDeptCount = async (where: Prisma.SysDeptWhereInput = {}, tx = pr
 };
 
 // 创建部门
-export const createDept = async (data, tx = prisma) => {
+export const createDeptModel = async (data, tx = prisma) => {
   // 处理祖级列表
   if (data.parentId > 0) {
-    const parentDept = await getDeptById(data.parentId, tx);
+    const parentDept = await getDeptByIdModel(data.parentId, tx);
     if (parentDept && parentDept.ancestors) {
       data.ancestors = `${parentDept.ancestors},${data.parentId}`;
     } else {
@@ -101,12 +101,12 @@ export const createDept = async (data, tx = prisma) => {
 };
 
 // 更新部门
-export const updateDept = async (deptId: number, data: Prisma.SysDeptUpdateInput, tx = prisma) => {
+export const updateDeptModel = async (deptId: number, data: Prisma.SysDeptUpdateInput, tx = prisma) => {
   // 如果更新了父部门，需要更新祖级列表
   if (data.parentId !== undefined) {
     const parentId = data.parentId as number;
     if (parentId > 0) {
-      const parentDept = await getDeptById(parentId, tx);
+      const parentDept = await getDeptByIdModel(parentId, tx);
       if (parentDept && parentDept.ancestors) {
         data.ancestors = `${parentDept.ancestors},${parentId}`;
       } else {
@@ -162,7 +162,7 @@ async function updateChildrenDeptAncestors(deptId: number, ancestors: string, tx
 }
 
 // 删除部门
-export const deleteDept = async (deptId: number, tx = prisma) => {
+export const deleteDeptModel = async (deptId: number, tx = prisma) => {
   // 检查是否有子部门
   const childCount = await tx.sysDept.count({
     where: {
@@ -203,7 +203,7 @@ export const deleteDept = async (deptId: number, tx = prisma) => {
 };
 
 // 检查部门名称是否唯一
-export const checkDeptNameUnique = async (deptName: string, parentId: number, deptId: number = 0, tx = prisma) => {
+export const checkDeptNameUniqueModel = async (deptName: string, parentId: number, deptId: number = 0, tx = prisma) => {
   const dept = await tx.sysDept.findFirst({
     where: {
       deptName,
@@ -217,7 +217,7 @@ export const checkDeptNameUnique = async (deptName: string, parentId: number, de
 };
 
 // 根据用户ID获取部门列表
-export const getDeptsByUserId = async (userId: number, tx = prisma) => {
+export const getDeptsByUserIdModel = async (userId: number, tx = prisma) => {
   const userDepts = await tx.sysUserDept.findMany({
     where: {
       userId
@@ -241,9 +241,9 @@ export const getDeptsByUserId = async (userId: number, tx = prisma) => {
 };
 
 // 获取部门树结构
-export const getDeptTree = async (where: any = {}, tx = prisma) => {
+export const getDeptTreeModel = async (where: any = {}, tx = prisma) => {
   // 获取符合条件的部门列表
-  const depts = await getDeptList(where, tx);
+  const depts = await getDeptListModel(where, tx);
   
   // 直接构建树形结构
   return buildDeptTree(depts);

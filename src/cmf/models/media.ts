@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 
 // 获取媒体数量
-export const getMediaCount = async (
+export const getMediaCountModel = async (
   where: Prisma.SysMediaWhereInput = {},
   tx = prisma
 ) => {
@@ -18,7 +18,7 @@ export const getMediaCount = async (
 };
 
 // 获取媒体列表
-export const getMediaList = async (
+export const getMediaListModel = async (
   current: number,
   pageSize: number,
   where: Prisma.SysMediaWhereInput = {},
@@ -39,7 +39,7 @@ export const getMediaList = async (
 };
 
 // 保存上传成功的路径信息
-export const saveMedia = async (
+export const saveMediaModel = async (
   media: Prisma.SysMediaCreateInput,
   tx = prisma
 ) => {
@@ -50,7 +50,7 @@ export const saveMedia = async (
 };
 
 // 批量保存
-export const saveMediaList = async (
+export const saveMediaListModel = async (
   mediaList: Prisma.SysMediaCreateInput[],
   tx = prisma
 ) => {
@@ -61,7 +61,7 @@ export const saveMediaList = async (
 };
 
 // 删除
-export const deleteMedia = async (
+export const deleteMediaModel = async (
   mediaId: number,
   tx = prisma
 ) => {
@@ -77,7 +77,7 @@ export const deleteMedia = async (
 };
 
 // 获取单个媒体信息
-export const getMediaById = async (
+export const getMediaByIdModel = async (
   mediaId: number,
   tx = prisma
 ) => {
@@ -87,7 +87,7 @@ export const getMediaById = async (
 };
 
 // 更新媒体信息
-export const updateMedia = async (
+export const updateMediaModel = async (
   mediaId: number,
   data: Prisma.SysMediaUpdateInput,
   tx = prisma

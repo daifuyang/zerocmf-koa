@@ -1,6 +1,6 @@
 import { Context } from "koa";
 import response from "@/lib/response";
-import { recordLoginLog } from "./auth";
+import { recordLoginLogService } from "./auth";
 
 /**
  * 错误类型枚举
@@ -86,7 +86,7 @@ export const errorStatusCodes = {
  * @param errorType 错误类型
  * @param details 错误详情
  */
-export const handleApiError = (ctx: Context, errorType: ErrorType, details?: any) => {
+export const handleApiErrorService = (ctx: Context, errorType: ErrorType, details?: any) => {
   const message = errorMessages[errorType] || "未知错误";
   const statusCode = errorStatusCodes[errorType] || 500;
   
@@ -100,9 +100,9 @@ export const handleApiError = (ctx: Context, errorType: ErrorType, details?: any
  * @param ctx Koa上下文
  * @param error 错误对象
  */
-export const handleServerError = (ctx: Context, error: Error) => {
+export const handleServerErrorService = (ctx: Context, error: Error) => {
   console.error("服务器错误:", error);
-  return handleApiError(ctx, ErrorType.SERVER_ERROR, { message: error.message });
+  return handleApiErrorService(ctx, ErrorType.SERVER_ERROR, { message: error.message });
 };
 
 /**
@@ -112,14 +112,14 @@ export const handleServerError = (ctx: Context, error: Error) => {
  * @param loginLogBase 登录日志基本信息
  * @param userId 用户ID
  */
-export const handleLoginError = async (ctx: Context, errorType: ErrorType, loginLogBase: any, userId?: number) => {
+export const handleLoginErrorService = async (ctx: Context, errorType: ErrorType, loginLogBase: any, userId?: number) => {
   const message = errorMessages[errorType] || "登录失败";
   
   // 记录登录日志
-  await recordLoginLog(loginLogBase, 0, message, userId);
+  await recordLoginLogService(loginLogBase, 0, message, userId);
   
   // 返回错误响应
-  return handleApiError(ctx, errorType);
+  return handleApiErrorService(ctx, errorType);
 };
 
 /**
@@ -127,6 +127,6 @@ export const handleLoginError = async (ctx: Context, errorType: ErrorType, login
  * @param ctx Koa上下文
  * @param errorType 错误类型
  */
-export const handleLoginLogError = (ctx: Context, errorType: ErrorType) => {
-  return handleApiError(ctx, errorType);
+export const handleLoginLogErrorService = (ctx: Context, errorType: ErrorType) => {
+  return handleApiErrorService(ctx, errorType);
 };

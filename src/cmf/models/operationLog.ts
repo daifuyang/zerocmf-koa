@@ -36,7 +36,7 @@ export enum OperatorType {
  * @returns 返回一个 Promise，解析为操作日志的总数（number 类型）。
  *          如果发生错误，则返回 0。
  */
-export const getOperationLogTotal = async (
+export const getOperationLogTotalModel = async (
   where: Prisma.SysOperationLogWhereInput,
   tx = prisma
 ) => {
@@ -57,7 +57,7 @@ export const getOperationLogTotal = async (
  *             用于执行数据库查询操作。
  * @returns 返回一个包含操作日志记录的数组。如果查询失败，则返回空数组。
  */
-export const getOperationLogList = async (
+export const getOperationLogListModel = async (
   where: Prisma.SysOperationLogWhereInput,
   current: number,
   pageSize: number,
@@ -85,7 +85,7 @@ export const getOperationLogList = async (
  * @param data 操作日志数据
  * @returns 创建的操作日志记录
  */
-export const createOperationLog = async (
+export const createOperationLogModel = async (
   data: Partial<SysOperationLog>,
   tx = prisma
 ): Promise<SysOperationLog | null> => {
@@ -104,7 +104,7 @@ export const createOperationLog = async (
  * @param operId 日志ID
  * @returns 操作日志详情
  */
-export const getOperationLogById = async (
+export const getOperationLogByIdModel = async (
   operId: number,
   tx = prisma
 ): Promise<SysOperationLog | null> => {
@@ -123,7 +123,7 @@ export const getOperationLogById = async (
  * @param operIds 日志ID数组
  * @returns 删除结果
  */
-export const deleteOperationLogs = async (operIds: number[], tx = prisma): Promise<boolean> => {
+export const deleteOperationLogsModel = async (operIds: number[], tx = prisma): Promise<boolean> => {
   try {
     await tx.sysOperationLog.deleteMany({
       where: {
@@ -143,7 +143,7 @@ export const deleteOperationLogs = async (operIds: number[], tx = prisma): Promi
  * 清空操作日志
  * @returns 清空结果
  */
-export const clearOperationLogs = async (tx = prisma): Promise<boolean> => {
+export const clearOperationLogsModel = async (tx = prisma): Promise<boolean> => {
   try {
     await tx.sysOperationLog.deleteMany({});
     return true;

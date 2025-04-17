@@ -1,5 +1,5 @@
 import { now } from "@/lib/date";
-import { createPost, getPostByCode } from "../models/post";
+import { createPostModel, getPostByCodeModel } from "../models/post";
 
 // 岗位数据迁移
 export default async function migratePost() {
@@ -17,11 +17,11 @@ export default async function migratePost() {
   // 遍历岗位数据并创建
   for (const post of posts) {
     // 检查岗位是否已存在
-    const existingPost = await getPostByCode(post.postCode);
+    const existingPost = await getPostByCodeModel(post.postCode);
     
     // 如果不存在，则创建岗位
     if (!existingPost) {
-      await createPost({
+      await createPostModel({
         ...post,
         createdBy: "admin",
         createdAt: now(),

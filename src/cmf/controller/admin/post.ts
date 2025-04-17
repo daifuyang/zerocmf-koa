@@ -38,13 +38,13 @@ export const getPostListController = async (ctx: Context) => {
       where.status = Number(status);
     }
     
-    const posts = await postModel.getPostList(where, Number(current), Number(pageSize));
+    const posts = await postModel.getPostListModel(where, Number(current), Number(pageSize));
     
     let pagination = {};
     if (pageSize === "0") {
       pagination = posts;
     } else {
-      const total = await postModel.getPostCount(where);
+      const total = await postModel.getPostCountModel(where);
       pagination = {
         page: Number(current),
         pageSize: Number(pageSize),
@@ -67,7 +67,7 @@ export const getPostController = async (ctx: Context) => {
       return ctx.body = response.error('岗位ID不能为空');
     }
     
-    const post = await postModel.getPostById(Number(postId));
+    const post = await postModel.getPostByIdModel(Number(postId));
     if (!post) {
       return ctx.body = response.error('岗位不存在');
     }
@@ -92,13 +92,13 @@ export const createPostController = async (ctx: Context) => {
     }
     
     // 检查岗位编码是否唯一
-    const isCodeUnique = await postModel.checkPostCodeUnique(postCode);
+    const isCodeUnique = await postModel.checkPostCodeUniqueModel(postCode);
     if (!isCodeUnique) {
       return ctx.body = response.error('岗位编码已存在');
     }
     
     // 检查岗位名称是否唯一
-    const isNameUnique = await postModel.checkPostNameUnique(postName);
+    const isNameUnique = await postModel.checkPostNameUniqueModel(postName);
     if (!isNameUnique) {
       return ctx.body = response.error('岗位名称已存在');
     }
@@ -118,7 +118,7 @@ export const createPostController = async (ctx: Context) => {
       updatedAt: now()
     };
     
-    const post = await postModel.createPost(data);
+    const post = await postModel.createPostModel(data);
     return ctx.body = response.success('添加成功', post);
   } catch (err: any) {
     return ctx.body = response.error(err.message);
@@ -137,7 +137,7 @@ export const updatePostController = async (ctx: Context) => {
     
     if (postCode) {
       // 检查岗位编码是否唯一
-      const isCodeUnique = await postModel.checkPostCodeUnique(postCode, Number(postId));
+      const isCodeUnique = await postModel.checkPostCodeUniqueModel(postCode, Number(postId));
       if (!isCodeUnique) {
         return ctx.body = response.error('岗位编码已存在');
       }
@@ -145,7 +145,7 @@ export const updatePostController = async (ctx: Context) => {
     
     if (postName) {
       // 检查岗位名称是否唯一
-      const isNameUnique = await postModel.checkPostNameUnique(postName, Number(postId));
+      const isNameUnique = await postModel.checkPostNameUniqueModel(postName, Number(postId));
       if (!isNameUnique) {
         return ctx.body = response.error('岗位名称已存在');
       }
@@ -166,7 +166,7 @@ export const updatePostController = async (ctx: Context) => {
     if (status !== undefined) data.status = Number(status);
     if (remark !== undefined) data.remark = remark;
     
-    const post = await postModel.updatePost(Number(postId), data);
+    const post = await postModel.updatePostModel(Number(postId), data);
     return ctx.body = response.success('更新成功', post);
   } catch (err: any) {
     return ctx.body = response.error(err.message);
@@ -181,7 +181,7 @@ export const deletePostController = async (ctx: Context) => {
       return ctx.body = response.error('岗位ID不能为空');
     }
     
-    await postModel.deletePost(Number(postId));
+    await postModel.deletePostModel(Number(postId));
     return ctx.body = response.success('删除成功');
   } catch (err: any) {
     return ctx.body = response.error(err.message);

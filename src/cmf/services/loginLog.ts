@@ -1,7 +1,7 @@
 import { Context } from "koa";
 import response from "@/lib/response";
 import { getLoginLogsModel, getLoginLogByIdModel, deleteLoginLogsModel, clearLoginLogsModel } from "../models/loginLog";
-import { ErrorType, handleLoginLogError } from "./errorHandler";
+import { ErrorType, handleLoginLogErrorService } from "./errorHandler";
 
 /**
  * 获取登录日志列表
@@ -10,7 +10,7 @@ import { ErrorType, handleLoginLogError } from "./errorHandler";
  * @param pageSize 每页记录数
  * @returns 登录日志列表和分页信息
  */
-export const getLoginLogsList = async (
+export const getLoginLogsListService = async (
   params: {
     ipaddr?: string;
     loginName?: string;
@@ -41,9 +41,9 @@ export const getLoginLogsList = async (
  * @param id 日志ID
  * @returns 是否成功获取
  */
-export const getLoginLogDetail = async (ctx: Context, id: string | number) => {
+export const getLoginLogDetailService = async (ctx: Context, id: string | number) => {
   if (!id) {
-    handleLoginLogError(ctx, ErrorType.LOG_ID_EMPTY);
+    handleLoginLogErrorService(ctx, ErrorType.LOG_ID_EMPTY);
     return false;
   }
 
@@ -51,7 +51,7 @@ export const getLoginLogDetail = async (ctx: Context, id: string | number) => {
   const loginLog = await getLoginLogByIdModel(infoId);
 
   if (!loginLog) {
-    handleLoginLogError(ctx, ErrorType.LOG_NOT_EXIST);
+    handleLoginLogErrorService(ctx, ErrorType.LOG_NOT_EXIST);
     return false;
   }
 
@@ -65,9 +65,9 @@ export const getLoginLogDetail = async (ctx: Context, id: string | number) => {
  * @param ids 日志ID数组
  * @returns 是否删除成功
  */
-export const removeLoginLogs = async (ctx: Context, ids: any[]) => {
+export const removeLoginLogsService = async (ctx: Context, ids: any[]) => {
   if (!ids || !Array.isArray(ids) || ids.length === 0) {
-    handleLoginLogError(ctx, ErrorType.LOG_ID_EMPTY);
+    handleLoginLogErrorService(ctx, ErrorType.LOG_ID_EMPTY);
     return false;
   }
 
@@ -75,7 +75,7 @@ export const removeLoginLogs = async (ctx: Context, ids: any[]) => {
   const result = await deleteLoginLogsModel(infoIds);
 
   if (!result) {
-    handleLoginLogError(ctx, ErrorType.LOG_DELETE_FAILED);
+    handleLoginLogErrorService(ctx, ErrorType.LOG_DELETE_FAILED);
     return false;
   }
 
@@ -88,11 +88,11 @@ export const removeLoginLogs = async (ctx: Context, ids: any[]) => {
  * @param ctx Koa上下文
  * @returns 是否清空成功
  */
-export const cleanAllLoginLogs = async (ctx: Context) => {
+export const cleanAllLoginLogsService = async (ctx: Context) => {
   const result = await clearLoginLogsModel();
 
   if (!result) {
-    handleLoginLogError(ctx, ErrorType.LOG_CLEAR_FAILED);
+    handleLoginLogErrorService(ctx, ErrorType.LOG_CLEAR_FAILED);
     return false;
   }
 
@@ -105,7 +105,7 @@ export const cleanAllLoginLogs = async (ctx: Context) => {
  * @param ctx Koa上下文
  * @returns 是否导出成功
  */
-export const exportLoginLogs = async (ctx: Context) => {
+export const exportLoginLogsService = async (ctx: Context) => {
   const { ipaddr, loginName, status, startTime, endTime } = ctx.query;
   
   const result = await getLoginLogsModel({
