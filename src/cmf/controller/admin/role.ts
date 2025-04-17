@@ -2,13 +2,13 @@ import { formatFields, now } from "@/lib/date";
 import { parseJson } from "@/lib/request";
 import response from "@/lib/response";
 import {
-  createRole,
-  deleteRole,
-  getRoleById,
-  getRoleByName,
-  getRoleCount,
-  getRoleList,
-  updateRole
+  createRoleModel,
+  deleteRoleModel,
+  getRoleByIdModel,
+  getRoleByNameModel,
+  getRoleCountModel,
+  getRoleListModel,
+  updateRoleModel
 } from "../../models/role";
 import { Role } from "../../typings/role";
 import { Context } from "koa";
@@ -43,7 +43,7 @@ export async function getRolesController(ctx: Context) {
     where.status = Number(status);
   }
 
-  const roleList = await getRoleList(Number(current), Number(pageSize), where);
+  const roleList = await getRoleListModel(Number(current), Number(pageSize), where);
 
   formatFields(roleList, [
     { fromField: "createdAt", toField: "createdTime" },
@@ -54,7 +54,7 @@ export async function getRolesController(ctx: Context) {
   if (pageSize === "0") {
     pagination = roleList;
   } else {
-    const total = await getRoleCount();
+    const total = await getRoleCountModel();
     pagination = {
       page: Number(current),
       pageSize: Number(pageSize),
@@ -77,21 +77,24 @@ export async function getRoleController(ctx: Context) {
   }
 
   if (numberRoleId > 0) {
-    const role = await getRoleById(numberRoleId);
-    const menuIds: number[] = [];
-    const e = await getEnforcer();
-    const rules = await e.getFilteredPolicy(0, roleId);
-    rules.forEach((rule) => {
-      menuIds.push(Number(rule[1]));
-    });
-    role.menuIds = menuIds;
+    const role = await getRoleByIdModel(numberRoleId);
     if (!role) {
       ctx.body = response.error("角色不存在！");
       return;
     }
+    
+    const menuIds: number[] = [];
+    const e = await getEnforcer();
+    const rules = await e.getFilteredPolicy(0, `${numberRoleId}`);
+    rules.forEach((rule) => {
+      menuIds.push(Number(rule[1]));
+    });
+    role.menuIds = menuIds;
+    
     ctx.body = response.success("获取成功！", role);
     return;
   }
+  
   ctx.body = response.error("参数错误！");
   return;
 }
@@ -107,7 +110,7 @@ async function saveRole(ctx: Context, roleId: number | null) {
     return;
   }
 
-  const nameRole = await getRoleByName(name);
+  const nameRole = await getRoleByNameModel(name);
   if (nameRole) {
     if (!edit) {
       ctx.body = response.error("角色名称已存在！");
@@ -123,7 +126,7 @@ async function saveRole(ctx: Context, roleId: number | null) {
   try {
 
     if (!edit) {
-      role = await createRole({
+      role = await createRoleModel({
         name,
         description,
         sortOrder,
@@ -134,7 +137,7 @@ async function saveRole(ctx: Context, roleId: number | null) {
       roleId = role.roleId;
       msg = '新增成功！';
     } else {
-      role = await updateRole(roleId, {
+      role = await updateRoleModel(roleId, {
         name,
         description,
         sortOrder,
@@ -189,12 +192,12 @@ export async function deleteRoleController(ctx: Context) {
   }
 
   if (numberRoleId > 0) {
-    const role = await getRoleById(numberRoleId);
+    const role = await getRoleByIdModel(numberRoleId);
     if (!role) {
       ctx.body = response.error("角色不存在！");
       return;
     }
-    const deleted = await deleteRole(numberRoleId);
+    const deleted = await deleteRoleModel(numberRoleId);
     if (deleted) {
       redis.del(`role:${roleId}`);
     }

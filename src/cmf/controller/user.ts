@@ -1,10 +1,11 @@
 import { Context } from "koa";
+import { CurrentUserRequest } from "../typings/controller";
 import jwt from "jsonwebtoken";
 import response from "@/lib/response";
-import { getUserById } from "../models/user";
+import { getUserByIdModel } from "../models/user";
 import { jwtSecret } from "@/cmf/constants/jwt";
 
-export const currentUser = async (ctx: Context) => {
+export const currentUserController = async (ctx: Context & CurrentUserRequest) => {
   const token = ctx.headers["authorization"];
 
   if (!token) {
@@ -14,9 +15,9 @@ export const currentUser = async (ctx: Context) => {
   }
 
   try {
-    const decoded = jwt.verify(token.split(" ")[1], jwtSecret);
-    const userId = (decoded as any).userId;
-    const user = await getUserById(Number(userId));
+    const decoded = jwt.verify(token.split(" ")[1], jwtSecret) as { userId: string };
+    const userId = decoded.userId;
+    const user = await getUserByIdModel(Number(userId));
     if (!user) {
       ctx.body = response.error("用户不存在");
       return;

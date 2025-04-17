@@ -1,6 +1,6 @@
 import { now } from "@/lib/date";
-import { createDictType, getDictTypeByType } from "../models/dict";
-import { createDictData, getDictDataBydictTypeAndValue, getDictDataList } from "../models/dictData";
+import { createDictTypeModel, getDictTypeByTypeModel } from "../models/dict";
+import { createDictDataModel, getDictDataBydictTypeAndValueModel, getDictDataListModel } from "../models/dictData";
 
 const SYS_GENDER = "sys_gender";
 const SYS_STATUS = "sys_status";
@@ -13,9 +13,9 @@ const SYS_STATUS = "sys_status";
  */
 async function createDictAndData(dictType: string, dictName: string, dictDataList: Array<{dictLabel: string, dictValue: string}>) {
   // 创建字典类型
-  const typeExists = await getDictTypeByType(dictType);
+  const typeExists = await getDictTypeByTypeModel(dictType);
   if (!typeExists) {
-    await createDictType({
+    await createDictTypeModel({
       dictType,
       dictName,
       createdAt: now(),
@@ -27,9 +27,9 @@ async function createDictAndData(dictType: string, dictName: string, dictDataLis
   let index = dictDataList.length;
   for (const item of dictDataList) {
     index--;
-    const exist = await getDictDataBydictTypeAndValue(dictType, item.dictValue);
+    const exist = await getDictDataBydictTypeAndValueModel(dictType, item.dictValue);
     if (!exist) {
-      await createDictData({
+      await createDictDataModel({
         dictSort: index,
         dictLabel: item.dictLabel,
         dictValue: item.dictValue,

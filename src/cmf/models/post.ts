@@ -7,7 +7,7 @@ import { Prisma } from "@prisma/client";
 const postIdKey = "post:id:";
 
 // 获取岗位列表
-export const getPostList = async (
+export const getPostListModel = async (
   where: Prisma.SysPostWhereInput = {},
   page: number = 1,
   pageSize: number = 10,
@@ -48,7 +48,7 @@ export const getPostList = async (
 };
 
 // 根据id获取岗位详情
-export const getPostById = async (postId: number, tx = prisma) => {
+export const getPostByIdModel = async (postId: number, tx = prisma) => {
   const cache = await redis.get(`${postIdKey}${postId}`);
   if (cache) {
     return JSON.parse(cache);
@@ -69,7 +69,7 @@ export const getPostById = async (postId: number, tx = prisma) => {
 };
 
 // 根据岗位编码获取岗位
-export const getPostByCode = async (postCode: string, tx = prisma) => {
+export const getPostByCodeModel = async (postCode: string, tx = prisma) => {
   return await tx.sysPost.findFirst({
     where: {
       postCode,
@@ -79,7 +79,7 @@ export const getPostByCode = async (postCode: string, tx = prisma) => {
 };
 
 // 根据岗位名称获取岗位
-export const getPostByName = async (postName: string, tx = prisma) => {
+export const getPostByNameModel = async (postName: string, tx = prisma) => {
   return await tx.sysPost.findFirst({
     where: {
       postName,
@@ -89,7 +89,7 @@ export const getPostByName = async (postName: string, tx = prisma) => {
 };
 
 // 获取岗位总数
-export const getPostCount = async (where: Prisma.SysPostWhereInput = {}, tx = prisma) => {
+export const getPostCountModel = async (where: Prisma.SysPostWhereInput = {}, tx = prisma) => {
   return await tx.sysPost.count({
     where: {
       ...where,
@@ -99,7 +99,7 @@ export const getPostCount = async (where: Prisma.SysPostWhereInput = {}, tx = pr
 };
 
 // 创建岗位
-export const createPost = async (data, tx = prisma) => {
+export const createPostModel = async (data, tx = prisma) => {
   const post = await tx.sysPost.create({
     data
   });
@@ -108,7 +108,7 @@ export const createPost = async (data, tx = prisma) => {
 };
 
 // 更新岗位
-export const updatePost = async (postId: number, data: Prisma.SysPostUpdateInput, tx = prisma) => {
+export const updatePostModel = async (postId: number, data: Prisma.SysPostUpdateInput, tx = prisma) => {
   const post = await tx.sysPost.update({
     where: {
       postId
@@ -124,7 +124,7 @@ export const updatePost = async (postId: number, data: Prisma.SysPostUpdateInput
 };
 
 // 删除岗位
-export const deletePost = async (postId: number, tx = prisma) => {
+export const deletePostModel = async (postId: number, tx = prisma) => {
   // 检查是否有关联用户
   const userCount = await tx.sysUserPost.count({
     where: {
@@ -153,7 +153,7 @@ export const deletePost = async (postId: number, tx = prisma) => {
 };
 
 // 检查岗位编码是否唯一
-export const checkPostCodeUnique = async (postCode: string, postId: number = 0, tx = prisma) => {
+export const checkPostCodeUniqueModel = async (postCode: string, postId: number = 0, tx = prisma) => {
   const post = await tx.sysPost.findFirst({
     where: {
       postCode,
@@ -166,7 +166,7 @@ export const checkPostCodeUnique = async (postCode: string, postId: number = 0, 
 };
 
 // 检查岗位名称是否唯一
-export const checkPostNameUnique = async (postName: string, postId: number = 0, tx = prisma) => {
+export const checkPostNameUniqueModel = async (postName: string, postId: number = 0, tx = prisma) => {
   const post = await tx.sysPost.findFirst({
     where: {
       postName,
@@ -179,7 +179,7 @@ export const checkPostNameUnique = async (postName: string, postId: number = 0, 
 };
 
 // 根据用户ID获取岗位列表
-export const getPostsByUserId = async (userId: number, tx = prisma) => {
+export const getPostsByUserIdModel = async (userId: number, tx = prisma) => {
   const userPosts = await tx.sysUserPost.findMany({
     where: {
       userId

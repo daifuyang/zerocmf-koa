@@ -6,7 +6,7 @@ import { Prisma, SysMenu } from "@prisma/client";
 const menuIdKey = "menu:id:";
 
 // 获取全部菜单列表
-export const getMenus = async (where: Prisma.SysMenuWhereInput = {}, tx = prisma) => {
+export const getMenusModel = async (where: Prisma.SysMenuWhereInput = {}, tx = prisma) => {
   const menuList = await tx.sysMenu.findMany({
     where
   });
@@ -14,7 +14,7 @@ export const getMenus = async (where: Prisma.SysMenuWhereInput = {}, tx = prisma
 };
 
 // 根据id获取单个菜单
-export const getMenuById = async (id: number, tx = prisma): Promise<SysMenu> => {
+export const getMenuByIdModel = async (id: number, tx = prisma): Promise<SysMenu> => {
   const key = `${menuIdKey}${id}`
   const cache = await redis.get(key);
   if (cache) {
@@ -34,7 +34,7 @@ export const getMenuById = async (id: number, tx = prisma): Promise<SysMenu> => 
 };
 
 // 根据名称获取单个菜单
-export const getMenuByName = async (menuName: string, tx = prisma) => {
+export const getMenuByNameModel = async (menuName: string, tx = prisma) => {
   const menu = await tx.sysMenu.findFirst({
     where: {
       menuName
@@ -44,7 +44,7 @@ export const getMenuByName = async (menuName: string, tx = prisma) => {
 };
 
 // 根据条件获取单个菜单
-export const getMenuByQuery = async (where: Prisma.SysMenuWhereInput, tx = prisma) => {
+export const getMenuByQueryModel = async (where: Prisma.SysMenuWhereInput, tx = prisma) => {
   const menu = await tx.sysMenu.findFirst({
     where
   });
@@ -52,14 +52,14 @@ export const getMenuByQuery = async (where: Prisma.SysMenuWhereInput, tx = prism
 };
 
 // 创建单个菜单
-export const createMenu = async (menu: Prisma.SysMenuCreateInput, tx = prisma) => {
+export const createMenuModel = async (menu: Prisma.SysMenuCreateInput, tx = prisma) => {
   return await tx.sysMenu.create({
     data: menu
   });
 };
 
 //更新单个菜单
-export const updateMenu = async (id: number, data: Prisma.SysMenuUpdateInput, tx = prisma) => {
+export const updateMenuModel = async (id: number, data: Prisma.SysMenuUpdateInput, tx = prisma) => {
   const menu = await tx.sysMenu.update({
     where: {
       menuId: id
@@ -75,7 +75,7 @@ export const updateMenu = async (id: number, data: Prisma.SysMenuUpdateInput, tx
 };
 
 // 删除单个菜单
-export const deleteMenu = async (id: number, tx = prisma) => {
+export const deleteMenuModel = async (id: number, tx = prisma) => {
   const deletedMenu = await tx.sysMenu.delete({
     where: {
       menuId: id,

@@ -3,13 +3,14 @@ import * as deptModel from '@/cmf/models/dept';
 import { now } from '@/lib/date';
 import response from '@/lib/response';
 import dayjs from 'dayjs';
+import { DeptRequest, DeptWhere } from '@/cmf/typings/controller';
 
 // 获取部门列表
 export const getDeptListController = async (ctx: Context) => {
   try {
     const { deptName, leader, startTime, endTime, status } = ctx.query;
     
-    const where: any = {};
+    const where: DeptWhere = {};
     
     if (deptName) {
       where.deptName = {
@@ -37,7 +38,7 @@ export const getDeptListController = async (ctx: Context) => {
       where.status = Number(status);
     }
     
-    const depts = await deptModel.getDeptList(where);
+    const depts = await deptModel.getDeptListModel(where);
     return ctx.body = response.success('获取成功', depts);
   } catch (err: any) {
     return ctx.body = response.error(err.message);
@@ -49,7 +50,7 @@ export const getDeptTreeController = async (ctx: Context) => {
   try {
     const { deptName, leader, startTime, endTime, status } = ctx.query;
     
-    const where: any = {};
+    const where: DeptWhere = {};
     
     if (deptName) {
       where.deptName = {
@@ -77,7 +78,7 @@ export const getDeptTreeController = async (ctx: Context) => {
       where.status = Number(status);
     }
     
-    const deptTree = await deptModel.getDeptTree(where);
+    const deptTree = await deptModel.getDeptTreeModel(where);
     return ctx.body = response.success('获取成功', deptTree);
   } catch (err: any) {
     return ctx.body = response.error(err.message);
@@ -92,7 +93,7 @@ export const getDeptController = async (ctx: Context) => {
       return ctx.body = response.error('部门ID不能为空');
     }
     
-    const dept = await deptModel.getDeptById(Number(deptId));
+    const dept = await deptModel.getDeptByIdModel(Number(deptId));
     if (!dept) {
       return ctx.body = response.error('部门不存在');
     }
@@ -106,14 +107,15 @@ export const getDeptController = async (ctx: Context) => {
 // 添加部门
 export const createDeptController = async (ctx: Context) => {
   try {
-    const { deptName, parentId = 0, sortOrder = 1, leader, phone, email, status = 1 } = ctx.request.body;
+    const body = ctx.request.body as DeptRequest;
+    const { deptName, parentId = 0, sortOrder = 1, leader, phone, email, status = 1 } = body;
     
     if (!deptName) {
       return ctx.body = response.error('部门名称不能为空');
     }
     
     // 检查部门名称是否唯一
-    const isUnique = await deptModel.checkDeptNameUnique(deptName, Number(parentId));
+    const isUnique = await deptModel.checkDeptNameUniqueModel(deptName, Number(parentId));
     if (!isUnique) {
       return ctx.body = response.error('部门名称已存在');
     }
@@ -135,7 +137,7 @@ export const createDeptController = async (ctx: Context) => {
       updatedAt: now()
     };
     
-    const dept = await deptModel.createDept(data);
+    const dept = await deptModel.createDeptModel(data);
     return ctx.body = response.success('添加成功', dept);
   } catch (err: any) {
     return ctx.body = response.error(err.message);
@@ -150,11 +152,12 @@ export const updateDeptController = async (ctx: Context) => {
       return ctx.body = response.error('部门ID不能为空');
     }
     
-    const { deptName, parentId, sortOrder, leader, phone, email, status } = ctx.request.body;
+    const body = ctx.request.body as DeptRequest;
+    const { deptName, parentId, sortOrder, leader, phone, email, status } = body;
     
     if (deptName) {
       // 检查部门名称是否唯一
-      const isUnique = await deptModel.checkDeptNameUnique(deptName, Number(parentId), Number(deptId));
+      const isUnique = await deptModel.checkDeptNameUniqueModel(deptName, Number(parentId), Number(deptId));
       if (!isUnique) {
         return ctx.body = response.error('部门名称已存在');
       }
@@ -177,7 +180,7 @@ export const updateDeptController = async (ctx: Context) => {
     if (email !== undefined) data.email = email;
     if (status !== undefined) data.status = Number(status);
     
-    const dept = await deptModel.updateDept(Number(deptId), data);
+    const dept = await deptModel.updateDeptModel(Number(deptId), data);
     return ctx.body = response.success('更新成功', dept);
   } catch (err: any) {
     return ctx.body = response.error(err.message);
@@ -192,7 +195,7 @@ export const deleteDeptController = async (ctx: Context) => {
       return ctx.body = response.error('部门ID不能为空');
     }
     
-    await deptModel.deleteDept(Number(deptId));
+    await deptModel.deleteDeptModel(Number(deptId));
     return ctx.body = response.success('删除成功');
   } catch (err: any) {
     return ctx.body = response.error(err.message);

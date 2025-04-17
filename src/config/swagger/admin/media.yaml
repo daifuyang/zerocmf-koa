@@ -138,8 +138,8 @@ paths:
                     }
                 }
     put:
-      summary: 更新媒体资源
-      description: 更新指定id的媒体资源
+      summary: 更新媒体资源备注名称
+      description: 更新指定id的媒体资源备注名称(remarkName)，不修改实际文件
       operationId: updateMedia
       security:
         - BearerAuth: []
@@ -155,16 +155,15 @@ paths:
       requestBody:
         required: true
         content:
-          multipart/form-data:
+          application/json:
             schema:
               type: object
               properties:
-                file:
+                remarkName:
                   type: string
-                  format: binary
-                type:
-                  type: string
-                  description: 文件类型，例如 image 或 video
+                  description: 新的备注名称
+              required:
+                - remarkName
       responses:
         "200":
           description: 更新成功。
@@ -179,10 +178,10 @@ paths:
                   "data":
                     {
                       "mediaId": 1,
-                      "type": "image",
-                      "url": "/uploads/2023/10/image1.jpg",
-                      "createdAt": "1725349743",
-                      "updatedAt": "1725354179"
+                      "fileName": "original.jpg",
+                      "remarkName": "新的备注名称",
+                      "filePath": "/uploads/20250331/uuid.jpg",
+                      "prevPath": "http://example.com/uploads/20250331/uuid.jpg"
                     }
                 }
     delete:

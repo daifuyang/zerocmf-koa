@@ -9,11 +9,11 @@ import {
   deleteRoleController
 } from "../controller/admin/role";
 import {
-  getLoginLogList,
-  getLoginLogDetail,
-  removeLoginLog,
-  cleanLoginLog,
-  exportLoginLog
+  getLoginLogListController,
+  getLoginLogDetailController,
+  removeLoginLogController,
+  cleanLoginLogController,
+  exportLoginLogController
 } from "../controller/admin/loginLog";
 
 import {
@@ -35,13 +35,13 @@ import { getApisController } from "../controller/admin/api";
 
 import { adminPrefix } from "../constants/router";
 import apiAccess from "../middlewares/apiAccess";
-import { operationLog } from "../middlewares/operationLog";
 
 import { getOptionController, setOptionController } from "../controller/admin/options";
 import {
   addMediaController,
   deleteMediaController,
-  getMediaListController
+  getMediaListController,
+  updateMediaController
 } from "../controller/admin/media";
 import {
   addMediaCategoryController,
@@ -92,7 +92,7 @@ import {
 } from "../controller/admin/operationLog";
 
 const adminRouter = new Router({ prefix: apiv1 + adminPrefix });
-adminRouter.use(auth, apiAccess, operationLog);
+adminRouter.use(auth, apiAccess);
 // 角色管理路由
 adminRouter.get("/roles", getRolesController);
 adminRouter.get("/roles/:roleId", getRoleController);
@@ -125,7 +125,7 @@ adminRouter.post("/options/:name", setOptionController);
 adminRouter.get("/medias", getMediaListController);
 // adminRouter.get("/medias/:mediaId", )
 adminRouter.post("/medias", addMediaController);
-// adminRouter.put("/medias/:mediaId")
+adminRouter.put("/medias/:mediaId", updateMediaController);
 adminRouter.delete("/medias/:mediaId", deleteMediaController);
 
 // 媒体分类管理
@@ -152,11 +152,11 @@ adminRouter.put("/posts/:postId", updatePostController);
 adminRouter.delete("/posts/:postId", deletePostController);
 
 // 登录日志管理
-adminRouter.get("/login-logs", getLoginLogList);
-adminRouter.get("/login-logs/:id", getLoginLogDetail);
-adminRouter.delete("/login-logs", removeLoginLog);
-adminRouter.delete("/login-logs/clean", cleanLoginLog);
-adminRouter.get("/login-logs/export", exportLoginLog);
+adminRouter.get("/login-logs", getLoginLogListController);
+adminRouter.get("/login-logs/:id", getLoginLogDetailController);
+adminRouter.delete("/login-logs", removeLoginLogController);
+adminRouter.delete("/login-logs/clean", cleanLoginLogController);
+adminRouter.get("/login-logs/export", exportLoginLogController);
 
 // 操作日志管理
 adminRouter.get("/operation-logs", getOperationLogListController);

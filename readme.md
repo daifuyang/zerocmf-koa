@@ -1,66 +1,126 @@
-# zerocmf api
+# ZeroCMF-Koa 内容管理框架
 
-base on koa
+![Node.js](https://img.shields.io/badge/node-%3E%3D18.15.0-brightgreen)
+![Koa](https://img.shields.io/badge/koa-2.x-blue)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)
+![Prisma](https://img.shields.io/badge/prisma-latest-orange)
 
-## 在线演示
+ZeroCMF-Koa 是一个基于 Koa.js 和 TypeScript 构建的现代化内容管理框架(CMF)后端系统，提供完整的API解决方案和内置的管理系统。
 
-[https://demo.zerocmf.com](https://demo.zerocmf.com)
+## ✨ 功能特性
 
-账号：admin
-密码：123456
+- **完整的管理系统**: 用户、角色、菜单、部门管理
+- **现代技术栈**: Koa、TypeScript、Prisma ORM
+- **RBAC权限控制**: JWT认证 + Casbin授权
+- **可扩展插件系统**: 轻松添加新功能
+- **API文档**: 自动生成的Swagger文档
+- **多数据库支持**: MySQL、PostgreSQL、SQLite
+- **云原生支持**: 支持无服务器部署
 
-## 环境变量
-
-.env
-请设置您真实的mysql数据库连接信息
+## 📦 安装指南
 
 ```bash
-DATABASE_URL="mysql://root:123456@localhost:3306/nextcms"
-```
-
-## 系统安装
-
-```bash
-# 1.依赖安装
+# 安装依赖
 npm install
 
-# 2.配置数据库
-新增.env文件，并设置数据库连接信息。按照以下格式设置：
-DATABASE_URL="mysql://you_name:you_password@localhost:3306/you_database"  
-
-# 2.数据库迁移
+# 初始化数据库(先配置.env文件)
 npx prisma migrate dev --name init
 ```
 
-## 系统启动
+## ⚙️ 配置说明
+
+创建`.env`文件并配置数据库连接:
 
 ```bash
-npm run dev
+DATABASE_URL="mysql://用户名:密码@localhost:3306/数据库名"
 ```
 
-## 推荐环境
+## 🚀 快速开始
 
-- node 18.15.0
-- mysql 8.0.32
-- pnpm 7.18.1
-- koa 2.14.1
-
-## 部署
-
-### 阿里云函数计算
-
-1.打包代码
 ```bash
+# 开发模式
+npm run dev
+
+# 生产环境构建
 npm run build
 ```
 
-2.进入fc模型环境，安装node_modules
-```bash
-s build --use-sandbox
-npm install
+## 🌟 核心架构
+
+```mermaid
+graph TD
+    A[客户端] --> B[Koa服务端]
+    B --> C[中间件]
+    C --> D[路由]
+    D --> E[控制器]
+    E --> F[服务层]
+    F --> G[模型]
+    G --> H[数据库]
 ```
 
-3.发布node_modules为层
-```bash
- s layer publish --region cn-shanghai --layer-name zerocmf- --code ./ --compatible-runtime custom.debian10
+## 🗂 目录结构
+
 ```
+src/
+├── cmf/          # 核心框架
+├── config/       # 配置文件
+├── plugins/      # 插件系统
+├── typings/      # 类型定义
+└── index.ts      # 主入口
+```
+
+## 🛠 管理功能
+
+- 用户与角色管理
+- 菜单与权限控制
+- 部门与岗位管理
+- 媒体库管理
+- 系统日志监控
+
+## 🔌 插件示例(文章模块)
+
+```typescript
+// 插件目录结构示例
+plugins/
+└── article/
+    ├── controller/
+    ├── models/
+    ├── router/
+    └── service/
+```
+
+## ☁️ 部署方案
+
+### 本地部署
+
+```bash
+npm run build
+npm start
+```
+
+### 无服务器部署(阿里云FC)
+
+```bash
+npm run build
+s deploy
+```
+
+## 📚 相关文档
+
+- [开发指南](./docs/development.md)
+- [API参考](./docs/api.md)
+- [插件开发](./docs/plugins.md)
+
+## 🔗 在线演示
+
+演示地址: [CMS示例后台](https://demo.zerocmf.com/admin)
+
+- 演示账号: demo / demo
+
+---
+
+🎯 **环境要求**
+
+- Node.js 18.15+
+- MySQL 8.0+
+- 推荐使用 PNPM 7.18+

@@ -6,7 +6,7 @@ import { Prisma } from "@prisma/client";
 const apiIdKey = "api:id:";
 
 // 获取所有api
-export async function getApis(where: Prisma.SysApiWhereInput = {}, tx = prisma) {
+export async function getApisModel(where: Prisma.SysApiWhereInput = {}, tx = prisma) {
   const apis = await tx.sysApi.findMany({
     where
   });
@@ -14,7 +14,7 @@ export async function getApis(where: Prisma.SysApiWhereInput = {}, tx = prisma) 
 }
 
 // 根据id获取api
-export async function getApiById(id: number, tx = prisma) {
+export async function getApiByIdModel(id: number, tx = prisma) {
   const key = `${apiIdKey}${id}`;
   const cache = await redis.get(key);
   if (cache) {
@@ -32,7 +32,7 @@ export async function getApiById(id: number, tx = prisma) {
 }
 
 // 根据method和path获取api
-export async function getApiByMethodAndPath(method: string, path: string, tx = prisma) {
+export async function getApiByMethodAndPathModel(method: string, path: string, tx = prisma) {
   const api = await tx.sysApi.findUnique({
     where: {
       path_method: {
@@ -45,7 +45,7 @@ export async function getApiByMethodAndPath(method: string, path: string, tx = p
 }
 
 // 创建单条api
-export async function createApi(data: any, tx = prisma) {
+export async function createApiModel(data: any, tx = prisma) {
   try {
     return await tx.sysApi.create({
       data
@@ -57,7 +57,7 @@ export async function createApi(data: any, tx = prisma) {
 }
 
 // 更新单条api
-export async function updateApi(id: number, data: any, tx = prisma) {
+export async function updateApiModel(id: number, data: any, tx = prisma) {
   return await tx.sysApi.update({
     where: {
       id
@@ -67,7 +67,7 @@ export async function updateApi(id: number, data: any, tx = prisma) {
 }
 
 // 创建多条api
-export async function createApis(data: any, tx = prisma) {
+export async function createApisModel(data: any, tx = prisma) {
   return await tx.sysApi.createMany({
     data
   });

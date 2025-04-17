@@ -7,7 +7,7 @@ import { Prisma } from "@prisma/client";
 const mediaCategoryIdKey = "mediaCategory:categoryId:";
 
 // 获取媒体分类数量
-export const getMediaCategoryCount = async (
+export const getMediaCategoryCountModel = async (
   where: Prisma.SysMediaCategoryWhereInput = {},
   tx = prisma
 ) => {
@@ -21,7 +21,7 @@ export const getMediaCategoryCount = async (
 };
 
 // 获取媒体分类列表
-export const getMediaCategoryList = async (
+export const getMediaCategoryListModel = async (
   current: number,
   pageSize: number,
   where: Prisma.SysMediaCategoryWhereInput = {},
@@ -45,7 +45,7 @@ export const getMediaCategoryList = async (
 };
 
 // 保存媒体分类
-export const createMediaCategory = async (
+export const createMediaCategoryModel = async (
   mediaCategory: Prisma.SysMediaCategoryCreateInput,
   tx = prisma
 ) => {
@@ -56,7 +56,7 @@ export const createMediaCategory = async (
 };
 
 // 更新媒体分类
-export const updateMediaCategory = async (
+export const updateMediaCategoryModel = async (
   categoryId: number,
   mediaCategory: Prisma.SysMediaCategoryUpdateInput,
   tx = prisma
@@ -77,7 +77,7 @@ export const updateMediaCategory = async (
 };
 
 // 删除媒体分类
-export const deleteMediaCategory = async (categoryId: number, tx = prisma) => {
+export const deleteMediaCategoryModel = async (categoryId: number, tx = prisma) => {
   const result = await tx.sysMediaCategory.update({
     where: {
       categoryId
@@ -96,7 +96,7 @@ export const deleteMediaCategory = async (categoryId: number, tx = prisma) => {
 };
 
 // 根据id获取单个媒体分类
-export const getMediaCategoryById = async (categoryId: number, tx = prisma) => {
+export const getMediaCategoryByIdModel = async (categoryId: number, tx = prisma) => {
   const key = `${mediaCategoryIdKey}${categoryId}`;
   const cache = await redis.get(key);
   if (cache) {

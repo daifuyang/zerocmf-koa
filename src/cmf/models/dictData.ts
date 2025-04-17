@@ -6,14 +6,14 @@ import prisma from "@/lib/prisma";
 const dictDataKey = "dict:data:";
 
 // 获取字典数据列表总数
-export const getDictDataCount = async (where: Prisma.SysDictDataWhereInput = {}, tx = prisma) => {
+export const getDictDataCountModel = async (where: Prisma.SysDictDataWhereInput = {}, tx = prisma) => {
   return await tx.sysDictData.count({
     where
   });
 };
 
 // 获取字典数据列表
-export const getDictDataList = async (
+export const getDictDataListModel = async (
   where: Prisma.SysDictDataWhereInput = {},
   page: number = 1,
   pageSize: number = 10,
@@ -32,7 +32,7 @@ export const getDictDataList = async (
 };
 
 // 获取字典数据详情
-export const getDictDataById = async (dictCode: number, tx = prisma) => {
+export const getDictDataByIdModel = async (dictCode: number, tx = prisma) => {
   const cache = await redis.get(`${dictDataKey}${dictCode}`);
   if (cache) {
     return JSON.parse(cache);
@@ -52,7 +52,7 @@ export const getDictDataById = async (dictCode: number, tx = prisma) => {
 };
 
 // 根据值获取数据详情
-export const getDictDataBydictTypeAndValue = async (dictType: string, dictValue: string, tx = prisma) => {
+export const getDictDataBydictTypeAndValueModel = async (dictType: string, dictValue: string, tx = prisma) => {
     const cache = await redis.get(`${dictDataKey}${dictType}_${dictValue}`);
     if (cache) {
       return JSON.parse(cache);
@@ -74,14 +74,14 @@ export const getDictDataBydictTypeAndValue = async (dictType: string, dictValue:
 };
 
 // 创建字典数据
-export const createDictData = async (data: Prisma.SysDictDataCreateInput, tx = prisma) => {
+export const createDictDataModel = async (data: Prisma.SysDictDataCreateInput, tx = prisma) => {
   return await tx.sysDictData.create({
     data
   });
 };
 
 // 更新字典数据
-export const updateDictData = async (
+export const updateDictDataModel = async (
   dictCode: number,
   data: Prisma.SysDictDataUpdateInput,
   tx = prisma
@@ -101,7 +101,7 @@ export const updateDictData = async (
 };
 
 // 删除字典数据
-export const deleteDictData = async (dictCode: number, tx = prisma) => {
+export const deleteDictDataModel = async (dictCode: number, tx = prisma) => {
   const deletedData = await tx.sysDictData.delete({
     where: {
       dictCode
@@ -116,7 +116,7 @@ export const deleteDictData = async (dictCode: number, tx = prisma) => {
 };
 
 // 批量删除字典数据
-export const deleteDictDataBatch = async (dictCodes: number[], tx = prisma) => {
+export const deleteDictDataBatchModel = async (dictCodes: number[], tx = prisma) => {
   const deletedData = await tx.sysDictData.deleteMany({
     where: {
       dictCode: {

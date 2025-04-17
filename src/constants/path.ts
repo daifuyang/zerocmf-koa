@@ -4,6 +4,11 @@ const ROOT_PATH = process.cwd();
 
 const APP_PATH =
   process.env.NODE_ENV === "development" ? path.resolve(ROOT_PATH, "src") : ROOT_PATH;
+
+// 后台模板路径
+const TEMPLATE_PATH = path.resolve(ROOT_PATH, "template");
+const ADMIN_PATH = path.resolve(TEMPLATE_PATH, "admin");
+
 // 上传路径
 const PUBLIC_PATH = path.resolve(ROOT_PATH, "public");
 const UPLOAD_DIR = path.resolve(PUBLIC_PATH, "uploads");
@@ -19,4 +24,4 @@ const LOCK_FILE = path.resolve(LOCK_DIR, "install.lock");
 
 const SWAGGER_APIS = path.resolve(APP_PATH, "**/*.yaml");
 
-export { ROOT_PATH, PUBLIC_PATH, MENU_JSON, UPLOAD_DIR, RBAC_MODEL, LOCK_DIR, LOCK_FILE, SWAGGER_APIS };
+export { ROOT_PATH, PUBLIC_PATH, MENU_JSON, UPLOAD_DIR, RBAC_MODEL, LOCK_DIR, LOCK_FILE, SWAGGER_APIS, ADMIN_PATH, TEMPLATE_PATH };

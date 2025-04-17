@@ -1,4 +1,4 @@
-import { getOptionValue, setOptionValue } from "@/cmf/models/option";
+import { getOptionValueModel, setOptionValueModel } from "@/cmf/models/option";
 import response from "@/lib/response";
 import { Context } from "koa";
 
@@ -29,7 +29,7 @@ export async function getOptionController(ctx: Context) {
     return;
   }
 
-  const option = await getOptionValue(name as string);
+  const option = await getOptionValueModel(name as string);
   if (option.optionValue) {
     option.optionValue = JSON.parse(option.optionValue);
   }
@@ -63,7 +63,14 @@ function filterFileTypes(fileTypes: any): any {
 
 export async function setOptionController(ctx: Context) {
   const { name } = ctx.params || {};
-  const value = ctx.request.body || {};
+  const value = ctx.request.body as {
+    maxFiles?: number;
+    chunkSize?: number;
+    fileTypes?: Record<string, {
+      uploadMaxFileSize?: number;
+      extensions?: string[];
+    }>;
+  } || {};
   if (!name || !value) {
     ctx.body = response.error("参数错误！");
     return;
@@ -107,7 +114,7 @@ export async function setOptionController(ctx: Context) {
     }
     setValue = JSON.stringify(inValue);
   }
-  await setOptionValue(name, setValue);
+  await setOptionValueModel(name, setValue);
   ctx.body = response.success("设置成功！", setValue);
   return;
 }

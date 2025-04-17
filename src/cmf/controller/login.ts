@@ -1,22 +1,16 @@
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
 import response from "@/lib/response";
-import { LoginReq } from "../typings/login";
-import { SysUser } from "@prisma/client";
+import { LoginRequest } from "../typings/controller";
 import { Context } from "koa";
-import { getUser } from "../models/user";
 import { parseJson } from "@/lib/request";
-import { createUserToken } from "../models/userToken";
-import { calculateExpiresAt } from "@/lib/date";
-import { getClientInfo } from "@/lib/clientInfo";
-import { createLoginLog } from "../models/loginLog";
 import {
-  jwtRefreshSecret,
-  jwtRefreshSecretExpire,
-  jwtSecret,
-  jwtSecretExpire
-} from "@/cmf/constants/jwt";
-import { hashPassword } from "@/lib/utils";
+  accountEnum,
+  prepareLoginLogBaseService,
+  recordLoginLogService,
+  getUserByLoginTypeService,
+  validatePasswordService,
+  generateUserTokensService
+} from "../services/auth";
+import { ErrorType, handleLoginErrorService } from "../services/errorHandler";
 
 /**
  * 处理用户登录请求，根据提供的登录类型进行身份验证。
@@ -34,161 +28,56 @@ import { hashPassword } from "@/lib/utils";
  * @date 2024-08-14
  */
 
-const accountEnum = {
-  email: "邮箱",
-  phone: "手机号",
-  account: "账号"
-};
-
-export const Login = async (ctx: Context) => {
-  
-  const { account, password, loginType = "account", phoneType } = parseJson(ctx) as LoginReq;
-  
-  // 获取客户端信息
-  const clientInfo = getClientInfo(ctx);
+export const LoginController = async (ctx: Context) => {
+  const { account, password, loginType = "account", phoneType } = parseJson<LoginRequest>(ctx);
   
   // 准备登录日志基本信息
-  const loginLogBase = {
-    loginName: account,
-    ipaddr: clientInfo.ip,
-    loginLocation: clientInfo.location,
-    browser: clientInfo.browser,
-    os: clientInfo.os,
-    loginTime: Math.floor(Date.now() / 1000)
-  };
+  const loginLogBase = prepareLoginLogBaseService(ctx, account);
 
+  // 验证账号
   if (!account) {
-    // 记录登录失败日志
-    await createLoginLog({
-      ...loginLogBase,
-      status: 1, // 失败
-      msg: `${accountEnum[loginType]}不能为空`
-    });
-    
-    ctx.body = response.error(`${accountEnum[loginType]}不能为空`);
+    await handleLoginErrorService(ctx, ErrorType.ACCOUNT_EMPTY, loginLogBase);
     return;
   }
 
-  // 根据登录类型进行身份验证
-  let user: SysUser | null = null;
-  switch (loginType) {
-    case "email":
-      // 邮箱登录逻辑
-      user = await getUser({ email: account });
-      break;
-    case "phone":
-      // 手机号登录逻辑
-      user = await getUser({ phone: account });
-      break;
-    case "account":
-      // 用户名登录逻辑
-      user = await getUser({ loginName: account });
-      break;
-  }
+  // 根据登录类型获取用户
+  const user = await getUserByLoginTypeService(loginType, account);
   
   // 检查用户是否存在
   if (!user) {
-    // 记录登录失败日志
-    await createLoginLog({
-      ...loginLogBase,
-      status: 1, // 失败
-      msg: "用户不存在"
-    });
-    
-    ctx.body = response.error("用户不存在");
+    await handleLoginErrorService(ctx, ErrorType.USER_NOT_EXIST, loginLogBase);
     return;
   }
 
   // 验证码登录
   if (loginType === "phone" && phoneType === "sms") {
+    // 短信验证码登录逻辑待实现
     return;
   }
 
+  // 验证密码
   if (!password) {
-    // 记录登录失败日志
-    await createLoginLog({
-      ...loginLogBase,
-      status: 1, // 失败
-      userId: user.userId,
-      msg: "密码不能为空"
-    });
-    
-    ctx.body = response.error("密码不能为空");
+    await handleLoginErrorService(ctx, ErrorType.PASSWORD_EMPTY, loginLogBase, user.userId);
     return;
   }
 
-  if (user?.password) {
-    const pwd = `${password}${user.salt}`
-    // 验证密码
-    const isPasswordValid = bcrypt.compareSync(pwd, user.password);
-    if (!isPasswordValid) {
-      // 记录登录失败日志
-      await createLoginLog({
-        ...loginLogBase,
-        status: 1, // 失败
-        userId: user.userId,
-        msg: "密码错误"
-      });
-      
-      ctx.body = response.error("密码错误");
-      return;
-    }
-  } else {
-    // 记录登录失败日志
-    await createLoginLog({
-      ...loginLogBase,
-      status: 1, // 失败
-      userId: user.userId,
-      msg: "密码错误"
-    });
-    
-    ctx.body = response.error("密码错误");
+  // 验证密码是否正确
+  const isPasswordValid = validatePasswordService(password, user);
+  if (!isPasswordValid) {
+    await handleLoginErrorService(ctx, ErrorType.PASSWORD_INVALID, loginLogBase, user.userId);
     return;
   }
 
-  const { userId } = user;
-
-  // 生成JWT token
-  const expiresIn = jwtSecretExpire;
-  const accessToken = jwt.sign({ userId }, jwtSecret, { expiresIn });
-
-  // 生成refresh token
-  const reExpiresIn = jwtRefreshSecretExpire;
-  const refreshToken = jwt.sign({ userId }, jwtRefreshSecret, {
-    expiresIn: reExpiresIn
-  });
-
-  const expiresAt = calculateExpiresAt(expiresIn);
-  const reExpiresAt = calculateExpiresAt(reExpiresIn);
-
-  const userToken = await createUserToken({
-    userId,
-    accessToken,
-    refreshToken,
-    expiresAt,
-    reExpiresAt
-  });
-
-  if (!userToken) {
-    // 记录登录失败日志
-    await createLoginLog({
-      ...loginLogBase,
-      status: 0, // 失败
-      userId: user.userId,
-      msg: "登录失败"
-    });
-    
-    ctx.body = response.error("登录失败");
+  // 生成用户令牌
+  const tokens = await generateUserTokensService(user.userId);
+  if (!tokens) {
+    await handleLoginErrorService(ctx, ErrorType.LOGIN_FAILED, loginLogBase, user.userId);
     return;
   }
 
   // 记录登录成功日志
-  await createLoginLog({
-    ...loginLogBase,
-    status: 1, // 成功
-    userId: user.userId,
-    msg: "登录成功"
-  });
+  await recordLoginLogService(loginLogBase, 1, "登录成功", user.userId);
 
-  ctx.body = response.success("登录成功！", { accessToken, expiresAt, refreshToken, reExpiresAt });
+  ctx.body = response.success("登录成功！", tokens);
+
 };

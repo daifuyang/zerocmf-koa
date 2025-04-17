@@ -123,3 +123,20 @@ export function getPrevPath(ctx: Context) {
   const originPath = proto ? `${proto}://${forwardedHost}` : `http://${forwardedHost}`;
   return forwardedHost ? originPath : origin;
 }
+
+/**
+ * 重命名文件
+ * @param oldPath 原文件路径（相对于PUBLIC_PATH）
+ * @param newName 新文件名（不带路径）
+ * @returns 新文件路径（相对于PUBLIC_PATH）
+ */
+export function renameFile(oldPath: string, newName: string): string {
+  const oldFullPath = path.join(PUBLIC_PATH, oldPath);
+  const dir = path.dirname(oldFullPath);
+  const ext = path.extname(oldFullPath);
+  const newFullPath = path.join(dir, `${newName}${ext}`);
+  
+  fs.renameSync(oldFullPath, newFullPath);
+  
+  return path.join(path.dirname(oldPath), `${newName}${ext}`);
+}

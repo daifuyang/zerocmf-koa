@@ -1,44 +1,20 @@
 import { Context } from "koa";
 import response from "@/lib/response";
-import {
-  getMediaCategoryCount,
-  getMediaCategoryList,
-  createMediaCategory,
-  updateMediaCategory,
-  deleteMediaCategory,
-  getMediaCategoryById
-} from "@/cmf/models/mediaCategory";
+import { 
+  getMediaCategoryListService,
+  getMediaCategoryCountService,
+  dataToTreeService,
+  getMediaCategoryByIdService,
+  createMediaCategoryService,
+  updateMediaCategoryService,
+  deleteMediaCategoryService
+} from "@/cmf/services/mediaCategory"; // Corrected path and function names
 import { parseQuery } from "@/lib/request";
 import { now } from "@/lib/date";
-import { SysMediaCategory } from "@prisma/client";
 
-// 定义树节点类型
-type TreeNode = SysMediaCategory & {
-  children?: SysMediaCategory[];
-};
-
-// 将扁平数据转换为树形结构
-function dataToTree(data: TreeNode[]): TreeNode[] {
-  const map: { [key: number]: TreeNode } = {};
-  const tree: TreeNode[] = [];
-
-  data.forEach((node) => {
-    map[node.categoryId] = { ...node };
-  });
-
-  data.forEach((node) => {
-    if (node.parentId !== 0) {
-      const parent = map[node.parentId];
-      if (parent) {
-        parent.children = parent.children || [];
-        parent.children.push(map[node.categoryId]);
-      }
-    } else {
-      tree.push(map[node.categoryId]);
-    }
-  });
-
-  return tree;
+interface MediaCategoryRequest {
+  name: string;
+  parentId?: number;
 }
 
 // 获取媒体分类列表
@@ -46,13 +22,13 @@ export async function getMediaCategoryListController(ctx: Context) {
   const query = ctx.query || {};
   const { current, pageSize } = parseQuery(query);
 
-  const mediaCategories = await getMediaCategoryList(current, pageSize);
+  const mediaCategories = await getMediaCategoryListService(current, pageSize);
   if (pageSize === 0) {
     ctx.body = response.success("获取成功！", mediaCategories);
     return;
   }
 
-  const total = await getMediaCategoryCount();
+  const total = await getMediaCategoryCountService();
   const pagination = {
     page: current,
     pageSize: pageSize,
@@ -74,10 +50,10 @@ export async function getMediaCategoryTreeController(ctx: Context) {
   }
   
   // 获取所有媒体分类
-  const mediaCategories = await getMediaCategoryList(1, 0, where);
+  const mediaCategories = await getMediaCategoryListService(1, 0, where);
   
   // 转换为树形结构并返回
-  ctx.body = response.success("获取成功！", dataToTree(mediaCategories));
+  ctx.body = response.success("获取成功！", dataToTreeService(mediaCategories));
 }
 
 // 获取单个媒体分类
@@ -89,7 +65,7 @@ export async function getMediaCategoryController(ctx: Context) {
     return;
   }
 
-  const mediaCategory = await getMediaCategoryById(Number(categoryId));
+  const mediaCategory = await getMediaCategoryByIdService(Number(categoryId));
 
   if (!mediaCategory) {
     ctx.body = response.error("媒体分类不存在！");
@@ -120,7 +96,7 @@ export async function updateMediaCategoryController(ctx: Context) {
 // 保存媒体分类
 async function saveMediaCategory(ctx: Context, categoryId: number | undefined = undefined) {
   const { userId, loginName } = ctx.state.user;
-  const { name, parentId } = ctx.request.body;
+  const { name, parentId } = ctx.request.body as MediaCategoryRequest;
 
   // 判断是新增还是更新
   if (!categoryId) {
@@ -129,7 +105,7 @@ async function saveMediaCategory(ctx: Context, categoryId: number | undefined = 
       return;
     }
 
-    const newCategory = await createMediaCategory({
+    const newCategory = await createMediaCategoryService({
       name,
       parentId,
       status: 1,
@@ -149,7 +125,7 @@ async function saveMediaCategory(ctx: Context, categoryId: number | undefined = 
     ctx.body = response.success("添加成功！", newCategory);
     return;
   } else {
-    const updatedCategory = await updateMediaCategory(Number(categoryId), {
+    const updatedCategory = await updateMediaCategoryService(Number(categoryId), {
       name,
       parentId,
       status: 1,
@@ -176,7 +152,7 @@ export async function deleteMediaCategoryController(ctx: Context) {
     return;
   }
 
-  const deletedCategory = await deleteMediaCategory(Number(categoryId));
+  const deletedCategory = await deleteMediaCategoryService(Number(categoryId));
 
   if (!deletedCategory) {
     ctx.body = response.error("删除失败！");

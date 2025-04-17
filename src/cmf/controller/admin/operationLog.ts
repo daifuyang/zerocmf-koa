@@ -1,13 +1,13 @@
 import response from "@/lib/response";
 import { parseJson } from "@/lib/request";
 import {
-  getOperationLogTotal,
-  getOperationLogList,
-  getOperationLogById,
-  deleteOperationLogs,
-  clearOperationLogs
-} from "../../models/operationLog";
-import { formatFields } from "@/lib/date";
+  getOperationLogListService,
+  getOperationLogService,
+  deleteOperationLogService,
+  batchDeleteOperationLogService,
+  clearOperationLogsService,
+  exportOperationLogsService
+} from "@/cmf/services/operationLog";
 
 /**
  * 获取操作日志列表
@@ -79,22 +79,11 @@ export const getOperationLogListController = async (ctx: any) => {
     };
   }
 
-  const result = await getOperationLogList(where, Number(current), Number(pageSize));
-
-  formatFields(result, [{ fromField: "operAt", toField: "operTime" }]);
-
-  let pagination = {};
-  if (pageSize === "0") {
-    pagination = result;
-  } else {
-    const total = await getOperationLogTotal(where);
-    pagination = {
-      page: Number(current),
-      pageSize: Number(pageSize),
-      total,
-      data: result
-    };
-  }
+  const pagination = await getOperationLogListService(
+    where,
+    Number(current),
+    Number(pageSize)
+  );
 
   ctx.body = response.success("获取成功！", pagination);
   return;
@@ -118,7 +107,7 @@ export const getOperationLogController = async (ctx: any) => {
     return;
   }
 
-  const operationLog = await getOperationLogById(numberOperId);
+  const operationLog = await getOperationLogService(numberOperId);
 
   if (!operationLog) {
     ctx.body = response.error("操作日志不存在！");
@@ -147,13 +136,13 @@ export const deleteOperationLogController = async (ctx: any) => {
     return;
   }
 
-  const exist = await getOperationLogById(numberOperId);
+  const exist = await getOperationLogService(numberOperId);
   if (!exist) {
     ctx.body = response.error("操作日志不存在！");
     return;
   }
 
-  const result = await deleteOperationLogs([numberOperId]);
+  const result = await deleteOperationLogService(numberOperId);
   if (!result) {
     ctx.body = response.error("删除失败！");
     return;
@@ -176,7 +165,7 @@ export const batchDeleteOperationLogController = async (ctx: any) => {
   }
 
   const operIds = ids.map((id) => Number(id));
-  const result = await deleteOperationLogs(operIds);
+  const result = await batchDeleteOperationLogService(operIds);
 
   if (!result) {
     ctx.body = response.error("批量删除失败！");
@@ -192,7 +181,7 @@ export const batchDeleteOperationLogController = async (ctx: any) => {
  * @param ctx Koa上下文
  */
 export const cleanOperationLogController = async (ctx: any) => {
-  const result = await clearOperationLogs();
+  const result = await clearOperationLogsService();
 
   if (!result) {
     ctx.body = response.error("清空失败！");
@@ -272,7 +261,7 @@ export const exportOperationLogController = async (ctx: any) => {
   }
 
   // 获取较多记录用于导出
-  const result = await getOperationLogList(where, 1, 0);
+  const result = await exportOperationLogsService(where);
 
   ctx.body = response.success("导出成功！", result);
   return;
