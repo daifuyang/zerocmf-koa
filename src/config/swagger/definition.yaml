@@ -83,13 +83,6 @@ tags:
   - name: tags
     description: 标签管理
 
-  - name: hospital
-    description: 医院管理
-  - name: customer
-    description: 客户管理
-  - name: dispatch
-    description: 派单管理
-
 
 servers:
   - url: /
