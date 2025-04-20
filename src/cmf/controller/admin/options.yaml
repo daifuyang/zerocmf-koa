@@ -1,0 +1,175 @@
+paths:
+  /api/v1/admin/options/{name}:
+    get:
+      summary: 获取配置项值
+      description: 根据配置项名称获取其值。
+      operationId: getOptionValue
+      security:
+        - BearerAuth: []
+      tags:
+        - options
+      parameters:
+        - name: name
+          in: path
+          description: 配置项名称
+          required: true
+          schema:
+            type: string
+            example: "upload"
+      responses:
+        "200":
+          description: 成功获取配置项值
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OptionResp"
+              example:
+                code: 1
+                msg: "获取成功！"
+                data:
+                  optionName: "upload"
+                  optionValue:
+                    maxFiles: 20
+                    chunkSize: 512
+                    fileTypes:
+                      image:
+                        uploadMaxFileSize: "10240"
+                        extensions: ["jpg", "jpeg", "png", "gif", "bmp4"]
+                      video:
+                        uploadMaxFileSize: "10240"
+                        extensions: ["mp4", "avi", "wmv", "rm", "rmvb", "mkv"]
+                      audio:
+                        uploadMaxFileSize: "10240"
+                        extensions: ["mp3", "wma", "wav"]
+                      file:
+                        uploadMaxFileSize: "10240"
+                        extensions: ["txt", "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "zip", "rar"]
+        "400":
+          description: 请求参数错误
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example:
+                code: 400
+                msg: "参数错误！"
+        "500":
+          description: 服务器内部错误
+
+    post:
+      summary: 设置配置项值
+      description: 根据配置项名称设置其值。
+      operationId: setOptionValue
+      security:
+        - BearerAuth: []
+      tags:
+        - options
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: 配置项名称
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 配置项名称
+                  example: "upload"
+                value:
+                  type: object
+                  description: 配置项值
+                  example:
+                    optionName: "upload"
+                    optionValue:
+                      maxFiles: 20
+                      chunkSize: 512
+                      fileTypes:
+                        image:
+                          uploadMaxFileSize: "10240"
+                          extensions: ["jpg", "jpeg", "png", "gif", "bmp4"]
+                        video:
+                          uploadMaxFileSize: "10240"
+                          extensions: ["mp4", "avi", "wmv", "rm", "rmvb", "mkv"]
+                        audio:
+                          uploadMaxFileSize: "10240"
+                          extensions: ["mp3", "wma", "wav"]
+                        file:
+                          uploadMaxFileSize: "10240"
+                          extensions: ["txt", "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "zip", "rar"]
+      responses:
+        "200":
+          description: 成功设置配置项值
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OptionResp"
+              example:
+                code: 1
+                msg: "设置成功！"
+                data:
+                  optionName: "upload"
+                  optionValue:
+                    maxFiles: 20
+                    chunkSize: 512
+                    fileTypes:
+                      image:
+                        uploadMaxFileSize: "10240"
+                        extensions: ["jpg", "jpeg", "png", "gif", "bmp4"]
+                      video:
+                        uploadMaxFileSize: "10240"
+                        extensions: ["mp4", "avi", "wmv", "rm", "rmvb", "mkv"]
+                      audio:
+                        uploadMaxFileSize: "10240"
+                        extensions: ["mp3", "wma", "wav"]
+                      file:
+                        uploadMaxFileSize: "10240"
+                        extensions: ["txt", "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "zip", "rar"]
+        "400":
+          description: 请求参数错误
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+              example:
+                code: 400
+                msg: "参数错误！"
+        "500":
+          description: 服务器内部错误
+
+components:
+  schemas:
+    Response:
+      type: object
+      required:
+        - code
+        - msg
+      properties:
+        code:
+          type: integer
+          description: Response code
+          example: 1
+        msg:
+          type: string
+          description: Response message
+
+    OptionResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                optionName:
+                  type: string
+                  description: 配置项名称
+                optionValue:
+                  type: object
+                  description: 配置项值

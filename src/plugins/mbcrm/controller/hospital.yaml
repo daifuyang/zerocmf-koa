@@ -101,6 +101,20 @@ paths:
 
 components:
   schemas:
+    Response:
+      type: object
+      required:
+        - code
+        - msg
+      properties:
+        code:
+          type: integer
+          description: Response code
+          example: 1
+        msg:
+          type: string
+          description: Response message
+
     Hospital:
       type: object
       properties:

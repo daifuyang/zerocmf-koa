@@ -1,0 +1,295 @@
+paths:
+  /api/v1/admin/dicts/{dictId}/data:
+    get:
+      summary: 获取字典数据列表
+      description: 根据字典ID获取对应的字典数据列表
+      operationId: getDictDataList
+      security:
+        - BearerAuth: []
+      tags:
+        - dicts-data
+      parameters:
+        - name: dictId
+          in: path
+          required: true
+          description: 字典ID
+          schema:
+            type: integer
+        - name: dictLabel
+          in: query
+          required: false
+          description: 字典标签(模糊查询)
+          schema:
+            type: string
+        - name: status
+          in: query
+          required: false
+          description: 状态(0=禁用,1=启用)
+          schema:
+            type: integer
+            enum: [0, 1]
+      responses:
+        "200":
+          description: 字典数据列表
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DictDataListResp"
+              example:
+                code: 1
+                msg: "获取成功"
+                data:
+                  - 
+                    dictCode: 1
+                    dictSort: 1
+                    dictLabel: "男"
+                    dictValue: "1"
+                    dictType: "sys_user_sex"
+                    cssClass: ""
+                    listClass: ""
+                    isDefault: 0
+                    status: 1
+                    remark: "性别男"
+                    createdAt: "1723613053"
+                    updatedAt: "1723613053"
+
+    post:
+      summary: 添加字典数据
+      description: 添加新的字典数据
+      operationId: createDictData
+      security:
+        - BearerAuth: []
+      tags:
+        - dicts-data
+      parameters:
+        - name: dictId
+          in: path
+          required: true
+          description: 字典ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DictDataReq"
+      responses:
+        "200":
+          description: 添加成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DictDataResp"
+
+  /api/v1/admin/dicts/data/{dictCode}:
+    get:
+      summary: 获取字典数据详情
+      description: 根据字典数据ID获取详情
+      operationId: getDictData
+      security:
+        - BearerAuth: []
+      tags:
+        - dicts-data
+      parameters:
+        - name: dictCode
+          in: path
+          required: true
+          description: 字典数据ID
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 字典数据详情
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DictDataResp"
+
+    put:
+      summary: 更新字典数据
+      description: 更新字典数据信息
+      operationId: updateDictData
+      security:
+        - BearerAuth: []
+      tags:
+        - dicts-data
+      parameters:
+        - name: dictCode
+          in: path
+          required: true
+          description: 字典数据ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DictDataReq"
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DictDataResp"
+
+    delete:
+      summary: 删除字典数据
+      description: 删除字典数据
+      operationId: deleteDictData
+      security:
+        - BearerAuth: []
+      tags:
+        - dicts-data
+      parameters:
+        - name: dictCode
+          in: path
+          required: true
+          description: 字典数据ID
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 删除成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+
+components:
+  schemas:
+    Response:
+      type: object
+      required:
+        - code
+        - msg
+      properties:
+        code:
+          type: integer
+          description: 响应码
+          example: 1
+        msg:
+          type: string
+          description: 响应消息
+          example: "操作成功"
+
+    DictDataReq:
+      type: object
+      properties:
+        dictType:
+          type: string
+          description: 字典类型
+          example: "sys_user_sex"
+        dictLabel:
+          type: string
+          description: 字典标签
+          example: "男"
+        dictValue:
+          type: string
+          description: 字典键值
+          example: "1"
+        dictSort:
+          type: integer
+          description: 字典排序
+          example: 1
+        cssClass:
+          type: string
+          description: 样式属性
+          example: ""
+        listClass:
+          type: string
+          description: 表格回显样式
+          example: ""
+        isDefault:
+          type: integer
+          description: 是否默认(0=否,1=是)
+          example: 0
+        status:
+          type: integer
+          description: 状态(0=禁用,1=启用)
+          example: 1
+        remark:
+          type: string
+          description: 备注
+          example: "性别男"
+      required:
+        - dictType
+        - dictLabel
+        - dictValue
+
+    DictData:
+      type: object
+      properties:
+        dictCode:
+          type: integer
+          description: 字典编码
+          example: 1
+        dictSort:
+          type: integer
+          description: 字典排序
+          example: 1
+        dictLabel:
+          type: string
+          description: 字典标签
+          example: "男"
+        dictValue:
+          type: string
+          description: 字典键值
+          example: "1"
+        dictType:
+          type: string
+          description: 字典类型
+          example: "sys_user_sex"
+        cssClass:
+          type: string
+          description: 样式属性
+          example: ""
+        listClass:
+          type: string
+          description: 表格回显样式
+          example: ""
+        isDefault:
+          type: integer
+          description: 是否默认(0=否,1=是)
+          example: 0
+        status:
+          type: integer
+          description: 状态(0=禁用,1=启用)
+          example: 1
+        remark:
+          type: string
+          description: 备注
+          example: "性别男"
+        createdAt:
+          type: string
+          description: 创建时间
+          example: "1723613053"
+        updatedAt:
+          type: string
+          description: 更新时间
+          example: "1723613053"
+      required:
+        - dictCode
+        - dictLabel
+        - dictValue
+        - dictType
+
+    DictDataResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/DictData"
+
+    DictDataListResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: "#/components/schemas/DictData"

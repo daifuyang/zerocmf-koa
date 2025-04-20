@@ -1,0 +1,286 @@
+openapi: 3.0.0
+info:
+  title: MBCRM Dispatch API
+  version: 1.0.0
+  description: API for managing dispatch records in MBCRM system
+
+paths:
+  /api/v1/admin/dispatch/list:
+    get:
+      operationId: getDispatchList
+      security:
+        - BearerAuth: []
+      tags:
+        - dispatch
+      summary: Get dispatch list
+      description: Returns a paginated list of dispatch records
+      parameters:
+        - name: current
+          in: query
+          description: Current page number
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          description: Number of records per page
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - name: hospitalId
+          in: query
+          description: Filter by hospital ID
+          required: false
+          schema:
+            type: integer
+        - name: customerId
+          in: query
+          description: Filter by customer ID
+          required: false
+          schema:
+            type: integer
+        - name: status
+          in: query
+          description: Filter by status (0=待派单,1=已派单,2=已确认,3=已完成,4=已取消)
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse_Dispatch_'
+
+  /api/v1/admin/dispatch:
+    post:
+      operationId: createDispatch
+      security:
+        - BearerAuth: []
+      tags:
+        - dispatch
+      summary: Create a dispatch
+      description: Creates a new dispatch record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DispatchInput'
+      responses:
+        '200':
+          description: Successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dispatch'
+        '400':
+          description: Invalid input
+
+  /api/v1/admin/dispatch/{dispatchId}:
+    get:
+      operationId: getDispatch
+      security:
+        - BearerAuth: []
+      tags:
+        - dispatch
+      summary: Get dispatch by ID
+      description: Returns a single dispatch record
+      parameters:
+        - name: dispatchId
+          in: path
+          description: ID of dispatch to return
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dispatch'
+        '404':
+          description: Dispatch not found
+
+    put:
+      operationId: updateDispatch
+      security:
+        - BearerAuth: []
+      tags:
+        - dispatch
+      summary: Update a dispatch
+      description: Updates an existing dispatch record
+      parameters:
+        - name: dispatchId
+          in: path
+          description: ID of dispatch to update
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DispatchInput'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dispatch'
+        '400':
+          description: Invalid input
+        '404':
+          description: Dispatch not found
+
+    delete:
+      operationId: deleteDispatch
+      security:
+        - BearerAuth: []
+      tags:
+        - dispatch
+      summary: Delete a dispatch
+      description: Deletes a dispatch record
+      parameters:
+        - name: dispatchId
+          in: path
+          description: ID of dispatch to delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successfully deleted
+        '404':
+          description: Dispatch not found
+
+components:
+  schemas:
+    Response:
+      type: object
+      required:
+        - code
+        - msg
+      properties:
+        code:
+          type: integer
+          description: Response code
+          example: 1
+        msg:
+          type: string
+          description: Response message
+
+    Dispatch:
+      type: object
+      properties:
+        dispathId:
+          type: integer
+          description: Unique identifier for the dispatch
+        dispatchNo:
+          type: string
+          maxLength: 191
+        hospitalId:
+          type: integer
+          description: ID of the hospital
+        customerId:
+          type: integer
+          description: ID of the customer
+        project:
+          type: string
+          maxLength: 100
+        dispatchTime:
+          type: integer
+          description: Unix timestamp of dispatch time
+        dispatcherId:
+          type: integer
+          description: ID of the dispatcher
+        status:
+          type: integer
+          format: int32
+          description: Current status (0=待派单,1=已派单,2=已确认,3=已完成,4=已取消)
+        message:
+          type: string
+          nullable: true
+          description: Additional notes
+        createdId:
+          type: integer
+          description: ID of creator
+        createdBy:
+          type: string
+          maxLength: 64
+        updatedId:
+          type: integer
+          description: ID of updater
+        updatedBy:
+          type: string
+          maxLength: 64
+        createdAt:
+          type: integer
+          description: Creation timestamp
+        updatedAt:
+          type: integer
+          nullable: true
+          description: Last update timestamp
+        deletedAt:
+          type: integer
+          description: Deletion timestamp
+
+    DispatchInput:
+      type: object
+      required:
+        - hospitalId
+        - customerId
+        - project
+        - dispatcherId
+      properties:
+        hospitalId:
+          type: integer
+          description: ID of the hospital
+        customerId:
+          type: integer
+          description: ID of the customer
+        project:
+          type: string
+          maxLength: 100
+        dispatchTime:
+          type: integer
+          description: Unix timestamp of dispatch time
+        dispatcherId:
+          type: integer
+          description: ID of the dispatcher
+        status:
+          type: integer
+          format: int32
+          description: Current status (0=待派单,1=已派单,2=已确认,3=已完成,4=已取消)
+        message:
+          type: string
+          nullable: true
+          description: Additional notes
+
+    ListResponse_Dispatch_:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                total:
+                  type: integer
+                  description: Total number of records
+                data:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Dispatch"
+                current:
+                  type: integer
+                  description: Current page number
+                pageSize:
+                  type: integer
+                  description: Number of records per page

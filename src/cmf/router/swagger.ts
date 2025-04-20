@@ -14,7 +14,7 @@ export const swaggerRouter = (() => {
         description: "API documentation for ZeroCMF project"
       }
     },
-    apis: [SWAGGER_APIS]
+    apis: SWAGGER_APIS
   };
 
   const swaggerSpec = swaggerJSDoc(options);
@@ -30,11 +30,11 @@ export const swaggerRouter = (() => {
     koaSwagger({
       routePrefix: false,
       swaggerOptions: {
-        url: prefix + "/swagger.json",
+        url: prefix + "/swagger.json"
       }
     })
   );
-  
+
   router.use(v1.routes());
   return router;
 })();

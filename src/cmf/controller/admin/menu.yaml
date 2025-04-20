@@ -1,0 +1,266 @@
+paths:
+  /api/v1/admin/menus:
+    get:
+      summary: 获取系统菜单列表
+      description: 返回系统菜单列表
+      operationId: getMenus
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: menuName
+          in: query
+          required: false
+          description: 菜单名称（支持模糊查询）
+          schema:
+            type: string
+        - name: status
+          in: query
+          required: false
+          description: 菜单状态（0停用 1正常）
+          schema:
+            type: integer
+            enum: [0, 1]
+      tags:
+        - menus
+      responses:
+        "200":
+          description: 返回系统菜单列表
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MenuListResp"
+              example:
+                code: 1
+                msg: "获取成功！"
+                data:
+                  - 
+                    menuId: 1
+                    menuName: "管理员"
+                    parentId: 0
+                    order: 0
+                    path: "/user"
+                    component: null
+                    query: null
+                    isFrame: 1
+                    isCache: 0
+                    menuType: ""
+                    visible: 0
+                    status: 0
+                    perms: "user"
+                    icon: ""
+                    createdId: 1
+                    createdBy: "admin"
+                    createdAt: 1728805377
+                    updatedId: 1
+                    updatedBy: "admin"
+                    updatedAt: 1728805377
+
+    post:
+      summary: 创建菜单
+      description: 创建新的系统菜单
+      operationId: createMenu
+      security:
+        - BearerAuth: []
+      tags:
+        - menus
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MenuInput"
+      responses:
+        "200":
+          description: 创建成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MenuResp"
+
+  /api/v1/admin/menus/{menuId}:
+    get:
+      summary: 获取菜单详情
+      description: 根据ID获取菜单详情
+      operationId: getMenu
+      security:
+        - BearerAuth: []
+      tags:
+        - menus
+      parameters:
+        - name: menuId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 返回菜单详情
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MenuResp"
+
+    put:
+      summary: 更新菜单
+      description: 根据ID更新菜单信息
+      operationId: updateMenu
+      security:
+        - BearerAuth: []
+      tags:
+        - menus
+      parameters:
+        - name: menuId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MenuInput"
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MenuResp"
+
+    delete:
+      summary: 删除菜单
+      description: 根据ID删除菜单
+      operationId: deleteMenu
+      security:
+        - BearerAuth: []
+      tags:
+        - menus
+      parameters:
+        - name: menuId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 删除成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+
+components:
+  schemas:
+    Response:
+      type: object
+      required:
+        - code
+        - msg
+      properties:
+        code:
+          type: integer
+          description: Response code
+          example: 1
+        msg:
+          type: string
+          description: Response message
+
+    MenuListResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: "#/components/schemas/Menu"
+    MenuResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/Menu"
+    Menu:
+      type: object
+      properties:
+        menuId:
+          type: integer
+        menuName:
+          type: string
+        parentId:
+          type: integer
+        order:
+          type: integer
+        path:
+          type: string
+        component:
+          type: string
+          nullable: true
+        query:
+          type: string
+          nullable: true
+        isFrame:
+          type: integer
+        isCache:
+          type: integer
+        menuType:
+          type: string
+        visible:
+          type: integer
+        status:
+          type: integer
+        perms:
+          type: string
+        icon:
+          type: string
+        createdId:
+          type: integer
+        createdBy:
+          type: string
+        createdAt:
+          type: integer
+        updatedId:
+          type: integer
+        updatedBy:
+          type: string
+        updatedAt:
+          type: integer
+      required:
+        - menuId
+
+    MenuInput:
+      type: object
+      properties:
+        menuName:
+          type: string
+        parentId:
+          type: integer
+        order:
+          type: integer
+        path:
+          type: string
+        component:
+          type: string
+          nullable: true
+        query:
+          type: string
+          nullable: true
+        isFrame:
+          type: integer
+        isCache:
+          type: integer
+        menuType:
+          type: string
+        visible:
+          type: integer
+        status:
+          type: integer
+        perms:
+          type: string
+        icon:
+          type: string
+      required:
+        - menuName
+        - path

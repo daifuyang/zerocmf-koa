@@ -14,7 +14,7 @@ import { Prisma } from "@prisma/client";
 import { getCurrentUser } from "@/lib/userinfo";
 import { z } from "zod";
 
-import { getUser, createUser, updateUser } from "@/cmf/models/user";
+import { getUserModel, createUserModel, updateUserModel } from "@/cmf/models/user";
 import { hashPassword, generateSalt } from "@/lib/utils";
 
 // 定义医院验证schema
@@ -74,7 +74,7 @@ export async function getHospitalController(ctx: Context) {
       user: {
         select: {
           userId: true,
-          loginName: true,
+          loginName: true
         }
       }
     }
@@ -97,7 +97,7 @@ export async function getHospitalController(ctx: Context) {
 
 // 处理用户创建/更新逻辑
 async function handleUserCreation(loginName: string, password: string, email: string) {
-  let userInfo = await getUser({ loginName });
+  let userInfo = await getUserModel({ loginName });
   let userId: number;
 
   if (userInfo) {
@@ -105,7 +105,7 @@ async function handleUserCreation(loginName: string, password: string, email: st
     // 更新用户密码
     const salt = generateSalt();
     const hashedPassword = await hashPassword(`${password}${salt}`);
-    await updateUser(userId, {
+    await updateUserModel(userId, {
       password: hashedPassword,
       salt,
       email,
@@ -126,7 +126,7 @@ async function handleUserCreation(loginName: string, password: string, email: st
       updatedAt: now(),
       deletedAt: 0
     };
-    const newUser = await createUser(userData);
+    const newUser = await createUserModel(userData);
     userId = newUser.userId;
   }
 
@@ -136,7 +136,6 @@ async function handleUserCreation(loginName: string, password: string, email: st
 // 构建医院数据
 function buildHospitalData(
   requestData,
-  createdId?: number,
   isUpdate = false
 ): Prisma.MbcrmHospitalCreateInput | Prisma.MbcrmHospitalUpdateInput {
   const {
@@ -165,6 +164,7 @@ function buildHospitalData(
     memberDiscount,
     rebate,
     introduction,
+    createId,
     status
   } = requestData;
 
@@ -194,7 +194,8 @@ function buildHospitalData(
     memberDiscount: memberDiscount || "",
     rebate: rebate ? parseFloat(rebate) : null,
     introduction: introduction || "",
-    status: status || 1
+    status: status || 1,
+    createId
   };
 
   if (isUpdate) {
@@ -205,7 +206,6 @@ function buildHospitalData(
   } else {
     return {
       ...baseData,
-      createdId,
       createdAt: now()
     };
   }
@@ -238,8 +238,10 @@ async function saveHospital(ctx: Context, isUpdate = false) {
     }
   }
 
+  requestData.createdId = createdId;
+
   // 构建医院数据
-  const hospitalData = buildHospitalData(requestData, createdId, isUpdate);
+  const hospitalData = buildHospitalData(requestData, isUpdate);
 
   // 如果是更新操作且提供了用户ID，更新用户关联
   if (!isUpdate && userId) {

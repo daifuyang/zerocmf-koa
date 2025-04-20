@@ -1,0 +1,612 @@
+paths:
+  /api/v1/admin/articles:
+    get:
+      summary: 获取文章列表
+      description: 返回文章列表，支持分页
+      operationId: getArticleList
+      security:
+        - BearerAuth: []
+      tags:
+        - articles
+      parameters:
+        - name: current
+          in: query
+          description: 当前页码
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          description: 每页条数
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        "200":
+          description: 返回文章列表
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleListResp"
+              example:
+                code: 1
+                msg: "获取成功！"
+                data:
+                  total: 1
+                  data:
+                    - articleId: 2
+                      postFormat: 1
+                      seoTitle: null
+                      seoKeywords: null
+                      seoDescription: null
+                      thumbnail: null
+                      title: "测试文章"
+                      content: '<p class="zerocmf-editor-paragraph"><span style="white-space:pre-wrap">测试分类</span></p>'
+                      keywords: ["标签1", "标签2"]
+                      excerpt: null
+                      source: null
+                      isTop: null
+                      hits: null
+                      favorites: null
+                      likes: null
+                      comments: null
+                      more: null
+                      articleStatus: 1
+                      commentStatus: 1
+                      order: null
+                      publishedAt: 1737708928
+                      createId: 1
+                      creator: "admin"
+                      updateId: 1
+                      updater: "admin"
+                      createdAt: 1737713075
+                      updatedAt: 1737713075
+                      deletedAt: 0
+                      createdTime: "2025-01-24 18:04:35"
+                      updatedTime: "2025-01-24 18:04:35"
+                      publishedTime: "2025-01-24"
+                      category:
+                        - categoryId: 1
+                          categoryName: "测试分类"
+                  current: 1
+                  pageSize: 10
+
+    post:
+      summary: 创建文章
+      description: 创建一篇新的文章
+      operationId: createArticle
+      security:
+        - BearerAuth: []
+      tags:
+        - articles
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                categoryIds:
+                  type: array
+                  description: 分类ID列表
+                  items:
+                    type: integer
+                  example: [1, 2]
+                title:
+                  type: string
+                  description: 文章标题
+                  example: "文章标题"
+                content:
+                  type: string
+                  description: 文章内容
+                  example: "文章内容"
+                excerpt:
+                  type: string
+                  description: 文章摘要
+                  example: "文章摘要"
+                keywords:
+                  type: array
+                  description: 文章关键词
+                  items:
+                    type: string
+                  example: ["关键词1", "关键词2"]
+                publishedAt:
+                  type: string
+                  format: date-time
+                  description: 发布时间
+                  example: "2023-10-01T00:00:00Z"
+      responses:
+        "200":
+          description: 返回创建的文章
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleResp"
+              example:
+                code: 1
+                msg: "创建成功！"
+                data:
+                  articleId: 2
+                  postFormat: 1
+                  seoTitle: null
+                  seoKeywords: null
+                  seoDescription: null
+                  thumbnail: null
+                  title: "测试文章"
+                  content: '<p class="zerocmf-editor-paragraph"><span style="white-space:pre-wrap">测试分类</span></p>'
+                  keywords: ["标签1", "标签2"]
+                  excerpt: null
+                  source: null
+                  isTop: null
+                  hits: null
+                  favorites: null
+                  likes: null
+                  comments: null
+                  more: null
+                  articleStatus: 1
+                  commentStatus: 1
+                  order: null
+                  publishedAt: 1737708928
+                  createId: 1
+                  creator: "admin"
+                  updateId: 1
+                  updater: "admin"
+                  createdAt: 1737713075
+                  updatedAt: 1737713075
+                  deletedAt: 0
+                  createdTime: "2025-01-24 18:04:35"
+                  updatedTime: "2025-01-24 18:04:35"
+                  publishedTime: "2025-01-24"
+                  category:
+                    - categoryId: 1
+                      categoryName: "测试分类"
+
+  /api/v1/admin/articles/{articleId}:
+    get:
+      summary: 获取文章详情
+      description: 根据ID获取文章详情
+      operationId: getArticle
+      security:
+        - BearerAuth: []
+      tags:
+        - articles
+      parameters:
+        - name: articleId
+          in: path
+          description: 文章ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 返回文章详情
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleResp"
+              example:
+                code: 1
+                msg: "获取成功！"
+                data:
+                  articleId: 2
+                  postFormat: 1
+                  seoTitle: null
+                  seoKeywords: null
+                  seoDescription: null
+                  thumbnail: null
+                  title: "测试文章"
+                  content: '<p class="zerocmf-editor-paragraph"><span style="white-space:pre-wrap">测试分类</span></p>'
+                  keywords: ["标签1", "标签2"]
+                  excerpt: null
+                  source: null
+                  isTop: null
+                  hits: null
+                  favorites: null
+                  likes: null
+                  comments: null
+                  more: null
+                  articleStatus: 1
+                  commentStatus: 1
+                  order: null
+                  publishedAt: 1737708928
+                  createId: 1
+                  creator: "admin"
+                  updateId: 1
+                  updater: "admin"
+                  createdAt: 1737713075
+                  updatedAt: 1737713075
+                  deletedAt: 0
+                  createdTime: "2025-01-24 18:04:35"
+                  updatedTime: "2025-01-24 18:04:35"
+                  publishedTime: "2025-01-24"
+                  category:
+                    - categoryId: 1
+                      categoryName: "测试分类"
+
+    put:
+      summary: 更新文章
+      description: 根据ID更新文章
+      operationId: updateArticle
+      security:
+        - BearerAuth: []
+      tags:
+        - articles
+      parameters:
+        - name: articleId
+          in: path
+          description: 文章ID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                categoryIds:
+                  type: array
+                  description: 分类ID列表
+                  items:
+                    type: integer
+                  example: [1, 2]
+                title:
+                  type: string
+                  description: 文章标题
+                  example: "文章标题"
+                content:
+                  type: string
+                  description: 文章内容
+                  example: "文章内容"
+                excerpt:
+                  type: string
+                  description: 文章摘要
+                  example: "文章摘要"
+                keywords:
+                  type: array
+                  description: 文章关键词
+                  items:
+                    type: string
+                  example: ["关键词1", "关键词2"]
+                publishedAt:
+                  type: string
+                  format: date-time
+                  description: 发布时间
+                  example: "2023-10-01T00:00:00Z"
+      responses:
+        "200":
+          description: 返回更新后的文章
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleResp"
+              example:
+                code: 1
+                msg: "更新成功！"
+                data:
+                  articleId: 2
+                  postFormat: 1
+                  seoTitle: null
+                  seoKeywords: null
+                  seoDescription: null
+                  thumbnail: null
+                  title: "测试文章"
+                  content: '<p class="zerocmf-editor-paragraph"><span style="white-space:pre-wrap">测试分类</span></p>'
+                  keywords: ["标签1", "标签2"]
+                  excerpt: null
+                  source: null
+                  isTop: null
+                  hits: null
+                  favorites: null
+                  likes: null
+                  comments: null
+                  more: null
+                  articleStatus: 1
+                  commentStatus: 1
+                  order: null
+                  publishedAt: 1737708928
+                  createId: 1
+                  creator: "admin"
+                  updateId: 1
+                  updater: "admin"
+                  createdAt: 1737713075
+                  updatedAt: 1737713075
+                  deletedAt: 0
+                  createdTime: "2025-01-24 18:04:35"
+                  updatedTime: "2025-01-24 18:04:35"
+                  publishedTime: "2025-01-24"
+                  category:
+                    - categoryId: 1
+                      categoryName: "测试分类"
+
+    delete:
+      summary: 删除文章
+      description: 根据ID删除文章
+      operationId: deleteArticle
+      security:
+        - BearerAuth: []
+      tags:
+        - articles
+      parameters:
+        - name: articleId
+          in: path
+          description: 文章ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 返回删除结果
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleResp"
+              example:
+                code: 1
+                msg: "删除成功！"
+                data:
+                  articleId: 2
+                  postFormat: 1
+                  seoTitle: null
+                  seoKeywords: null
+                  seoDescription: null
+                  thumbnail: null
+                  title: "测试文章"
+                  content: '<p class="zerocmf-editor-paragraph"><span style="white-space:pre-wrap">测试分类</span></p>'
+                  keywords: ["标签1", "标签2"]
+                  excerpt: null
+                  source: null
+                  isTop: null
+                  hits: null
+                  favorites: null
+                  likes: null
+                  comments: null
+                  more: null
+                  articleStatus: 1
+                  commentStatus: 1
+                  order: null
+                  publishedAt: 1737708928
+                  createId: 1
+                  creator: "admin"
+                  updateId: 1
+                  updater: "admin"
+                  createdAt: 1737713075
+                  updatedAt: 1737713075
+                  deletedAt: 0
+                  createdTime: "2025-01-24 18:04:35"
+                  updatedTime: "2025-01-24 18:04:35"
+                  publishedTime: "2025-01-24"
+                  category:
+                    - categoryId: 1
+                      categoryName: "测试分类"
+
+components:
+  schemas:
+    Response:
+      type: object
+      required:
+        - code
+        - msg
+      properties:
+        code:
+          type: integer
+          description: Response code
+          example: 1
+        msg:
+          type: string
+          description: Response message
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          description: 当前页码
+          example: 1
+        pageSize:
+          type: integer
+          description: 每页显示的数据条数
+          example: 10
+        total:
+          type: integer
+          description: 总数据条数
+          example: 2
+
+    ArticleListResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                total:
+                  type: integer
+                  example: 1
+                data:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Article"
+                current:
+                  type: integer
+                  example: 1
+                pageSize:
+                  type: integer
+                  example: 10
+
+    ArticleResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/Article"
+
+    Article:
+      type: object
+      properties:
+        articleId:
+          type: integer
+          description: 文章ID
+          example: 2
+        postFormat:
+          type: integer
+          description: 发布格式
+          example: 1
+        seoTitle:
+          type: string
+          nullable: true
+          description: SEO标题
+          example: null
+        seoKeywords:
+          type: string
+          nullable: true
+          description: SEO关键词
+          example: null
+        seoDescription:
+          type: string
+          nullable: true
+          description: SEO描述
+          example: null
+        thumbnail:
+          type: string
+          nullable: true
+          description: 缩略图URL
+          example: null
+        title:
+          type: string
+          description: 文章标题
+          example: "测试文章"
+        content:
+          type: string
+          description: 文章内容，支持HTML格式
+          example: '<p class="zerocmf-editor-paragraph"><span style="white-space:pre-wrap">测试分类</span></p>'
+        keywords:
+          type: array
+          description: 关键词列表
+          items:
+            type: string
+          example:
+            - "标签1"
+            - "标签2"
+        excerpt:
+          type: string
+          nullable: true
+          description: 摘要
+          example: null
+        source:
+          type: string
+          nullable: true
+          description: 来源
+          example: null
+        isTop:
+          type: boolean
+          nullable: true
+          description: 是否置顶
+          example: null
+        hits:
+          type: integer
+          nullable: true
+          description: 点击量
+          example: null
+        favorites:
+          type: integer
+          nullable: true
+          description: 收藏数
+          example: null
+        likes:
+          type: integer
+          nullable: true
+          description: 点赞数
+          example: null
+        comments:
+          type: integer
+          nullable: true
+          description: 评论数
+          example: null
+        more:
+          type: object
+          nullable: true
+          description: 其他信息
+          example: null
+        articleStatus:
+          type: integer
+          description: 文章状态（例如：1-已发布，0-草稿）
+          example: 1
+        commentStatus:
+          type: integer
+          description: 评论状态（例如：1-允许，0-不允许）
+          example: 1
+        order:
+          type: integer
+          nullable: true
+          description: 排序权重
+          example: null
+        publishedAt:
+          type: integer
+          description: 发布时间，Unix时间戳格式
+          example: 1737708928
+        createId:
+          type: integer
+          description: 创建者ID
+          example: 1
+        creator:
+          type: string
+          description: 创建者名称
+          example: "admin"
+        updateId:
+          type: integer
+          description: 更新者ID
+          example: 1
+        updater:
+          type: string
+          description: 更新者名称
+          example: "admin"
+        createdAt:
+          type: integer
+          description: 创建时间，Unix时间戳格式
+          example: 1737713075
+        updatedAt:
+          type: integer
+          description: 更新时间，Unix时间戳格式
+          example: 1737713075
+        deletedAt:
+          type: integer
+          description: 删除时间，Unix时间戳格式，0表示未删除
+          example: 0
+        createdTime:
+          type: string
+          format: date-time
+          description: 创建时间的可读格式
+          example: "2025-01-24 18:04:35"
+        updatedTime:
+          type: string
+          format: date-time
+          description: 更新时间的可读格式
+          example: "2025-01-24 18:04:35"
+        publishedTime:
+          type: string
+          format: date
+          description: 发布时间的可读格式
+          example: "2025-01-24"
+        category:
+          type: array
+          description: 分类信息
+          items:
+            type: object
+            properties:
+              categoryId:
+                type: integer
+                description: 分类ID
+                example: 1
+              categoryName:
+                type: string
+                description: 分类名称
+                example: "测试分类"
+
+      required:
+        - articleId
+        - publishedAt

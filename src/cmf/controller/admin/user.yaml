@@ -1,4 +1,46 @@
 paths:
+  /api/v1/currentUser:
+    get:
+      summary: 获取当前用户信息
+      description: 根据提供的 JWT 令牌获取当前用户信息。
+      operationId: currentUser
+      security:
+        - BearerAuth: []
+      tags:
+        - users
+      responses:
+        "200":
+          description: 成功获取用户信息
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResp"
+              example:
+                {
+                  "userId": 1,
+                  "loginName": "admin",
+                  "email": null,
+                  "phone": null,
+                  "nickname": "admin",
+                  "realName": null,
+                  "gender": 0,
+                  "birthday": null,
+                  "userType": 1,
+                  "name": null,
+                  "avatar": null,
+                  "loginIp": null,
+                  "loginTime": null,
+                  "status": 1,
+                  "createdAt": "1723613053",
+                  "updatedAt": "1723613053"
+                }
+        "401":
+          description: 未授权或身份已过期
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnAuthorized"
+
   /api/v1/admin/users:
     get:
       summary: 获取管理员用户列表
@@ -14,23 +56,15 @@ paths:
           required: false
           description: "当前页"
           schema:
-            type: "integer"
-            default: 1
+            type: "string"
+            default: "1"
         - name: "pageSize"
           in: "query"
           required: false
           description: "每页数量"
           schema:
-            type: "integer"
-            default: 10
-        - name: "isAll"
-          in: "query"
-          required: false
-          description: "是否获取全部列表，设置为1时返回所有数据，不进行分页"
-          schema:
-            type: "integer"
-            enum: [0, 1]
-            default: 0
+            type: "string"
+            default: "10"
         - name: loginName
           in: query
           description: 通过登录名筛选
@@ -48,8 +82,7 @@ paths:
           description: 通过状态筛选，0表示禁用，1表示启用
           required: false
           schema:
-            type: integer
-            enum: [0, 1]
+            type: string
       responses:
         "200":
           description: 用户角色的分页列表。
@@ -62,32 +95,30 @@ paths:
                   "code": 1,
                   "msg": "获取成功！",
                   "data":
-                    {
-                      "page": 1,
-                      "pageSize": 10,
-                      "total": 1,
-                      "data": [
-                        {
-                          "userId": 1,
-                          "loginName": "admin",
-                          "email": null,
-                          "phone": null,
-                          "nickname": "admin",
-                          "realname": null,
-                          "gender": 0,
-                          "birthday": null,
-                          "userType": 1,
-                          "name": null,
-                          "avatar": null,
-                          "loginIp": null,
-                          "loginTime": null,
-                          "status": 1,
-                          "createdAt": "1723613053",
-                          "updatedAt": "1723613053",
-                          "deletedAt": "0"
-                        }
-                      ]
-                    }
+                    [
+                      {
+                        "userId": 1,
+                        "loginName": "admin",
+                        "email": null,
+                        "phone": null,
+                        "nickname": "admin",
+                        "realname": null,
+                        "gender": 0,
+                        "birthday": null,
+                        "userType": 1,
+                        "name": null,
+                        "avatar": null,
+                        "loginIp": null,
+                        "loginTime": null,
+                        "status": 1,
+                        "createdAt": "1723613053",
+                        "updatedAt": "1723613053",
+                        "deletedAt": "0"
+                      }
+                    ],
+                  "page": 1,
+                  "pageSize": 10,
+                  "total": 1
                 }
     post:
       summary: 添加管理员用户
@@ -112,7 +143,7 @@ paths:
                 "realname": "admin",
                 "password": "123456",
                 "gender": 1,
-                "birthday": 12345678910,
+                "birthday": "12345678910",
                 "userType": 1,
                 "avatar": null,
                 "status": 1
@@ -133,11 +164,11 @@ paths:
                       "userId": 1,
                       "loginName": "admin",
                       "email": example@qq.com,
-                      "phone": 12345678910,
+                      "phone": "12345678910",
                       "nickname": "admin",
                       "realname": "admin",
                       "gender": 1,
-                      "birthday": 12345678910,
+                      "birthday": "12345678910",
                       "userType": 1,
                       "avatar": null,
                       "status": 1,
@@ -225,7 +256,7 @@ paths:
                 "realname": "admin",
                 "password": "123456",
                 "gender": 1,
-                "birthday": 12345678910,
+                "birthday": "12345678910",
                 "userType": 1,
                 "avatar": null,
                 "status": 1
@@ -308,6 +339,28 @@ paths:
 
 components:
   schemas:
+    Response:
+      type: object
+      required:
+        - code
+        - msg
+      properties:
+        code:
+          type: integer
+          description: Response code
+          example: 1
+        msg:
+          type: string
+          description: Response message
+    UnAuthorized:
+      type: object
+      required:
+        - msg
+      properties:
+        msg:
+          type: string
+          description: Response message
+          example: 用户身份已过期
     User:
       type: object
       properties:
@@ -346,10 +399,10 @@ components:
           enum: [0, 1]
           example: 1
         birthday:
-          type: integer
+          type: string
           description: 出生日期（Unix 时间戳）
           nullable: true
-          example: 12345678910
+          example: "12345678910"
         userType:
           type: integer
           description: 用户类型，1 表示管理员
@@ -393,28 +446,28 @@ components:
         - status
         - createdAt
         - updatedAt
-
     UserListResp:
       allOf:
         - $ref: "#/components/schemas/Response"
         - type: object
           properties:
             data:
-              oneOf:
-                - allOf:
-                    - $ref: "#/components/schemas/Pagination"
-                    - type: object
-                      properties:
-                        data:
-                          type: array
-                          description: 用户列表
-                          items:
-                            $ref: "#/components/schemas/User"
-                - type: array
-                  description: 用户列表，不包含分页信息
-                  items:
-                    $ref: "#/components/schemas/User"
-
+              type: array
+              description: 用户列表
+              items:
+                $ref: "#/components/schemas/User"
+            page:
+              type: integer
+              description: 当前页码
+              example: 1
+            pageSize:
+              type: integer
+              description: 每页数量
+              example: 10
+            total:
+              type: integer
+              description: 总记录数
+              example: 1
     UserResp:
       allOf:
         - $ref: "#/components/schemas/Response"
@@ -424,7 +477,6 @@ components:
               $ref: "#/components/schemas/User"
           required:
             - data
-
     UserSaveReq:
       type: object
       required:
@@ -462,10 +514,9 @@ components:
           enum: [0, 1]
           example: 1
         birthday:
-          type: integer
-          format: int64
+          type: string
           description: 出生日期（Unix 时间戳）
-          example: 12345678910
+          example: "12345678910"
         userType:
           type: integer
           description: 用户类型，1 表示管理员

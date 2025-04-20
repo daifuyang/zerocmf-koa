@@ -1,4 +1,3 @@
-import Router from "koa-router";
 import migrateMenu from "./menu";
 import { systemMenus } from "./menu";
 import cmfMigrate from "@/cmf/migrate";

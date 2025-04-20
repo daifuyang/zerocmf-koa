@@ -1,7 +1,9 @@
 import { getEnforcer } from "@/casbin";
 import { formatFields, now } from "@/lib/date";
-import response from "@/lib/response";
+import response, { Pagination } from "@/lib/response";
 import { generateSalt, hashPassword } from "@/lib/utils";
+import { z } from "zod";
+
 import {
   createUserModel,
   deleteUserModel,
@@ -11,19 +13,42 @@ import {
   getUserListModel,
   updateUserModel
 } from "../../models/user";
+import { Prisma } from "@prisma/client";
 
-// 获取管理员列表
+const ListQuerySchema = z.object({
+  current: z.string().optional().default("1"),
+  pageSize: z.string().optional().default("10"),
+  loginName: z.string().optional().default(""),
+  phone: z.string().optional().default(""),
+  status: z.string().optional()
+});
+
+const UserIdSchema = z.object({
+  userId: z.string().min(1, "参数错误！")
+});
+
+const UserSaveSchema = z.object({
+  loginName: z.string().min(1, "登录用户名不能为空！"),
+  email: z.string().email("邮箱格式不正确").optional(),
+  phone: z.string().optional(),
+  nickname: z.string().optional(),
+  realname: z.string().optional(),
+  password: z.string().optional(),
+  gender: z.number().optional(),
+  birthday: z.number().optional(),
+  avatar: z.string().optional(),
+  loginIp: z.string().optional(),
+  loginTime: z.string().optional(),
+  status: z.number(),
+  remark: z.string().optional(),
+  roleIds: z.array(z.number()).optional()
+});
+
 export const getUsersController = async (ctx: any) => {
-  // 获取查询参数
-  const query = ctx.query || {};
-  const { current = "1", pageSize = "10", loginName = "", phone = "", status } = query;
+  const query = ListQuerySchema.parse(ctx.query || {});
+  const { current, pageSize, loginName, phone, status } = query;
 
-  const where: {
-    userType: 1;
-    loginName?: any;
-    phone?: any;
-    status?: any;
-  } = {
+  const where: Prisma.SysUserWhereInput = {
     userType: 1
   };
 
@@ -57,29 +82,22 @@ export const getUsersController = async (ctx: any) => {
     return newItem;
   });
 
-  let pagination = {};
-  if (pageSize === "0") {
-    pagination = data;
-  } else {
+  let pagination: Pagination;
+  if (pageSize !== "0") {
     const total = await getUserCountModel(where);
     pagination = {
-      page: Number(current),
+      current: Number(current),
       pageSize: Number(pageSize),
-      total,
-      data: data
+      total
     };
   }
-  ctx.body = response.success("获取成功！", pagination);
+  ctx.body = response.success("获取成功！", data, { pagination });
   return;
 };
 
 // 获取单个管理员
 export const getUserController = async (ctx: any) => {
-  const { userId } = ctx.params;
-  if (!userId) {
-    ctx.body = response.error("参数错误！");
-    return;
-  }
+  const { userId } = UserIdSchema.parse(ctx.params);
   const user = await getUserByIdModel(Number(userId));
   if (!user) {
     ctx.body = response.error("用户不存在！");
@@ -106,6 +124,7 @@ export const updateUserController = async (ctx: any) => {
 
 // 保存管理员，添加修改逻辑合二为一
 const saveUser = async (ctx: any, userId: string | null) => {
+  const body = UserSaveSchema.parse(ctx.request.body);
   const {
     loginName,
     email,
@@ -121,12 +140,7 @@ const saveUser = async (ctx: any, userId: string | null) => {
     status,
     remark,
     roleIds
-  } = ctx.request.body;
-
-  if (!loginName) {
-    ctx.body = response.error("登录用户名不能为空！");
-    return;
-  }
+  } = body;
 
   const userModel = await getUserModel({ loginName });
   if (userModel) {
@@ -200,12 +214,12 @@ const saveUser = async (ctx: any, userId: string | null) => {
     password: hashPwd,
     salt,
     gender,
-    birthday,
+    birthday: birthday ? Number(birthday) : undefined,
     userType: 1,
     avatar,
     loginIp,
     loginTime,
-    status,
+    status: Number(status),
     remark,
     createdAt: now(),
     updatedAt: now()
@@ -234,18 +248,8 @@ const saveUser = async (ctx: any, userId: string | null) => {
 
 // 删除管理员
 export const deleteUserController = async (ctx: any) => {
-  const { userId } = ctx.params;
-
-  if (!userId) {
-    ctx.body = response.error("参数错误！");
-    return;
-  }
-
+  const { userId } = UserIdSchema.parse(ctx.params);
   const numberUserId = Number(userId);
-  if (isNaN(numberUserId)) {
-    ctx.body = response.error("参数错误！");
-    return;
-  }
 
   const exist = await getUserByIdModel(numberUserId);
   if (!exist) {

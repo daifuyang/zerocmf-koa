@@ -89,6 +89,98 @@ CREATE TABLE `cms_article_tag_post` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `mbcrm_hospital` (
+    `hospital_id` INTEGER NOT NULL AUTO_INCREMENT,
+    `hospital_name` VARCHAR(100) NOT NULL,
+    `email` VARCHAR(100) NULL,
+    `province` VARCHAR(50) NULL,
+    `city` VARCHAR(50) NULL,
+    `district` VARCHAR(50) NULL,
+    `address` VARCHAR(255) NULL,
+    `phone` VARCHAR(20) NULL,
+    `avg_price` DOUBLE NULL,
+    `website` VARCHAR(100) NULL,
+    `hospital_type` TINYINT NOT NULL DEFAULT 0,
+    `contact_name` VARCHAR(50) NULL,
+    `contact_phone` VARCHAR(20) NULL,
+    `contact_qq` VARCHAR(20) NULL,
+    `contact_wechat` VARCHAR(50) NULL,
+    `front_name` VARCHAR(50) NULL,
+    `front_phone` VARCHAR(20) NULL,
+    `front_qq` VARCHAR(20) NULL,
+    `front_wechat` VARCHAR(50) NULL,
+    `bus_station` VARCHAR(100) NULL,
+    `bus_route` VARCHAR(100) NULL,
+    `metro_station` VARCHAR(100) NULL,
+    `metro_route` VARCHAR(100) NULL,
+    `member_discount` VARCHAR(100) NULL,
+    `rebate` DOUBLE NULL,
+    `introduction` TEXT NULL,
+    `status` TINYINT NOT NULL DEFAULT 1,
+    `created_id` INTEGER NOT NULL DEFAULT 0,
+    `created_at` INTEGER NOT NULL DEFAULT 0,
+    `updated_at` INTEGER NOT NULL DEFAULT 0,
+    `deleted_at` INTEGER NOT NULL DEFAULT 0,
+
+    PRIMARY KEY (`hospital_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `mbcrm_customer` (
+    `customer_id` INTEGER NOT NULL AUTO_INCREMENT,
+    `member_no` VARCHAR(36) NOT NULL,
+    `name` VARCHAR(50) NOT NULL,
+    `birth_date` VARCHAR(20) NOT NULL,
+    `gender` VARCHAR(10) NOT NULL,
+    `province` VARCHAR(50) NOT NULL,
+    `city` VARCHAR(50) NOT NULL,
+    `district` VARCHAR(50) NOT NULL,
+    `address` VARCHAR(200) NOT NULL,
+    `phone` VARCHAR(20) NULL,
+    `mobile` VARCHAR(20) NULL,
+    `wechat` VARCHAR(50) NULL,
+    `qq` VARCHAR(20) NULL,
+    `project` VARCHAR(100) NULL,
+    `status` TINYINT NOT NULL DEFAULT 0,
+    `remark` VARCHAR(500) NULL,
+    `operator_id` INTEGER NOT NULL,
+    `created_id` INTEGER NOT NULL,
+    `created_by` VARCHAR(64) NOT NULL DEFAULT '',
+    `created_at` INTEGER NOT NULL DEFAULT 0,
+    `updated_id` INTEGER NOT NULL,
+    `updated_by` VARCHAR(64) NOT NULL DEFAULT '',
+    `updated_at` INTEGER NULL,
+    `deleted_at` INTEGER NOT NULL DEFAULT 0,
+
+    UNIQUE INDEX `mbcrm_customer_member_no_key`(`member_no`),
+    PRIMARY KEY (`customer_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `mbcrm_dispatch` (
+    `dispathId` INTEGER NOT NULL AUTO_INCREMENT,
+    `dispatch_no` VARCHAR(191) NOT NULL,
+    `hospital_id` INTEGER NOT NULL,
+    `customer_id` INTEGER NOT NULL,
+    `project` VARCHAR(100) NOT NULL,
+    `dispatch_time` INTEGER NOT NULL DEFAULT 0,
+    `dispatcher_id` INTEGER NOT NULL,
+    `status` TINYINT NOT NULL DEFAULT 0,
+    `message` TEXT NULL,
+    `created_id` INTEGER NOT NULL,
+    `created_by` VARCHAR(64) NOT NULL DEFAULT '',
+    `created_at` INTEGER NOT NULL DEFAULT 0,
+    `updated_id` INTEGER NOT NULL DEFAULT 0,
+    `updated_by` VARCHAR(64) NOT NULL DEFAULT '',
+    `updated_at` INTEGER NULL,
+    `deleted_at` INTEGER NOT NULL DEFAULT 0,
+
+    UNIQUE INDEX `mbcrm_dispatch_dispatch_no_key`(`dispatch_no`),
+    INDEX `mbcrm_dispatch_hospital_id_customer_id_dispatcher_id_status_idx`(`hospital_id`, `customer_id`, `dispatcher_id`, `status`),
+    PRIMARY KEY (`dispathId`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `sys_user` (
     `user_id` INTEGER NOT NULL AUTO_INCREMENT,
     `login_name` VARCHAR(191) NULL,
@@ -413,3 +505,21 @@ ALTER TABLE `cms_article_tag_post` ADD CONSTRAINT `cms_article_tag_post_article_
 
 -- AddForeignKey
 ALTER TABLE `cms_article_tag_post` ADD CONSTRAINT `cms_article_tag_post_tag_id_fkey` FOREIGN KEY (`tag_id`) REFERENCES `cms_article_tag`(`tagId`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `mbcrm_hospital` ADD CONSTRAINT `mbcrm_hospital_created_id_fkey` FOREIGN KEY (`created_id`) REFERENCES `sys_user`(`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `mbcrm_customer` ADD CONSTRAINT `mbcrm_customer_operator_id_fkey` FOREIGN KEY (`operator_id`) REFERENCES `sys_user`(`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `mbcrm_customer` ADD CONSTRAINT `mbcrm_customer_created_id_fkey` FOREIGN KEY (`created_id`) REFERENCES `sys_user`(`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `mbcrm_dispatch` ADD CONSTRAINT `mbcrm_dispatch_hospital_id_fkey` FOREIGN KEY (`hospital_id`) REFERENCES `mbcrm_hospital`(`hospital_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `mbcrm_dispatch` ADD CONSTRAINT `mbcrm_dispatch_customer_id_fkey` FOREIGN KEY (`customer_id`) REFERENCES `mbcrm_customer`(`customer_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `mbcrm_dispatch` ADD CONSTRAINT `mbcrm_dispatch_dispatcher_id_fkey` FOREIGN KEY (`dispatcher_id`) REFERENCES `sys_user`(`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE;

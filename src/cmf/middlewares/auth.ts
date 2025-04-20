@@ -1,7 +1,6 @@
 import { Context } from "koa";
 import response from "@/lib/response";
 import { getUserByIdModel } from "../models/user";
-import { jwtSecret } from "../constants/jwt";
 import { verifyTokenService } from "../services/auth";
 
 export const auth = async (ctx: Context, next: () => Promise<void>) => {

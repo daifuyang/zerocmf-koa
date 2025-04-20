@@ -1,5 +1,6 @@
 import type { Cmf } from "@/cmf/typings";
 import articlePlugin from "./article";
+import mbcrmPlugin from "./mbcrm";
 
 export interface Plugin {
   name: string;
@@ -10,53 +11,55 @@ export interface Plugin {
   stop?: (cmf: Cmf) => void;
 }
 
-export class PluginManager {
-  private plugins: Map<string, Plugin> = new Map();
-  private cmf: Cmf;
+export function createPluginManager(cmf: Cmf) {
+  const plugins: Map<string, Plugin> = new Map();
 
-  constructor(cmf: Cmf) {
-    this.cmf = cmf;
-  }
-
-  register(plugin: Plugin) {
+  function register(plugin: Plugin) {
     // 检查依赖
     if (plugin.dependencies) {
       for (const dep of plugin.dependencies) {
-        if (!this.plugins.has(dep)) {
+        if (!plugins.has(dep)) {
           throw new Error(`Plugin ${plugin.name} requires ${dep} but it's not registered`);
         }
       }
     }
 
-    this.plugins.set(plugin.name, plugin);
+    plugins.set(plugin.name, plugin);
     
     // 执行安装
     if (plugin.install) {
-      plugin.install(this.cmf);
+      plugin.install(cmf);
     }
   }
 
-  startAll() {
-    for (const [name, plugin] of this.plugins) {
+  function startAll() {
+    for (const [name, plugin] of plugins) {
       if (plugin.start) {
-        plugin.start(this.cmf);
+        plugin.start(cmf);
       }
     }
   }
 
-  stopAll() {
-    for (const [name, plugin] of this.plugins) {
+  function stopAll() {
+    for (const [name, plugin] of plugins) {
       if (plugin.stop) {
-        plugin.stop(this.cmf);
+        plugin.stop(cmf);
       }
     }
   }
+
+  return {
+    register,
+    startAll,
+    stopAll
+  };
 }
 
 // 兼容旧版
 export const registerPlugins = (cmf: Cmf): void => {
-  const manager = new PluginManager(cmf);
+  const manager = createPluginManager(cmf);
   manager.register(articlePlugin);
+  manager.register(mbcrmPlugin);
   manager.startAll();
 };
 

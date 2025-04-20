@@ -170,7 +170,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MediaResp"
+                $ref: "#/components/searches/MediaResp"
               example:
                 {
                   "code": 1,
@@ -222,33 +222,36 @@ paths:
 
 components:
   schemas:
-    MediaListResp:
-      allOf:
-        - $ref: "#/components/schemas/Response"
-        - type: object
-          properties:
-            data:
-              oneOf:
-                - allOf:
-                    - $ref: "#/components/schemas/Pagination"
-                    - type: object
-                      properties:
-                        medias:
-                          type: array
-                          description: 媒体资源列表
-                          items:
-                            $ref: "#/components/schemas/Media"
-                - type: array
-                  description: 角色列表，不包含分页信息
-                  items:
-                    $ref: "#/components/schemas/Media"
-    MediaResp:
-      allOf:
-        - $ref: "#/components/schemas/Response"
-        - type: object
-          properties:
-            data:
-              $ref: "#/components/schemas/MediaListResp"
+    Response:
+      type: object
+      required:
+        - code
+        - msg
+      properties:
+        code:
+          type: integer
+          description: Response code
+          example: 1
+        msg:
+          type: string
+          description: Response message
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          description: 当前页码
+          example: 1
+        pageSize:
+          type: integer
+          description: 每页显示的数据条数
+          example: 10
+        total:
+          type: integer
+          description: 总数据条数
+          example: 2
+
     Media:
       type: object
       properties:
@@ -272,3 +275,33 @@ components:
           type: string
           description: 更新时间戳
           example: "1725354179"
+
+    MediaListResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                page:
+                  type: integer
+                  example: 1
+                pageSize:
+                  type: integer
+                  example: 10
+                total:
+                  type: integer
+                  example: 2
+                data:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Media"
+
+    MediaResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/Media"

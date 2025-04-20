@@ -256,7 +256,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DictDataResp"
+                $ref: "#/components/searches/DictDataResp"
 
     delete:
       summary: 删除字典数据
@@ -310,6 +310,36 @@ paths:
   
 components:
   schemas:
+    Response:
+      type: object
+      required:
+        - code
+        - msg
+      properties:
+        code:
+          type: integer
+          description: Response code
+          example: 1
+        msg:
+          type: string
+          description: Response message
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          description: 当前页码
+          example: 1
+        pageSize:
+          type: integer
+          description: 每页显示的数据条数
+          example: 10
+        total:
+          type: integer
+          description: 总数据条数
+          example: 2
+
     DictType:
       type: object
       properties:

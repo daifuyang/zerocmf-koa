@@ -6,6 +6,8 @@ paths:
       summary: 获取登录日志列表
       description: 分页获取登录日志列表
       operationId: getLoginLogList
+      security:
+        - BearerAuth: []
       parameters:
         - name: current
           in: query
@@ -51,36 +53,16 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                    example: 1
-                  msg:
-                    type: string
-                    example: 获取登录日志列表成功
-                  data:
-                    type: object
-                    properties:
-                      list:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/LoginLog'
-                      total:
-                        type: integer
-                        example: 100
-                      current:
-                        type: integer
-                        example: 1
-                      pageSize:
-                        type: integer
-                        example: 10
+                $ref: '#/components/schemas/LoginLogListResp'
+
     delete:
       tags:
         - login-logs
       summary: 删除登录日志
       description: 批量删除登录日志
       operationId: removeLoginLog
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -99,16 +81,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                    example: 1
-                  msg:
-                    type: string
-                    example: 删除登录日志成功
-                  data:
-                    type: object
+                $ref: '#/components/schemas/Response'
 
   /api/v1/admin/login-logs/{id}:
     get:
@@ -117,6 +90,8 @@ paths:
       summary: 获取登录日志详情
       description: 根据ID获取登录日志详情
       operationId: getLoginLogDetail
+      security:
+        - BearerAuth: []
       parameters:
         - name: id
           in: path
@@ -130,16 +105,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                    example: 1
-                  msg:
-                    type: string
-                    example: 获取登录日志详情成功
-                  data:
-                    $ref: '#/components/schemas/LoginLog'
+                $ref: '#/components/schemas/LoginLogResp'
 
   /api/v1/admin/login-logs/clean:
     delete:
@@ -148,22 +114,15 @@ paths:
       summary: 清空登录日志
       description: 清空所有登录日志
       operationId: cleanLoginLog
+      security:
+        - BearerAuth: []
       responses:
         '200':
           description: 成功清空登录日志
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                    example: 1
-                  msg:
-                    type: string
-                    example: 清空登录日志成功
-                  data:
-                    type: object
+                $ref: '#/components/schemas/Response'
 
   /api/v1/admin/login-logs/export:
     get:
@@ -172,6 +131,8 @@ paths:
       summary: 导出登录日志
       description: 导出登录日志数据
       operationId: exportLoginLog
+      security:
+        - BearerAuth: []
       parameters:
         - name: ipaddr
           in: query
@@ -205,21 +166,24 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                    example: 1
-                  msg:
-                    type: string
-                    example: 导出登录日志成功
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/LoginLog'
+                $ref: '#/components/schemas/LoginLogExportResp'
 
 components:
   schemas:
+    Response:
+      type: object
+      required:
+        - code
+        - msg
+      properties:
+        code:
+          type: integer
+          description: Response code
+          example: 1
+        msg:
+          type: string
+          description: Response message
+
     LoginLog:
       type: object
       properties:
@@ -263,3 +227,43 @@ components:
           type: integer
           description: 用户ID
           example: 1
+
+    LoginLogListResp:
+      allOf:
+        - $ref: '#/components/schemas/Response'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                list:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/LoginLog'
+                total:
+                  type: integer
+                  example: 100
+                current:
+                  type: integer
+                  example: 1
+                pageSize:
+                  type: integer
+                  example: 10
+
+    LoginLogResp:
+      allOf:
+        - $ref: '#/components/schemas/Response'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/LoginLog'
+
+    LoginLogExportResp:
+      allOf:
+        - $ref: '#/components/schemas/Response'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/LoginLog'

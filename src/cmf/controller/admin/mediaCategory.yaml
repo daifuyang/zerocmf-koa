@@ -30,6 +30,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MediaCategoryListResp"
+
     post:
       summary: 添加媒体分类
       description: 添加一个新的媒体分类
@@ -62,6 +63,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MediaCategoryResp"
+
   /api/v1/admin/media-categories/tree:
     get:
       summary: 获取媒体分类树形结构
@@ -119,6 +121,7 @@ paths:
                     createdAt: 1737708748
                     updatedAt: 1737708748
                     deletedAt: 0
+
   /api/v1/admin/media-categories/{categoryId}:
     get:
       summary: 获取媒体分类详情
@@ -142,6 +145,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MediaCategoryResp"
+
     put:
       summary: 修改媒体分类
       description: 根据ID修改媒体分类
@@ -181,6 +185,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MediaCategoryResp"
+
     delete:
       summary: 删除媒体分类
       description: 根据ID删除媒体分类
@@ -203,34 +208,39 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MediaCategoryResp"
+
 components:
   schemas:
-    MediaCategoryListResp:
-      allOf:
-        - $ref: "#/components/schemas/Response"
-        - type: object
-          properties:
-            data:
-              oneOf:
-                - allOf:
-                    - $ref: "#/components/schemas/Pagination"
-                    - type: object
-                      properties:
-                        data:
-                          type: array
-                          items:
-                            $ref: "#/components/schemas/MediaCategory"
-                - type: array
-                  description: 媒体分类列表，不包含分页信息
-                  items:
-                    $ref: "#/components/schemas/MediaCategory"
-    MediaCategoryResp:
-      allOf:
-        - $ref: "#/components/schemas/Response"
-        - type: object
-          properties:
-            data:
-              $ref: "#/components/schemas/MediaCategory"
+    Response:
+      type: object
+      required:
+        - code
+        - msg
+      properties:
+        code:
+          type: integer
+          description: Response code
+          example: 1
+        msg:
+          type: string
+          description: Response message
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          description: 当前页码
+          example: 1
+        pageSize:
+          type: integer
+          description: 每页显示的数据条数
+          example: 10
+        total:
+          type: integer
+          description: 总数据条数
+          example: 2
+
     MediaCategory:
       type: object
       properties:
@@ -267,3 +277,31 @@ components:
           description: 子分类列表，仅在树形结构返回时有效
           items:
             $ref: "#/components/schemas/MediaCategory"
+
+    MediaCategoryListResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              oneOf:
+                - allOf:
+                    - $ref: "#/components/schemas/Pagination"
+                    - type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/MediaCategory"
+                - type: array
+                  description: 媒体分类列表，不包含分页信息
+                  items:
+                    $ref: "#/components/schemas/MediaCategory"
+
+    MediaCategoryResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/MediaCategory"

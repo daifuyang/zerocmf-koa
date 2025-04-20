@@ -1,0 +1,462 @@
+paths:
+  /api/v1/admin/article-categories:
+    get:
+      summary: 获取文章分类列表
+      description: 返回文章分类列表，支持分页
+      operationId: getArticleCategoryList
+      security:
+        - BearerAuth: []
+      tags:
+        - article-categories
+      parameters:
+        - name: current
+          in: query
+          description: 当前页码
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          description: 每页条数
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - name: isTree
+          in: query
+          description: 是否返回树形结构
+          required: false
+      responses:
+        "200":
+          description: 返回文章分类列表
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleCategoryListResp"
+              example:
+                code: 1
+                msg: "获取成功！"
+                data:
+                  total: 1
+                  data:
+                    - articleCategoryId: 1
+                      parentId: 0
+                      seoTitle: null
+                      seoKeywords: null
+                      seoDescription: null
+                      name: "测试分类"
+                      icon: null
+                      description: null
+                      status: 1
+                      articleCount: 1
+                      path: "0"
+                      order: null
+                      createId: 1
+                      creator: "admin"
+                      updateId: 1
+                      updater: "admin"
+                      createdAt: 1737708748
+                      updatedAt: 1737708748
+                      deletedAt: 0
+                  current: 1
+                  pageSize: 10
+
+    post:
+      summary: 添加文章分类
+      description: 添加一个新的文章分类
+      operationId: addArticleCategory
+      security:
+        - BearerAuth: []
+      tags:
+        - article-categories
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                parentId:
+                  type: integer
+                  description: 父分类ID
+                  example: 0
+                name:
+                  type: string
+                  description: 分类名称
+                  example: "技术"
+                description:
+                  type: string
+                  description: 分类描述
+                  example: "技术相关文章"
+                icon:
+                  type: string
+                  description: 分类图标
+                  example: "icon-tech"
+                order:
+                  type: integer
+                  description: 排序
+                  example: 1
+                status:
+                  type: integer
+                  description: 状态
+                  example: 1
+      responses:
+        "200":
+          description: 返回添加的文章分类
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleCategoryResp"
+              example:
+                code: 1
+                msg: "添加成功！"
+                data:
+                  articleCategoryId: 1
+                  parentId: 0
+                  seoTitle: null
+                  seoKeywords: null
+                  seoDescription: null
+                  name: "测试分类"
+                  icon: null
+                  description: null
+                  status: 1
+                  articleCount: 1
+                  path: "0"
+                  order: null
+                  createId: 1
+                  creator: "admin"
+                  updateId: 1
+                  updater: "admin"
+                  createdAt: 1737708748
+                  updatedAt: 1737708748
+                  deletedAt: 0
+
+  /api/v1/admin/article-categories/{articleCategoryId}:
+    get:
+      summary: 获取文章分类详情
+      description: 根据ID获取文章分类详情
+      operationId: getArticleCategory
+      security:
+        - BearerAuth: []
+      tags:
+        - article-categories
+      parameters:
+        - name: articleCategoryId
+          in: path
+          description: 文章分类ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 返回文章分类详情
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleCategoryResp"
+              example:
+                code: 1
+                msg: "获取成功！"
+                data:
+                  articleCategoryId: 1
+                  parentId: 0
+                  seoTitle: null
+                  seoKeywords: null
+                  seoDescription: null
+                  name: "测试分类"
+                  icon: null
+                  description: null
+                  status: 1
+                  articleCount: 1
+                  path: "0"
+                  order: null
+                  createId: 1
+                  creator: "admin"
+                  updateId: 1
+                  updater: "admin"
+                  createdAt: 1737708748
+                  updatedAt: 1737708748
+                  deletedAt: 0
+
+    put:
+      summary: 修改文章分类
+      description: 根据ID修改文章分类
+      operationId: updateArticleCategory
+      security:
+        - BearerAuth: []
+      tags:
+        - article-categories
+      parameters:
+        - name: articleCategoryId
+          in: path
+          description: 文章分类ID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                parentId:
+                  type: integer
+                  description: 父分类ID
+                  example: 0
+                name:
+                  type: string
+                  description: 分类名称
+                  example: "技术"
+                description:
+                  type: string
+                  description: 分类描述
+                  example: "技术相关文章"
+                icon:
+                  type: string
+                  description: 分类图标
+                  example: "icon-tech"
+                order:
+                  type: integer
+                  description: 排序
+                  example: 1
+                status:
+                  type: integer
+                  description: 状态
+                  example: 1
+      responses:
+        "200":
+          description: 返回修改后的文章分类
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleCategoryResp"
+              example:
+                code: 1
+                msg: "修改成功！"
+                data:
+                  articleCategoryId: 1
+                  parentId: 0
+                  seoTitle: null
+                  seoKeywords: null
+                  seoDescription: null
+                  name: "测试分类"
+                  icon: null
+                  description: null
+                  status: 1
+                  articleCount: 1
+                  path: "0"
+                  order: null
+                  createId: 1
+                  creator: "admin"
+                  updateId: 1
+                  updater: "admin"
+                  createdAt: 1737708748
+                  updatedAt: 1737708748
+                  deletedAt: 0
+
+    delete:
+      summary: 删除文章分类
+      description: 根据ID删除文章分类
+      operationId: deleteArticleCategory
+      security:
+        - BearerAuth: []
+      tags:
+        - article-categories
+      parameters:
+        - name: articleCategoryId
+          in: path
+          description: 文章分类ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 返回删除结果
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleCategoryResp"
+              example:
+                code: 1
+                msg: "删除成功！"
+                data:
+                  articleCategoryId: 1
+                  parentId: 0
+                  seoTitle: null
+                  seoKeywords: null
+                  seoDescription: null
+                  name: "测试分类"
+                  icon: null
+                  description: null
+                  status: 1
+                  articleCount: 1
+                  path: "0"
+                  order: null
+                  createId: 1
+                  creator: "admin"
+                  updateId: 1
+                  updater: "admin"
+                  createdAt: 1737708748
+                  updatedAt: 1737708748
+                  deletedAt: 0
+
+components:
+  schemas:
+    Response:
+      type: object
+      required:
+        - code
+        - msg
+      properties:
+        code:
+          type: integer
+          description: Response code
+          example: 1
+        msg:
+          type: string
+          description: Response message
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          description: 当前页码
+          example: 1
+        pageSize:
+          type: integer
+          description: 每页显示的数据条数
+          example: 10
+        total:
+          type: integer
+          description: 总数据条数
+          example: 2
+
+    ArticleCategoryListResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                total:
+                  type: integer
+                  example: 1
+                data:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/ArticleCategory"
+                current:
+                  type: integer
+                  example: 1
+                pageSize:
+                  type: integer
+                  example: 10
+
+    ArticleCategoryResp:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/ArticleCategory"
+
+    ArticleCategory:
+      type: object
+      properties:
+        articleCategoryId:
+          type: integer
+          description: 分类ID
+          example: 1
+        parentId:
+          type: integer
+          description: 父级分类ID，0表示顶级分类
+          example: 0
+        seoTitle:
+          type: string
+          nullable: true
+          description: SEO标题
+          example: null
+        seoKeywords:
+          type: string
+          nullable: true
+          description: SEO关键词
+          example: null
+        seoDescription:
+          type: string
+          nullable: true
+          description: SEO描述
+          example: null
+        name:
+          type: string
+          description: 分类名称
+          example: "测试分类"
+        icon:
+          type: string
+          nullable: true
+          description: 分类图标
+          example: null
+        description:
+          type: string
+          nullable: true
+          description: 分类描述
+          example: null
+        status:
+          type: integer
+          description: 分类状态（例如：1-启用，0-禁用）
+          example: 1
+        articleCount:
+          type: integer
+          description: 该分类下的文章数量
+          example: 1
+        path:
+          type: string
+          description: 分类路径，用于标识层级关系
+          example: "0"
+        order:
+          type: integer
+          nullable: true
+          description: 排序权重
+          example: null
+        createId:
+          type: integer
+          description: 创建者ID
+          example: 1
+        creator:
+          type: string
+          description: 创建者名称
+          example: "admin"
+        updateId:
+          type: integer
+          description: 更新者ID
+          example: 1
+        updater:
+          type: string
+          description: 更新者名称
+          example: "admin"
+        createdAt:
+          type: integer
+          description: 创建时间，Unix时间戳格式
+          example: 1737708748
+        updatedAt:
+          type: integer
+          description: 更新时间，Unix时间戳格式
+          example: 1737708748
+        deletedAt:
+          type: integer
+          description: 删除时间，Unix时间戳格式，0表示未删除
+          example: 0
+
+    ArticleCategoryTree:
+      type: object
+      properties:
+        articleCategory:
+          $ref: "#/components/schemas/ArticleCategory"
+        children:
+          type: array
+          description: 子文章列表
+          items:
+            $ref: "#/components/schemas/ArticleCategory"

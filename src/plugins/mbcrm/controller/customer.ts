@@ -14,6 +14,7 @@ import { formatField, formatFields, now } from "@/lib/date";
 import { PrismaClient } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { z } from "zod";
+import { getCurrentUser } from "@/lib/userinfo";
 
 // Zod验证schema
 const customerSchema = z.object({
@@ -68,10 +69,10 @@ export async function getCustomerListController(ctx: Context) {
   ]);
 
   // 返回结果
-  ctx.body = response.success("获取成功", { 
-    total, 
-    data: list, 
-    current, 
+  ctx.body = response.success("获取成功", {
+    total,
+    data: list,
+    current,
     pageSize,
     statusOptions: getCustomerStatusOptions()
   });
@@ -81,7 +82,7 @@ export async function getCustomerListController(ctx: Context) {
 export async function getCustomerController(ctx: Context) {
   const { customerId } = ctx.params;
   const customerIdNumber = Number(customerId);
-  
+
   if (isNaN(customerIdNumber)) {
     ctx.body = response.error("参数错误");
     return;
@@ -105,25 +106,27 @@ export async function getCustomerController(ctx: Context) {
 
 // 保存客户信息
 export async function saveCustomer(ctx: Context, customerId: number | null) {
-  const { userId, loginName, isSuperAdmin } = ctx.state.user;
+  const { userId, loginName } = getCurrentUser(ctx);
 
   try {
     const json = await parseJson(ctx);
-    
+
     // 验证输入数据
     const validatedData = customerSchema.parse(json);
 
     // 处理操作客服逻辑
-    const operatorData = isSuperAdmin && validatedData.operator 
-      ? { connect: { userId: Number(validatedData.operator) } }
-      : { connect: { userId: userId } };
+    const operatorData = { connect: { userId } };
+
+    const creatorData = {
+      connect: { userId }
+    };
 
     const edit = customerId !== null;
     let msg = null;
 
     const result = await prisma.$transaction(async (tx: PrismaClient) => {
       let customer = null;
-      
+
       if (edit) {
         customer = await updateCustomer(
           customerId,
@@ -155,7 +158,7 @@ export async function saveCustomer(ctx: Context, customerId: number | null) {
             status: validatedData.status,
             remark: validatedData.remark,
             operator: operatorData,
-            createdId: userId,
+            creator: creatorData,
             createdBy: loginName,
             createdAt: now(),
             updatedId: userId,
@@ -188,7 +191,7 @@ export async function createCustomerController(ctx: Context) {
 export async function updateCustomerController(ctx: Context) {
   const { customerId } = ctx.params;
   const customerIdNumber = Number(customerId);
-  
+
   if (isNaN(customerIdNumber)) {
     ctx.body = response.error("参数错误");
     return;
@@ -207,7 +210,7 @@ export async function updateCustomerController(ctx: Context) {
 export async function deleteCustomerController(ctx: Context) {
   const { customerId } = ctx.params;
   const customerIdNumber = Number(customerId);
-  
+
   if (isNaN(customerIdNumber)) {
     ctx.body = response.error("参数错误");
     return;
@@ -221,5 +224,4 @@ export async function deleteCustomerController(ctx: Context) {
 
   await deleteCustomer(customerIdNumber);
   ctx.body = response.success("删除成功");
-  
 }

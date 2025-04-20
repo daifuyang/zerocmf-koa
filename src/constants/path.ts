@@ -22,6 +22,18 @@ const RBAC_MODEL = path.resolve(APP_PATH, "config/casbin/rbac_model.conf");
 const LOCK_DIR = path.resolve(APP_PATH, "install");
 const LOCK_FILE = path.resolve(LOCK_DIR, "install.lock");
 
-const SWAGGER_APIS = path.resolve(APP_PATH, "**/*.yaml");
+const SWAGGER_APIS = [path.resolve(APP_PATH, "**/*.yaml"), path.resolve(APP_PATH, "**/*.ts")];
+console.log(SWAGGER_APIS);
 
-export { ROOT_PATH, PUBLIC_PATH, MENU_JSON, UPLOAD_DIR, RBAC_MODEL, LOCK_DIR, LOCK_FILE, SWAGGER_APIS, ADMIN_PATH, TEMPLATE_PATH };
+export {
+  ROOT_PATH,
+  PUBLIC_PATH,
+  MENU_JSON,
+  UPLOAD_DIR,
+  RBAC_MODEL,
+  LOCK_DIR,
+  LOCK_FILE,
+  SWAGGER_APIS,
+  ADMIN_PATH,
+  TEMPLATE_PATH
+};

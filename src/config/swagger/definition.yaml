@@ -90,7 +90,6 @@ tags:
   - name: dispatch
     description: 派单管理
 
-
 servers:
   - url: /
     description: Local server
